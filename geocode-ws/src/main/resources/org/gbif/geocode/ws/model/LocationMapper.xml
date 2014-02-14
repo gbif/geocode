@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gbif.geocode.ws.model.LocationMapper">
+
+  <!--cache/-->
+
+  <!-- Searches the public.political table -->
+  <select id="listPolitical" parameterType="string" resultType="Location">
+    SELECT gid as id, 'Political' AS type, 'http://www.naturalearthdata.com' AS source, name AS title, iso_a2 AS isoCountryCode2Digit
+    FROM political
+    WHERE ST_DWithin(the_geom, ST_GeomFromText(#{point}, 4326), 0.001)
+  </select>
+
+  <!-- Searches the public.eez table -->
+  <select id="listEez" parameterType="string" resultType="Location">
+    SELECT eez.gid AS id, 'EEZ' as TYPE, 'http://vliz.be/vmdcdata/marbound/' as SOURCE, eez.country AS title, political.iso_a2 AS isoCountryCode2Digit
+    FROM eez LEFT OUTER JOIN political ON eez.iso_3digit = political.iso_a3
+    WHERE ST_DWithin(eez.the_geom, ST_GeomFromText(#{point}, 4326), 0.001)
+  </select>
+
+</mapper>
