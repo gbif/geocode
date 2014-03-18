@@ -6,7 +6,6 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.Geocoder;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;

@@ -19,6 +19,8 @@ public interface GeocodeWsStatisticsMBean {
 
   long getTotalNoResults();
 
+  long getWithing5KmHits();
+
   double getAverageResultSize();
 
   void resetStats();

@@ -1,6 +1,7 @@
 package org.gbif.geocode.ws.monitoring;
 
 import java.util.concurrent.atomic.AtomicLong;
+
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -22,6 +23,7 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
   private final AtomicLong cacheHits = new AtomicLong(0);
   private final AtomicLong dbHits = new AtomicLong(0);
   private final AtomicLong politicalHits = new AtomicLong(0);
+  private final AtomicLong within5KmHits = new AtomicLong(0);
   private final AtomicLong eezHits = new AtomicLong(0);
   private final AtomicLong noHits = new AtomicLong(0);
   private final AtomicLong totalResults = new AtomicLong(0);
@@ -84,9 +86,19 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
     eezHits.incrementAndGet();
   }
 
+
   @Override
   public long getTotalEezHits() {
     return eezHits.get();
+  }
+
+  public void foundWithing5Km() {
+    within5KmHits.incrementAndGet();
+  }
+
+  @Override
+  public long getWithing5KmHits() {
+    return within5KmHits.get();
   }
 
   public void noResult() {
@@ -104,7 +116,7 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
 
   @Override
   public double getAverageResultSize() {
-    double totalHits = politicalHits.get() + eezHits.get();
+    double totalHits = politicalHits.get() + eezHits.get() + within5KmHits.get();
     return totalResults.get() / totalHits;
   }
 
@@ -118,6 +130,7 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
     eezHits.set(0);
     noHits.set(0);
     totalResults.set(0);
+    within5KmHits.set(0);
   }
 
 }

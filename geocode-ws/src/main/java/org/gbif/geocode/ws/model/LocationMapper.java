@@ -4,6 +4,8 @@ import org.gbif.geocode.api.model.Location;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 /**
  * Used by MyBatis to provide a typed interface to the mapped queries.
  * <p/>
@@ -11,8 +13,8 @@ import java.util.List;
  */
 public interface LocationMapper {
 
-  List<Location> listPolitical(String point);
+  List<Location> listPolitical(@Param("point") String point, @Param("distance") double distance);
 
-  List<Location> listEez(String point);
+  List<Location> listEez(@Param("point") String point, @Param("distance") double distance);
 
 }
