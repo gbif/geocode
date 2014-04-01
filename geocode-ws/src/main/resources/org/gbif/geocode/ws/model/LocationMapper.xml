@@ -9,6 +9,7 @@
     SELECT gid as id, 'Political' AS type, 'http://www.naturalearthdata.com' AS source, name AS title, iso_a2 AS isoCountryCode2Digit
     FROM political
     WHERE ST_DWithin(the_geom, ST_GeomFromText(#{point}, 4326), #{distance})
+    ORDER BY ST_Distance(the_geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
   <!-- Searches the public.eez table -->
@@ -16,6 +17,7 @@
     SELECT eez.gid AS id, 'EEZ' as TYPE, 'http://vliz.be/vmdcdata/marbound/' as SOURCE, eez.country AS title, political.iso_a2 AS isoCountryCode2Digit
     FROM eez LEFT OUTER JOIN political ON eez.iso_3digit = political.iso_a3
     WHERE ST_DWithin(eez.the_geom, ST_GeomFromText(#{point}, 4326), #{distance})
+    ORDER BY ST_Distance(the_geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
 </mapper>
