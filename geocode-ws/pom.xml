@@ -16,7 +16,6 @@
 
   <properties>
     <gbif-parsers.version>0.1</gbif-parsers.version>
-    <geocode-api.version>0.2-SNAPSHOT</geocode-api.version>
     <guice.version>3.0</guice.version>
     <guava.version>14.0.1</guava.version>
     <jersey.version>1.17</jersey.version>
@@ -138,7 +137,7 @@
     <dependency>
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
-      <version>${geocode-api.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
