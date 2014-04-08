@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.gbif.geocode</groupId>
     <artifactId>geocode-motherpom</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>geocode-ws-client</artifactId>
@@ -15,7 +15,7 @@
   <description>Provides a convenient client for the Geocode WS.</description>
 
   <properties>
-    <geocode-api.version>0.2-SNAPSHOT</geocode-api.version>
+    <geocode-api.version>${project.version}</geocode-api.version>
     <guice.version>3.0</guice.version>
     <jersey.version>1.17</jersey.version>
     <junit.version>4.11</junit.version>
