@@ -25,7 +25,7 @@
 
   <groupId>org.gbif.geocode</groupId>
   <artifactId>geocode-motherpom</artifactId>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.3</version>
   <packaging>pom</packaging>
 
   <name>Geocode Mother POM</name>
@@ -35,6 +35,7 @@
     <connection>scm:git:git@github.com:gbif/geocode.git</connection>
     <url>https://github.com/gbif/geocode</url>
     <developerConnection>scm:git:git@github.com:gbif/geocode.git</developerConnection>
+    <tag>geocode-0.3</tag>
   </scm>
 
   <repositories>
