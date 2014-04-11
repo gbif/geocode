@@ -187,4 +187,22 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <!-- requires <geocode-ws.password></geocode-ws.password> from elsewhere -->
+    <profile>
+      <id>prod</id>
+      <properties>
+        <geocode-ws.url>jdbc:postgresql://excalibur.gbif.org/eez</geocode-ws.url>
+        <geocode-ws.username>eez</geocode-ws.username>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>uat</id>
+      <properties>
+        <geocode-ws.url>jdbc:postgresql://boma.gbif.org/eez</geocode-ws.url>
+        <geocode-ws.username>eez</geocode-ws.username>
+      </properties>
+    </profile>
+  </profiles>
 </project>
