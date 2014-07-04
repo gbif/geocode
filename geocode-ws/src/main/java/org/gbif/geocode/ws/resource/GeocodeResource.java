@@ -20,7 +20,7 @@ import com.google.inject.Singleton;
 /**
  * Provides the web service interface to query our Geocoder.
  */
-@Path("/reverse")
+@Path("/geocode")
 @Singleton
 public class GeocodeResource implements GeocodeService {
 
@@ -36,6 +36,7 @@ public class GeocodeResource implements GeocodeService {
 
   @Override
   @GET
+  @Path("reverse")
   @Produces(MediaType.APPLICATION_JSON)
   public Collection<Location> get(@QueryParam("lat") Double latitude, @QueryParam("lng") Double longitude) {
     if (latitude == null || longitude == null) {
