@@ -204,5 +204,13 @@
         <geocode-ws.username>eez</geocode-ws.username>
       </properties>
     </profile>
+
+    <profile>
+      <id>dev</id>
+      <properties>
+        <geocode-ws.url>jdbc:postgresql://boma.gbif.org/eez</geocode-ws.url>
+        <geocode-ws.username>eez</geocode-ws.username>
+      </properties>
+    </profile>
   </profiles>
 </project>
