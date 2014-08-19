@@ -6,6 +6,8 @@
   <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
     <resetJUL>true</resetJUL>
   </contextListener>
+  
+  <property name="defaultPattern" value="%-5level [%date{'yyyy-MM-dd HH:mm:ss,SSSZ'}] [%thread] %logger: %msg%n%xEx"/>
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -39,7 +41,7 @@
   </appender>
 
   <root level="WARN">
-    <!--appender-ref ref="STDOUT"/-->
+    <!-- appender-ref ref="CONSOLE"/-->
     <appender-ref ref="FILE"/>
     <appender-ref ref="ERROR_FILE"/>
   </root>
