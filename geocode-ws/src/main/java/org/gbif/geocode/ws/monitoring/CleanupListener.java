@@ -13,13 +13,7 @@ import com.google.inject.Injector;
 public class CleanupListener implements ServletContextListener {
 
   @Override
-  public void contextInitialized(ServletContextEvent sce) {
-    // Nothing to initialize
-  }
-
-  @Override
   public void contextDestroyed(ServletContextEvent sce) {
-    System.out.println();
     Injector injector = (Injector) sce.getServletContext().getAttribute(Injector.class.getName());
     if (injector != null) {
       MBeanServer mbeanServer = injector.getInstance(MBeanServer.class);
@@ -30,5 +24,10 @@ public class CleanupListener implements ServletContextListener {
       } catch (MalformedObjectNameException ignored) {
       }
     }
+  }
+
+  @Override
+  public void contextInitialized(ServletContextEvent sce) {
+    // Nothing to initialize
   }
 }

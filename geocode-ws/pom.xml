@@ -31,8 +31,7 @@
     <servlet-api.version>3.0-alpha-1</servlet-api.version>
     <slf4j.version>1.7.2</slf4j.version>
     <xalan.version>2.7.1</xalan.version>
-    <bonecp.version>0.8.0-alpha1</bonecp.version>
-
+    <bonecp.version>0.8.0.RELEASE</bonecp.version>
     <jetty-maven-plugin.version>8.0.1.v20110908</jetty-maven-plugin.version>
   </properties>
 
@@ -92,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>com.jolbox</groupId>
-      <artifactId>bonecp-provider</artifactId>
+      <artifactId>bonecp</artifactId>
       <version>${bonecp.version}</version>
       <scope>runtime</scope>
     </dependency>
