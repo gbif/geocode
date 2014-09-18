@@ -91,6 +91,7 @@ public class GuiceConfig extends GuiceServletContextListener {
       Names.bindProperties(binder(), properties);
       bindConstant().annotatedWith(Names.named("bonecp.partitionCount")).to(4);
       bindConstant().annotatedWith(Names.named("bonecp.maxConnectionsPerPartition")).to(5);
+      bindConstant().annotatedWith(Names.named("bonecp.maxConnectionAgeInSeconds")).to(120); // 2 mins
       environmentId("default");
       bindTransactionFactoryType(JdbcTransactionFactory.class);
       bindDataSourceProviderType(BoneCPProvider.class);
