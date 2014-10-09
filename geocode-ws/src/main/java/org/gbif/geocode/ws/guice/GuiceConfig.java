@@ -5,6 +5,8 @@ import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.Geocoder;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
+import org.gbif.utils.file.properties.PropertiesUtil;
+import org.gbif.ws.app.ConfUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.management.MBeanServer;
 
+import com.google.common.base.Throwables;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -33,6 +36,8 @@ import org.mybatis.guice.datasource.bonecp.BoneCPProvider;
  * different modules.
  */
 public class GuiceConfig extends GuiceServletContextListener {
+
+  private static final String APP_CONF_FILE = "mybatis.properties";
 
   @Override
   protected Injector getInjector() {
@@ -81,22 +86,22 @@ public class GuiceConfig extends GuiceServletContextListener {
 
     @Override
     protected void initialize() {
-      Properties properties = new Properties();
-      InputStream inputStream = getClass().getClassLoader().getResourceAsStream("mybatis.properties");
       try {
-        properties.load(inputStream);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
+        Properties properties = PropertiesUtil.readFromFile(ConfUtils.getAppConfFile(APP_CONF_FILE));
+        Names.bindProperties(binder(), properties);
+        bindConstant().annotatedWith(Names.named("bonecp.partitionCount")).to(4);
+        bindConstant().annotatedWith(Names.named("bonecp.maxConnectionsPerPartition")).to(5);
+        bindConstant().annotatedWith(Names.named("bonecp.maxConnectionAgeInSeconds")).to(120); // 2 mins
+        environmentId("default");
+        bindTransactionFactoryType(JdbcTransactionFactory.class);
+        bindDataSourceProviderType(BoneCPProvider.class);
+        addAlias("Location").to(Location.class);
+        addMapperClass(LocationMapper.class);
+      } catch(IOException ex) {
+        Throwables.propagate(ex);
       }
-      Names.bindProperties(binder(), properties);
-      bindConstant().annotatedWith(Names.named("bonecp.partitionCount")).to(4);
-      bindConstant().annotatedWith(Names.named("bonecp.maxConnectionsPerPartition")).to(5);
-      bindConstant().annotatedWith(Names.named("bonecp.maxConnectionAgeInSeconds")).to(120); // 2 mins
-      environmentId("default");
-      bindTransactionFactoryType(JdbcTransactionFactory.class);
-      bindDataSourceProviderType(BoneCPProvider.class);
-      addAlias("Location").to(Location.class);
-      addMapperClass(LocationMapper.class);
     }
+
   }
+
 }

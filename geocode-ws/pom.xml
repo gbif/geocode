@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>geocode-ws</artifactId>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>Geocode Web service</name>
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
@@ -33,6 +33,9 @@
     <xalan.version>2.7.2</xalan.version>
     <bonecp.version>0.8.0.RELEASE</bonecp.version>
     <jetty-maven-plugin.version>8.0.1.v20110908</jetty-maven-plugin.version>
+    <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
+    <gbif-microservice.version>0.1-SNAPSHOT</gbif-microservice.version>
+    <gbif-common.version>0.17-SNAPSHOT</gbif-common.version>
   </properties>
 
   <build>
@@ -51,6 +54,53 @@
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven-shade-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <transformers>
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.gbif.ws.app.Application</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>org.jruby:jruby-complete</artifact>
+                  <excludes>
+                    <exclude>org/joda/**</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <!--Exclude configuration file that are not required in the output jar file -->
+                  <artifact>org.gbif.geocode:geocode-ws</artifact>
+                  <excludes>
+                    <exclude>mybatis.properties</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -121,7 +171,7 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>${servlet-api.version}</version>
-      <scope>provided</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -190,6 +240,18 @@
       <artifactId>xalan</artifactId>
       <version>${xalan.version}</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <!-- gbif-microservice: embedded jetty -->
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-microservice</artifactId>
+      <version>${gbif-microservice.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common</artifactId>
+      <version>${gbif-common.version}</version>
     </dependency>
   </dependencies>
 
