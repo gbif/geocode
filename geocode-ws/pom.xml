@@ -34,8 +34,8 @@
     <bonecp.version>0.8.0.RELEASE</bonecp.version>
     <jetty-maven-plugin.version>8.0.1.v20110908</jetty-maven-plugin.version>
     <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-    <gbif-microservice.version>0.1-SNAPSHOT</gbif-microservice.version>
-    <gbif-common.version>0.17-SNAPSHOT</gbif-common.version>
+    <gbif-microservice.version>0.1</gbif-microservice.version>
+    <gbif-common.version>0.17</gbif-common.version>
   </properties>
 
   <build>
