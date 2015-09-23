@@ -1,45 +1,44 @@
-Providing database credentials
-------------------------------
+# Providing database credentials
 
 No credentials are hardcoded. You can provide credentials in one of multiple ways:
 
 For these two remember not to check your changes in:
-*) Change the src/resources/mybatis.properties file
-*) Change the src/resources/mybatis-config.xml file
+ - Change the src/resources/mybatis.properties file
+ - Change the src/resources/mybatis-config.xml file
 
-*) Provide the connection details on the command line while running Maven:
-     -Dgeocode-ws.url=<url> -Dgeocode-ws.username=<user> -Dgeocode-ws.password=<password>
+ - Provide the connection details on the command line while running Maven:
+    ```-Dgeocode-ws.url=<url> -Dgeocode-ws.username=<user> -Dgeocode-ws.password=<password>```
 
-*) Provide the connection details in a profile in your settings.xml file:
+ - Provide the connection details in a profile in your settings.xml file:
 
-     <profile>
-       <id>geocode-ws-production</id>
-       <properties>
-         <geocode-ws.url></geocode-ws.url>
-         <geocode-ws.username></geocode-ws.username>
-         <geocode-ws.password></geocode-ws.password>
-       </properties>
-     </profile>
+```xml
+<profile>
+  <id>geocode-ws-production</id>
+  <properties>
+    <geocode-ws.url></geocode-ws.url>
+    <geocode-ws.username></geocode-ws.username>
+    <geocode-ws.password></geocode-ws.password>
+  </properties>
+</profile>
+```
 
-   Then start Maven with this profile:
-     -Pgeocode-ws-production
+Then start Maven with this profile:
+     ```-Pgeocode-ws-production```
 
-Building
---------
+# Building
 
 To build the WebService just execute Maven this way:
 
-  mvn clean package
+    mvn clean package
 
 And make sure to provide database credentials in one of the ways mentioned above.
 
 
-Testing
--------
+# Testing
 
 To run the WebService in a local Jetty instance run
 
-mvn jetty:run
+```mvn jetty:run```
 
 And make sure to provide database credentials in one of the ways mentioned above.
 
@@ -47,14 +46,14 @@ Then go to: http://localhost:8080/geocode-ws/reverse?lat=55.68&lng=12.00
 
 Response should be:
 
+```json
 [{
 title: "PA:6"
 id: "6"
 }]
+```
 
-
-Create Database
----------------
+# Create Database
 
 At the moment we have two sources of data: Natural Earth and EEZ.
 
