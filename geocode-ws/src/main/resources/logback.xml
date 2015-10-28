@@ -1,4 +1,5 @@
 <configuration>
+  <!-- DEVELOPMENT FILE: This file is excluded from the build. -->
 
   <contextName>Geocode WS</contextName>
   <jmxConfigurator/>
@@ -41,7 +42,7 @@
   </appender>
 
   <root level="WARN">
-    <!-- appender-ref ref="CONSOLE"/-->
+    <appender-ref ref="CONSOLE"/>
     <appender-ref ref="FILE"/>
     <appender-ref ref="ERROR_FILE"/>
   </root>
