@@ -1,4 +1,9 @@
-# Providing database credentials
+#geocode-ws
+
+RESTful service that provides the reverse geocode functionality. The REST resource should be accessible at this URL 
+This service is accessible at the URL `http://{server}:{httpPort}/reverse`.
+
+## How to build this project
 
 No credentials are hardcoded. You can provide credentials in one of multiple ways:
 
@@ -13,7 +18,7 @@ For these two remember not to check your changes in:
 
 ```xml
 <profile>
-  <id>geocode-ws-production</id>
+  <id>geocode-ws</id>
   <properties>
     <geocode-ws.url></geocode-ws.url>
     <geocode-ws.username></geocode-ws.username>
@@ -23,18 +28,18 @@ For these two remember not to check your changes in:
 ```
 
 Then start Maven with this profile:
-     ```-Pgeocode-ws-production```
+     ```-Pgeocode-ws```
 
-# Building
+### Building
 
 To build the WebService just execute Maven this way:
 
-    mvn clean package
+```mvn clean package```
 
 And make sure to provide database credentials in one of the ways mentioned above.
 
 
-# Testing
+## Testing
 
 To run the WebService in a local Jetty instance run
 
@@ -53,7 +58,7 @@ id: "6"
 }]
 ```
 
-# Create Database
+## Create Database
 
 At the moment we have two sources of data: Natural Earth and EEZ.
 
@@ -78,3 +83,10 @@ CREATE INDEX political_iso_a3
 CREATE INDEX eez_iso_3digit
   ON eez
   (iso_3digit);
+
+##How to run this service
+
+This service is based on the [gbif-microservice](https://github.com/gbif/gbif-microservice) project which means that the
+jar file can be executed using the parameters described in the [gbif-microservice](https://github.com/gbif/gbif-microservice)
+project; additionally, this service requires a logback.xml file in the `conf` directory located at same level where the
+jar file (such directory is added to the application classpath).
