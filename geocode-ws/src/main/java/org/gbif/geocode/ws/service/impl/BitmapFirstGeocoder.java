@@ -42,7 +42,7 @@ public class BitmapFirstGeocoder implements Geocoder {
     this.geocoder = geocoder;
 
     try {
-      img = ImageIO.read(new File("world.png"));
+      img = ImageIO.read(this.getClass().getResourceAsStream("world.png"));
       img_height = img.getHeight();
       img_width = img.getWidth();
     } catch (IOException e) {

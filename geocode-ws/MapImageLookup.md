@@ -5,7 +5,7 @@ The class `BitmapFirstGeocoder` refers to a PNG bitmap of the world, with each c
 
 ![PNG map cache](./src/main/resources/org/gbif/geocode/ws/service/impl/world.png)
 
-== Process to generate the map image
+## Process to generate the map image
 
 The bitmap is generated using data from MarineRegions.org, the same data source as is used in our database.
 
@@ -29,7 +29,7 @@ South Sudan is missing from the Marine EEZ map, so download the Marine EEZ + Lan
 
     cp world-marineregions.svg world.svg
 
-Open this in a text editor, and remove the styling attributes from the SVG element.  Add the general CSS styles (for path and #eez_land).
+Open this in a text editor, and remove the styling attributes from the SVG element.  Add the general CSS styles (for `path` and `#eez_land`).
 
 ````css
 <style type="text/css">
