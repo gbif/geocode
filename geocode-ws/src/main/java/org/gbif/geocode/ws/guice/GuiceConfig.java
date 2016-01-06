@@ -4,12 +4,12 @@ import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.Geocoder;
+import org.gbif.geocode.ws.service.impl.BitmapFirstGeocoder;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 import org.gbif.utils.file.properties.PropertiesUtil;
 import org.gbif.ws.app.ConfUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,8 @@ public class GuiceConfig extends GuiceServletContextListener {
     @Override
     protected void configure() {
       bind(MBeanServer.class).toInstance(ManagementFactory.getPlatformMBeanServer());
-      bind(Geocoder.class).to(MyBatisGeocoder.class);
+      bind(Geocoder.class).annotatedWith(Names.named("Database")).to(MyBatisGeocoder.class);
+      bind(Geocoder.class).to(BitmapFirstGeocoder.class);
       bind(GeocodeWsStatistics.class).asEagerSingleton();
     }
   }

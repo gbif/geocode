@@ -1,4 +1,4 @@
-#geocode
+# Geocode
 
 Provide a reverse geocoding service, which is the process of back (reverse) coding of a point location (latitude, longitude) to a know location. This service relies on a [PostGIS](http://postgis.refractions.net/) database to recognize a coordinate in the boundaries of a political area and inside [exclusive economic zones](https://en.wikipedia.org/wiki/Exclusive_economic_zone). The service exposed in this project is not intended to be used publicly, this service is used internally in GBIF services to interpret countries boundaries from geographic coordinates. This project contains 3 modules:
   * geocode-api: contains the GeocodeService.get(lat,lon) service and the Location instance returned by it.
@@ -7,7 +7,9 @@ Provide a reverse geocoding service, which is the process of back (reverse) codi
   * geocode-ws-client: Java client to access the RESTful service.
    
 ##How to build this project
+
 Execute the Maven command:
+
 ```
 mvn clean package verify install -P{geocode}
 ```
