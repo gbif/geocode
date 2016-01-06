@@ -32,6 +32,12 @@ public class LocationResourceTest {
     geocodeService.get(10.0d, null);
   }
 
+  @Test(expected = WebApplicationException.class)
+  public void testOffworldParameter() {
+    GeocodeService geocodeService = new GeocodeResource(null, null);
+    geocodeService.get(95.0d, 0.0d);
+  }
+
   @Test
   public void testGoodRequest() {
     GeocodeWsStatistics statistics = mock(GeocodeWsStatistics.class);
@@ -47,5 +53,4 @@ public class LocationResourceTest {
     assertEquals(1, locations.size());
     assertTrue(locations.contains(locationTest2));
   }
-
 }

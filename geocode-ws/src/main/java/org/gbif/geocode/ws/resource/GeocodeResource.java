@@ -39,7 +39,9 @@ public class GeocodeResource implements GeocodeService {
   @Path("reverse")
   @Produces(MediaType.APPLICATION_JSON)
   public Collection<Location> get(@QueryParam("lat") Double latitude, @QueryParam("lng") Double longitude) {
-    if (latitude == null || longitude == null) {
+    if (latitude == null || longitude == null
+            || latitude < -90 || latitude > 90
+            || longitude < -180 || longitude > 180) {
       throw new WebApplicationException(Response.Status.BAD_REQUEST);
     }
 
