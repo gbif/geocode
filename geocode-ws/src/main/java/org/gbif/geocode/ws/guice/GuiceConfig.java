@@ -6,6 +6,7 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.Geocoder;
 import org.gbif.geocode.ws.service.impl.BitmapFirstGeocoder;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
+import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.utils.file.properties.PropertiesUtil;
 import org.gbif.ws.app.ConfUtils;
 
@@ -17,7 +18,6 @@ import java.util.Properties;
 import javax.management.MBeanServer;
 
 import com.google.common.base.Throwables;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
@@ -27,9 +27,6 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.mybatis.guice.MyBatisModule;
-import org.mybatis.guice.datasource.bonecp.BoneCPProvider;
 
 /**
  * Overarching configuration of our WebService. Tying together Jersey, MyBatis and our own classes using three
@@ -41,7 +38,13 @@ public class GuiceConfig extends GuiceServletContextListener {
 
   @Override
   protected Injector getInjector() {
-    return Guice.createInjector(Stage.PRODUCTION, new JerseyModule(), new GeocodeWsModule(), new InternalMyBatisModule());
+    try {
+      Properties props = PropertiesUtil.readFromFile(ConfUtils.getAppConfFile(APP_CONF_FILE));
+      return Guice.createInjector(Stage.PRODUCTION, new JerseyModule(), new InternalMyBatisModule(props));
+    } catch (IOException e) {
+      Throwables.propagate(e);
+      return null;
+    }
   }
 
   /**
@@ -65,42 +68,32 @@ public class GuiceConfig extends GuiceServletContextListener {
   }
 
   /**
-   * A Guice module for all things not tied to either mybatis or Jersey
-   */
-  private static class GeocodeWsModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-      bind(MBeanServer.class).toInstance(ManagementFactory.getPlatformMBeanServer());
-      bind(Geocoder.class).annotatedWith(Names.named("Database")).to(MyBatisGeocoder.class);
-      bind(Geocoder.class).to(BitmapFirstGeocoder.class);
-      bind(GeocodeWsStatistics.class).asEagerSingleton();
-    }
-  }
-
-  /**
    * A Guice module for all things mybatis
    * <p/>
    * A config file named mybatis-config.xml is picked up automatically.
    */
   private static class InternalMyBatisModule extends MyBatisModule {
 
+    public InternalMyBatisModule(Properties props) {
+      super("geocode", props);
+    }
+
     @Override
-    protected void initialize() {
-      try {
-        Properties properties = PropertiesUtil.readFromFile(ConfUtils.getAppConfFile(APP_CONF_FILE));
-        Names.bindProperties(binder(), properties);
-        bindConstant().annotatedWith(Names.named("bonecp.partitionCount")).to(4);
-        bindConstant().annotatedWith(Names.named("bonecp.maxConnectionsPerPartition")).to(5);
-        bindConstant().annotatedWith(Names.named("bonecp.maxConnectionAgeInSeconds")).to(120); // 2 mins
-        environmentId("default");
-        bindTransactionFactoryType(JdbcTransactionFactory.class);
-        bindDataSourceProviderType(BoneCPProvider.class);
-        addAlias("Location").to(Location.class);
-        addMapperClass(LocationMapper.class);
-      } catch(IOException ex) {
-        Throwables.propagate(ex);
-      }
+    protected void bindMappers() {
+      addAlias("Location").to(Location.class);
+      addMapperClass(LocationMapper.class);
+    }
+
+    @Override
+    protected void bindTypeHandlers() {
+    }
+
+    @Override
+    protected void bindManagers() {
+      bind(MBeanServer.class).toInstance(ManagementFactory.getPlatformMBeanServer());
+      bind(Geocoder.class).annotatedWith(Names.named("Database")).to(MyBatisGeocoder.class);
+      bind(Geocoder.class).to(BitmapFirstGeocoder.class);
+      bind(GeocodeWsStatistics.class).asEagerSingleton();
     }
 
   }

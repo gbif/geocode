@@ -25,7 +25,6 @@
     <dependency>
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
