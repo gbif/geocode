@@ -10,9 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -42,7 +40,7 @@ public class GeocodeResource implements GeocodeService {
     if (latitude == null || longitude == null
             || latitude < -90 || latitude > 90
             || longitude < -180 || longitude > 180) {
-      throw new WebApplicationException(Response.Status.BAD_REQUEST);
+      throw new OffWorldException();
     }
 
     statistics.goodRequest();

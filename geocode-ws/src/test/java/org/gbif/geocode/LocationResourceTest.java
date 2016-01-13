@@ -4,11 +4,11 @@ import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.GeocodeResource;
+import org.gbif.geocode.ws.resource.OffWorldException;
 import org.gbif.geocode.ws.service.Geocoder;
 
 import java.util.Arrays;
 import java.util.Collection;
-import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
@@ -20,19 +20,19 @@ import static org.mockito.Mockito.when;
 
 public class LocationResourceTest {
 
-  @Test(expected = WebApplicationException.class)
+  @Test(expected = OffWorldException.class)
   public void testMissingParameters() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
     geocodeService.get(null, null);
   }
 
-  @Test(expected = WebApplicationException.class)
+  @Test(expected = OffWorldException.class)
   public void testMissingParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
     geocodeService.get(10.0d, null);
   }
 
-  @Test(expected = WebApplicationException.class)
+  @Test(expected = OffWorldException.class)
   public void testOffworldParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
     geocodeService.get(95.0d, 0.0d);
