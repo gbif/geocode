@@ -61,20 +61,27 @@ Response should be:
 
 At the moment we have two sources of data: Natural Earth and EEZ.
 
-Natural Earth (we're currently on version 1.4.0):
-Download the 1:10m Cultural Vectors, Admin 0 - Countries file from here http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+Natural Earth (we're currently on version 3.1.0):
+Download the [1:10m Cultural Vectors, Admin 0 - Countries file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
+and the [1:10m Cultural Vectors, Admin 0 - Details map units file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/).
 
 ```
-shp2pgsql -d -D -s 4326 -i -I -W WINDOWS-1252 ne_10m_admin_0_countries.shp public.political > political.sql
+unzip ne_10m_admin_0_countries.zip
+shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne_10m_admin_0_countries.shp public.political > political.sql
 psql -h <host> -U <user> -d <database> -f political.sql
+
+unzip ne_10m_admin_0_map_units.zip
+shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne_10m_admin_0_map_units.shp public.political_map_units > political_map_units.sql
+psql -h <host> -U <user> -d <database> -f political_map_units.sql
 ```
 
-EEZ (we're currently on version 6.1):
+EEZ (we're currently on version 8):
 Download the Low res version from here: http://vliz.be/vmdcdata/marbound/download.php
 
 ```
-shp2pgsql -d -D -s 4326 -i -I -W WINDOWS-1252 World_EEZ_v6_1_simpliefiedcoastlines_20110512.shp public.eez > eez.sql
-psql -h <host> -U <user> -d <database> -f political.sql
+unzip World_EEZ_v8_20140228_LR.zip
+shp2pgsql -d -D -s 4326 -i -I -W WINDOWS-1252 World_EEZ_v8_2014.shp public.eez > eez.sql
+psql -h <host> -U <user> -d <database> -f eez.sql
 ```
 
 Add the indexes:
@@ -87,6 +94,32 @@ CREATE INDEX political_iso_a3
 CREATE INDEX eez_iso_3digit
   ON eez
   (iso_3digit);
+```
+
+Import Svalbard, Jan Mayen and Bouvet Island, which are missing from a supposedly-with-territories Norway.
+
+```
+DELETE FROM political WHERE sovereignt = 'Norway';
+CREATE TEMPORARY TABLE no_sj_bv AS SELECT * FROM political_map_units WHERE sovereignt = 'Norway';
+UPDATE no_sj_bv SET gid = gid + (SELECT MAX(gid) FROM political);
+INSERT INTO political (SELECT * FROM no_sj_bv);
+```
+
+Change some areas to use different ISO codes:
+
+```
+-- SELECT * FROM political WHERE adm0_a3 IN('HKG','MAC','USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
+
+UPDATE political SET iso_a2 = 'CN' WHERE adm0_a3 IN('HKG','MAC');
+UPDATE political SET iso_a2 = 'CU' WHERE adm0_a3 = 'USG';
+UPDATE political SET iso_a2 = 'CY' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');
+UPDATE political SET iso_a2 = 'FR', iso_a3 = 'FRA' WHERE adm0_a3 = 'FRA';
+UPDATE political SET iso_a2 = 'KZ' WHERE adm0_a3 = 'KAB';
+UPDATE political SET iso_a2 = 'MA' WHERE adm0_a3 = 'SAH';
+UPDATE political SET iso_a2 = 'SO' WHERE adm0_a3 = 'SOL';
+UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';
+
+UPDATE eez SET iso_3digit = 'FRA' WHERE iso_3digit IN('REU','GLP','GUF','MTQ','MYT');
 ```
 
 ## Map image for faster lookups

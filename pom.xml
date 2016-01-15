@@ -139,6 +139,12 @@
         <version>${servlet-api.version}</version>
         <scope>compile</scope>
       </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${jersey.version}</version>
+        <scope>test</scope>
+      </dependency>
 
       <!-- tests -->
       <dependency>
