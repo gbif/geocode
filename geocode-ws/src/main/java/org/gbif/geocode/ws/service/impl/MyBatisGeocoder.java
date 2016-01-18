@@ -1,7 +1,8 @@
 package org.gbif.geocode.ws.service.impl;
 
-import org.gbif.common.parsers.ParseResult;
-import org.gbif.common.parsers.countryname.CountryNameParser;
+import org.gbif.api.vocabulary.Country;
+import org.gbif.common.parsers.CountryParser;
+import org.gbif.common.parsers.core.ParseResult;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
@@ -24,7 +25,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 @Singleton
 public class MyBatisGeocoder implements Geocoder {
 
-  private final static CountryNameParser COUNTRY_PARSER = CountryNameParser.getInstance();
+  private final static CountryParser COUNTRY_PARSER = CountryParser.getInstance();
 
   private final SqlSessionFactory sqlSessionFactory;
 
@@ -97,11 +98,11 @@ public class MyBatisGeocoder implements Geocoder {
     List<Location> politicalLocations = locationMapper.listPolitical(point, distance);
     List<Location> eeZlocations = locationMapper.listEez(point, distance);
     if (politicalLocations.size() == 1 && eeZlocations.size() == 1) {
-      ParseResult<String> result = COUNTRY_PARSER.parse(eeZlocations.get(0).getTitle());
+      ParseResult<Country> result = COUNTRY_PARSER.parse(eeZlocations.get(0).getTitle());
       Location location = politicalLocations.get(0);
       String localLocationIsoCode = location.getIsoCountryCode2Digit();
       if (result.isSuccessful() && localLocationIsoCode != null
-        && localLocationIsoCode.equalsIgnoreCase(result.getPayload())) {
+        && localLocationIsoCode.equalsIgnoreCase(result.getPayload().getIso2LetterCode())) {
         return Optional.of(location);
       }
     }
@@ -122,9 +123,9 @@ public class MyBatisGeocoder implements Geocoder {
 
     for (Location loc : locations) {
       if (loc.getIsoCountryCode2Digit() == null) {
-        ParseResult<String> result = COUNTRY_PARSER.parse(loc.getTitle());
+        ParseResult<Country> result = COUNTRY_PARSER.parse(loc.getTitle());
         if (result.isSuccessful()) {
-          loc.setIsoCountryCode2Digit(result.getPayload());
+          loc.setIsoCountryCode2Digit(result.getPayload().getIso2LetterCode());
         }
       }
     }
