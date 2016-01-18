@@ -98,11 +98,14 @@ CREATE INDEX eez_iso_3digit
 
 Import Svalbard, Jan Mayen and Bouvet Island, which are missing from a supposedly-with-territories Norway.
 
+Also import Australian territories as pieces, otherwise Christmas Island is joined to the Cocos & Keeling Islands without either having an ISO code.
+
 ```
-DELETE FROM political WHERE sovereignt = 'Norway';
-CREATE TEMPORARY TABLE no_sj_bv AS SELECT * FROM political_map_units WHERE sovereignt = 'Norway';
-UPDATE no_sj_bv SET gid = gid + (SELECT MAX(gid) FROM political);
-INSERT INTO political (SELECT * FROM no_sj_bv);
+DELETE FROM political WHERE sovereignt IN('Norway', 'Australia');
+CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia');
+UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);
+UPDATE splitup SET iso_a2 = 'SJ' WHERE geounit = 'Jan Mayen';
+INSERT INTO political (SELECT * FROM splitup);
 ```
 
 Change some areas to use different ISO codes:
