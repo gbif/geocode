@@ -100,11 +100,14 @@ Import Svalbard, Jan Mayen and Bouvet Island, which are missing from a supposedl
 
 Also import Australian territories as pieces, otherwise Christmas Island is joined to the Cocos & Keeling Islands without either having an ISO code.
 
+And the Netherlands, for Aruba (AW), Curaçao (CW), Bonaire, Sint Eustatius, and Saba (BQ), Sint Maarten (SX).
+
 ```
-DELETE FROM political WHERE sovereignt IN('Norway', 'Australia');
-CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia');
+DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands');
+CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands');
 UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);
 UPDATE splitup SET iso_a2 = 'SJ' WHERE geounit = 'Jan Mayen';
+UPDATE splitup SET iso_a2 = 'NL' WHERE geounit = 'Netherlands';
 INSERT INTO political (SELECT * FROM splitup);
 ```
 
