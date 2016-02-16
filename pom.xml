@@ -52,10 +52,10 @@
   </modules>
 
   <properties>
-    <gbif-common-mybatis.version>0.22</gbif-common-mybatis.version>
-    <gbif-common.version>0.21</gbif-common.version>
-    <gbif-microservice.version>0.4</gbif-microservice.version>
-    <gbif-parsers.version>0.17</gbif-parsers.version>
+    <gbif-common-mybatis.version>0.26</gbif-common-mybatis.version>
+    <gbif-common.version>0.23</gbif-common.version>
+    <gbif-microservice.version>0.5</gbif-microservice.version>
+    <gbif-parsers.version>0.20</gbif-parsers.version>
     <guava.version>18.0</guava.version>
     <guice.version>4.0</guice.version>
     <hamcrest-core.version>1.3</hamcrest-core.version>
