@@ -116,16 +116,16 @@ Change some areas to use different ISO codes:
 ```
 -- SELECT * FROM political WHERE adm0_a3 IN('HKG','MAC','USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
 
-UPDATE political SET iso_a2 = 'CN' WHERE adm0_a3 IN('HKG','MAC');
-UPDATE political SET iso_a2 = 'CU' WHERE adm0_a3 = 'USG';
-UPDATE political SET iso_a2 = 'CY' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');
+UPDATE political SET iso_a2 = 'CN', name = 'China' WHERE adm0_a3 IN('HKG','MAC');
+UPDATE political SET iso_a2 = 'CU', name = 'Cuba' WHERE adm0_a3 = 'USG';
+UPDATE political SET iso_a2 = 'CY', name = 'Cyprus' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');
 UPDATE political SET iso_a2 = 'FR', iso_a3 = 'FRA' WHERE adm0_a3 = 'FRA';
-UPDATE political SET iso_a2 = 'KZ' WHERE adm0_a3 = 'KAB';
-UPDATE political SET iso_a2 = 'MA' WHERE adm0_a3 = 'SAH';
-UPDATE political SET iso_a2 = 'SO' WHERE adm0_a3 = 'SOL';
+UPDATE political SET iso_a2 = 'KZ', name = 'Kazakhstan' WHERE adm0_a3 = 'KAB';
+UPDATE political SET iso_a2 = 'MA', name = 'Morocco' WHERE adm0_a3 = 'SAH';
+UPDATE political SET iso_a2 = 'SO', name = 'Somalia' WHERE adm0_a3 = 'SOL';
 UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';
 
-UPDATE eez SET iso_3digit = 'FRA' WHERE iso_3digit IN('REU','GLP','GUF','MTQ','MYT');
+UPDATE eez SET iso_3digit = 'FRA', country = 'France' WHERE iso_3digit IN('REU','GLP','GUF','MTQ','MYT');
 ```
 
 ## Map image for faster lookups
