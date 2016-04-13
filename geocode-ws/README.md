@@ -102,30 +102,29 @@ Also import Australian territories as pieces, otherwise Christmas Island is join
 
 And the Netherlands, for Aruba (AW), Curaçao (CW), Bonaire, Sint Eustatius, and Saba (BQ), Sint Maarten (SX).
 
+Import France, so the overseas territories retain their ISO codes.  Likewise for China, for Hong Kong and Macau.
+
 ```
-DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands');
-CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands');
+DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'China');
+CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'China');
 UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);
 UPDATE splitup SET iso_a2 = 'SJ' WHERE geounit = 'Jan Mayen';
 UPDATE splitup SET iso_a2 = 'NL' WHERE geounit = 'Netherlands';
+SELECT sovereignt, admin, geounit, iso_a2 FROM splitup ORDER BY sovereignt, admin, geounit;
 INSERT INTO political (SELECT * FROM splitup);
 ```
 
 Change some areas to use different ISO codes:
 
 ```
--- SELECT * FROM political WHERE adm0_a3 IN('HKG','MAC','USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
+-- SELECT * FROM political WHERE adm0_a3 IN('USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
 
-UPDATE political SET iso_a2 = 'CN', name = 'China' WHERE adm0_a3 IN('HKG','MAC');
 UPDATE political SET iso_a2 = 'CU', name = 'Cuba' WHERE adm0_a3 = 'USG';
 UPDATE political SET iso_a2 = 'CY', name = 'Cyprus' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');
-UPDATE political SET iso_a2 = 'FR', iso_a3 = 'FRA' WHERE adm0_a3 = 'FRA';
 UPDATE political SET iso_a2 = 'KZ', name = 'Kazakhstan' WHERE adm0_a3 = 'KAB';
 UPDATE political SET iso_a2 = 'MA', name = 'Morocco' WHERE adm0_a3 = 'SAH';
 UPDATE political SET iso_a2 = 'SO', name = 'Somalia' WHERE adm0_a3 = 'SOL';
 UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';
-
-UPDATE eez SET iso_3digit = 'FRA', country = 'France' WHERE iso_3digit IN('REU','GLP','GUF','MTQ','MYT');
 ```
 
 ## Map image for faster lookups
