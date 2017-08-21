@@ -33,11 +33,16 @@ public class MyBatisGeocoder implements Geocoder {
 
   // Distance are calculated using the approximation that 1 degree is ~ 111 kilometers
 
-  // 0.001 * 11100 KM = 111 m
-  private final static double DEFAULT_DISTANCE = 0.001d;
+  // The default distance is chosen at ~5km to allow for gaps between land and sea (political and EEZ)
+  // and to cope with the inaccuracies introduced in the simplified datasets.
 
-  // 5 KM/111 KM is approximately 0.0450 degrees
-  private final static double KM5_DISTANCE = 0.045d;
+  // The ~25km distance is chosen to cope with coastal lakes (except the one in Turkmenistan)
+
+  // 0.05 * 111 km = 5.55 km
+  private final static double DEFAULT_DISTANCE = 0.05d;
+
+  // 0.25 * 111 km = 27.75 km
+  private final static double LARGER_DISTANCE = 0.25d;
 
   @Inject
   public MyBatisGeocoder(SqlSessionFactory sqlSessionFactory, GeocodeWsStatistics statistics) {
@@ -64,7 +69,7 @@ public class MyBatisGeocoder implements Geocoder {
       if (locations.isEmpty()) {
         locations = locationMapper.listEez(point, DEFAULT_DISTANCE);
         if (locations.isEmpty()) {
-          Optional<Location> optLocation = tryWithin(point, KM5_DISTANCE, locationMapper);
+          Optional<Location> optLocation = tryWithin(point, LARGER_DISTANCE, locationMapper);
           if (optLocation.isPresent()) {
             statistics.foundWithing5Km();
             locations.add(optLocation.get());
