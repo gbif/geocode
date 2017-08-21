@@ -61,71 +61,7 @@ Response should be:
 
 At the moment we have two sources of data: Natural Earth and EEZ.
 
-Natural Earth (we're currently on version 3.1.0):
-Download the [1:10m Cultural Vectors, Admin 0 - Countries file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
-and the [1:10m Cultural Vectors, Admin 0 - Details map units file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/).
-
-```
-unzip ne_10m_admin_0_countries.zip
-shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne_10m_admin_0_countries.shp public.political > political.sql
-psql -h <host> -U <user> -d <database> -f political.sql
-
-unzip ne_10m_admin_0_map_units.zip
-shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne_10m_admin_0_map_units.shp public.political_map_units > political_map_units.sql
-psql -h <host> -U <user> -d <database> -f political_map_units.sql
-```
-
-EEZ (we're currently on version 8):
-Download the Low res version from here: http://vliz.be/vmdcdata/marbound/download.php
-
-```
-unzip World_EEZ_v8_20140228_LR.zip
-shp2pgsql -d -D -s 4326 -i -I -W WINDOWS-1252 World_EEZ_v8_2014.shp public.eez > eez.sql
-psql -h <host> -U <user> -d <database> -f eez.sql
-```
-
-Add the indexes:
-
-```sql
-CREATE INDEX political_iso_a3
-  ON political
-  (iso_a3);
-
-CREATE INDEX eez_iso_3digit
-  ON eez
-  (iso_3digit);
-```
-
-Import Svalbard, Jan Mayen and Bouvet Island, which are missing from a supposedly-with-territories Norway.
-
-Also import Australian territories as pieces, otherwise Christmas Island is joined to the Cocos & Keeling Islands without either having an ISO code.
-
-And the Netherlands, for Aruba (AW), Curaçao (CW), Bonaire, Sint Eustatius, and Saba (BQ), Sint Maarten (SX).
-
-Import France, so the overseas territories retain their ISO codes.  Likewise for China, for Hong Kong and Macau.
-
-```
-DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'China');
-CREATE TEMPORARY TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'China');
-UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);
-UPDATE splitup SET iso_a2 = 'SJ' WHERE geounit = 'Jan Mayen';
-UPDATE splitup SET iso_a2 = 'NL' WHERE geounit = 'Netherlands';
-SELECT sovereignt, admin, geounit, iso_a2 FROM splitup ORDER BY sovereignt, admin, geounit;
-INSERT INTO political (SELECT * FROM splitup);
-```
-
-Change some areas to use different ISO codes:
-
-```
--- SELECT * FROM political WHERE adm0_a3 IN('USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
-
-UPDATE political SET iso_a2 = 'CU', name = 'Cuba' WHERE adm0_a3 = 'USG';
-UPDATE political SET iso_a2 = 'CY', name = 'Cyprus' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');
-UPDATE political SET iso_a2 = 'KZ', name = 'Kazakhstan' WHERE adm0_a3 = 'KAB';
-UPDATE political SET iso_a2 = 'MA', name = 'Morocco' WHERE adm0_a3 = 'SAH';
-UPDATE political SET iso_a2 = 'SO', name = 'Somalia' WHERE adm0_a3 = 'SOL';
-UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';
-```
+See [../database/scripts/import.sh](../database/scripts/import.sh) for a script to import the database. With appropriate environment variables, it can be used against non-Docker databases.
 
 ## Map image for faster lookups
 

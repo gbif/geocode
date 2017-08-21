@@ -1,0 +1,30 @@
+version: "2"
+volumes:
+  pgdata:
+  cache:
+services:
+  postgres:
+    image: "openmaptiles/postgis:2.9"
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+    networks:
+    - postgres_conn
+    ports:
+     - "15432:5432"
+    env_file: .env
+    volumes:
+     - ./scripts:/scripts
+  postserve:
+    image: "openmaptiles/postserve:0.2"
+    env_file: .env
+    networks:
+     - postgres_conn
+    ports:
+    - "8090:8080"
+    volumes:
+     - ./server:/server
+    command: python -u /server/server.py
+
+networks:
+  postgres_conn:
+    driver: bridge

@@ -14,8 +14,8 @@
 
   <!-- Searches the public.eez table -->
   <select id="listEez" resultType="Location">
-    SELECT eez.gid AS id, 'EEZ' as TYPE, 'http://vliz.be/vmdcdata/marbound/' as SOURCE, eez.country AS title, political.iso_a2 AS isoCountryCode2Digit
-    FROM eez LEFT OUTER JOIN political ON eez.iso_3digit = political.iso_a3
+    SELECT eez.gid AS id, 'EEZ' as TYPE, 'http://vliz.be/vmdcdata/marbound/' as SOURCE, eez.sovereign1 AS title, iso_map.iso2 AS isoCountryCode2Digit
+    FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
     WHERE ST_DWithin(eez.geom, ST_GeomFromText(#{point}, 4326), #{distance})
     ORDER BY ST_Distance(eez.geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
