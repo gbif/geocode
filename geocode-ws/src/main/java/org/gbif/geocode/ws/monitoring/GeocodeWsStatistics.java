@@ -92,12 +92,12 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
     return eezHits.get();
   }
 
-  public void foundWithing5Km() {
+  public void foundWithin5Km() {
     within5KmHits.incrementAndGet();
   }
 
   @Override
-  public long getWithing5KmHits() {
+  public long getWithin5KmHits() {
     return within5KmHits.get();
   }
 

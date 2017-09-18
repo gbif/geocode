@@ -8,6 +8,7 @@ import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.Geocoder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,33 +56,24 @@ public class MyBatisGeocoder implements Geocoder {
    */
   @Override
   public Collection<Location> get(double lat, double lng) {
-    Collection<Location> locations;
+    Collection<Location> locations = new ArrayList<>();
 
     SqlSession session = sqlSessionFactory.openSession();
     try {
       LocationMapper locationMapper = session.getMapper(LocationMapper.class);
       String point = "POINT(" + lng + ' ' + lat + ')';
 
-      // try using the terrestrial table as it is far quicker
-      locations = locationMapper.listPolitical(point, DEFAULT_DISTANCE);
-
-      // only go to Marine EEZ for no results as it is slow
-      if (locations.isEmpty()) {
-        locations = locationMapper.listEez(point, DEFAULT_DISTANCE);
-        if (locations.isEmpty()) {
-          Optional<Location> optLocation = tryWithin(point, LARGER_DISTANCE, locationMapper);
-          if (optLocation.isPresent()) {
-            statistics.foundWithing5Km();
-            locations.add(optLocation.get());
-          } else {
-            statistics.noResult();
-          }
-        } else {
-          statistics.foundEez();
-          fixEezIsoCodes(locations);
-        }
+      Optional<List<Location>> optLocations = tryWithin(point, DEFAULT_DISTANCE, locationMapper);
+      if (optLocations.isPresent()) {
+        locations.addAll(optLocations.get());
       } else {
-        statistics.foundPolitical();
+        optLocations = tryWithin(point, LARGER_DISTANCE, locationMapper);
+        if (optLocations.isPresent()) {
+          statistics.foundWithin5Km();
+          locations.addAll(optLocations.get());
+        } else {
+          statistics.noResult();
+        }
       }
 
       statistics.servedFromDatabase();
@@ -93,29 +85,34 @@ public class MyBatisGeocoder implements Geocoder {
     return locations;
   }
 
-
   /**
-   * Tries to find a single location within a distance.
-   * Searches the political and eez locations within a distance and if both results returns the same location for the
-   * first result, it is returned.
+   * Searches the political and EEZ locations within a distance.
    */
-  private Optional<Location> tryWithin(String point, double distance, LocationMapper locationMapper) {
+  private Optional<List<Location>> tryWithin(String point, double distance, LocationMapper locationMapper) {
+    List<Location> locations = new ArrayList<>();
+
     List<Location> politicalLocations = locationMapper.listPolitical(point, distance);
-    List<Location> eeZlocations = locationMapper.listEez(point, distance);
-    if (politicalLocations.size() == 1 && eeZlocations.size() == 1) {
-      ParseResult<Country> result = COUNTRY_PARSER.parse(eeZlocations.get(0).getTitle());
-      Location location = politicalLocations.get(0);
-      String localLocationIsoCode = location.getIsoCountryCode2Digit();
-      if (result.isSuccessful() && localLocationIsoCode != null
-        && localLocationIsoCode.equalsIgnoreCase(result.getPayload().getIso2LetterCode())) {
-        return Optional.of(location);
-      }
+    if (!politicalLocations.isEmpty()) {
+      statistics.foundPolitical();
+      locations.addAll(politicalLocations);
     }
-    return Optional.absent();
+
+    List<Location> eezLocations = locationMapper.listEez(point, distance);
+    if (!eezLocations.isEmpty()) {
+      statistics.foundEez();
+      fixEezIsoCodes(eezLocations);
+      locations.addAll(eezLocations);
+    }
+
+    if (locations.isEmpty()) {
+      return Optional.absent();
+    } else {
+      return Optional.of(locations);
+    }
   }
 
   /**
-   * Some EEZ locations won't have iso countries, so need to fill them in based on returned title.
+   * Some EEZ locations won't have ISO countries, so need to fill them in based on returned title.
    * <p/>
    * This will change the objects in place.
    * 

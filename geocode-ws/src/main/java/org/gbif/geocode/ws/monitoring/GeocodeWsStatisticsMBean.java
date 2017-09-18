@@ -19,7 +19,7 @@ public interface GeocodeWsStatisticsMBean {
 
   long getTotalNoResults();
 
-  long getWithing5KmHits();
+  long getWithin5KmHits();
 
   double getAverageResultSize();
 
