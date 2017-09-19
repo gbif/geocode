@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Geocoder map</title>
+		<link  href="https://tile.gbif-uat.org/ui/ol.css" rel="stylesheet" type="text/css">
+		<script src="https://tile.gbif-uat.org/ui/ol.js"></script>
+		<script src="https://tile.gbif-uat.org/ui/proj4.js"></script>
+		<style>
+			html {
+				font-family: sans-serif;
+			}
+			.wrapper {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: lavender;
+			}
+			.map {
+				width: 100%;
+				height: 100%;
+			}
+
+			.ol-popup {
+				position: absolute;
+				background-color: white;
+				-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+				filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+				padding: 15px;
+				border-radius: 10px;
+				border: 1px solid #cccccc;
+				bottom: 12px;
+				left: -50px;
+				min-width: 280px;
+			}
+			.ol-popup:after, .ol-popup:before {
+				top: 100%;
+				border: solid transparent;
+				content: " ";
+				height: 0;
+				width: 0;
+				position: absolute;
+				pointer-events: none;
+			}
+			.ol-popup:after {
+				border-top-color: white;
+				border-width: 10px;
+				left: 48px;
+				margin-left: -10px;
+			}
+			.ol-popup:before {
+				border-top-color: #cccccc;
+				border-width: 11px;
+				left: 48px;
+				margin-left: -11px;
+			}
+			.ol-popup-closer {
+				text-decoration: none;
+				position: absolute;
+				top: 2px;
+				right: 8px;
+			}
+			.ol-popup-closer:after {
+				content: "✖";
+			}
+
+			.ol-scale-line {
+				top: calc(50% - 0.5em);
+				left: calc(50% - 3em);
+				height: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div id="map" class="map"></div>
+			<div id="popup" class="ol-popup">
+				<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+				<div id="popup-content"></div>
+			</div>
+		</div>
+		<script src="interface.js"></script>
+	</body>
+</html>
