@@ -106,6 +106,7 @@ function align_natural_earth() {
 	echo "UPDATE political SET iso_a2 = 'CY', name = 'Cyprus' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');" | exec_psql
 	echo "UPDATE political SET iso_a2 = 'KZ', name = 'Kazakhstan' WHERE adm0_a3 = 'KAB';" | exec_psql
 	echo "UPDATE political SET iso_a2 = 'SO', name = 'Somalia' WHERE adm0_a3 = 'SOL';" | exec_psql
+	echo "UPDATE political SET iso_a2 = 'XK' WHERE adm0_a3 = 'KOS';" | exec_psql
 	echo "UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';" | exec_psql
 
 	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
