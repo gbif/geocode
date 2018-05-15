@@ -66,6 +66,7 @@
     <junit.version>4.12</junit.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.3</logback.version>
+    <logstash-encoder.version>4.11</logstash-encoder.version>
     <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
     <mockito.version>1.9.5</mockito.version>
     <mybatis-guice.version>3.7</mybatis-guice.version>
@@ -183,6 +184,12 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-encoder.version}</version>
+        <scope>runtime</scope>
       </dependency>
 
       <!-- db -->
