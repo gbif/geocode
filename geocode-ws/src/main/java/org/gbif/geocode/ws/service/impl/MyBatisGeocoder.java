@@ -4,9 +4,9 @@ import org.gbif.api.vocabulary.Country;
 import org.gbif.common.parsers.CountryParser;
 import org.gbif.common.parsers.core.ParseResult;
 import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
-import org.gbif.geocode.ws.service.Geocoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,10 +21,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
- * Implementation of {@link Geocoder} using MyBatis to search for results.
+ * Implementation of {@link GeocodeService} using MyBatis to search for results.
  */
 @Singleton
-public class MyBatisGeocoder implements Geocoder {
+public class MyBatisGeocoder implements GeocodeService {
 
   private final static CountryParser COUNTRY_PARSER = CountryParser.getInstance();
 
@@ -55,15 +55,20 @@ public class MyBatisGeocoder implements Geocoder {
    * Simple get candidates by point.
    */
   @Override
-  public Collection<Location> get(double lat, double lng) {
+  public Collection<Location> get(Double lat, Double lng, Double uncertainty) {
     Collection<Location> locations = new ArrayList<>();
+
+    if (uncertainty == null) uncertainty = DEFAULT_DISTANCE;
+
+    // TODO DOCUMENT
+    uncertainty = Math.max(uncertainty, DEFAULT_DISTANCE);
 
     SqlSession session = sqlSessionFactory.openSession();
     try {
       LocationMapper locationMapper = session.getMapper(LocationMapper.class);
       String point = "POINT(" + lng + ' ' + lat + ')';
 
-      Optional<List<Location>> optLocations = tryWithin(point, DEFAULT_DISTANCE, locationMapper);
+      Optional<List<Location>> optLocations = tryWithin(point, uncertainty, locationMapper);
       if (optLocations.isPresent()) {
         locations.addAll(optLocations.get());
       } else {
@@ -115,7 +120,7 @@ public class MyBatisGeocoder implements Geocoder {
    * Some EEZ locations won't have ISO countries, so need to fill them in based on returned title.
    * <p/>
    * This will change the objects in place.
-   * 
+   *
    * @param locations list of locations to fix.
    */
   private static void fixEezIsoCodes(@Nullable Collection<Location> locations) {
@@ -131,5 +136,10 @@ public class MyBatisGeocoder implements Geocoder {
         }
       }
     }
+  }
+
+  @Override
+  public byte[] bitmap() {
+    throw new UnsupportedOperationException("Not implemented.");
   }
 }

@@ -14,8 +14,14 @@ public interface GeocodeService {
    *
    * @param latitude  to check
    * @param longitude to check
+   * @param uncertainty to use
    *
    * @return a list of Locations that fit the provided coordinates in no particular order
    */
-  Collection<Location> get(Double latitude, Double longitude);
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty);
+
+  /**
+   * Gets a PNG bitmap suitable for using as a client-side cache/lookup table.
+   */
+  public byte[] bitmap();
 }

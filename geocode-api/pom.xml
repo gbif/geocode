@@ -20,4 +20,11 @@
       <url>http://repository.gbif.org/content/groups/gbif</url>
     </repository>
   </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

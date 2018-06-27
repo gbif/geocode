@@ -1,25 +1,24 @@
 package org.gbif.geocode.ws.client;
 
-import org.gbif.geocode.api.model.Location;
-import org.gbif.geocode.api.service.GeocodeService;
-
-import javax.ws.rs.core.MultivaluedMap;
-
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.api.service.GeocodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GeocodeWsClientTest {
+public class GeocodeWsBitmapCacheClientTest {
 
   @Mock
   private WebResource resource;

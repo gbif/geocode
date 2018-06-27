@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <display-name>Geocode WebService</display-name>
+  <display-name>Geocode Web service</display-name>
 
   <listener>
-    <listener-class>org.gbif.geocode.ws.guice.GuiceConfig</listener-class>
+    <listener-class>org.gbif.geocode.ws.GeocodeWsListener</listener-class>
   </listener>
   <listener>
     <listener-class>org.gbif.geocode.ws.monitoring.CleanupListener</listener-class>

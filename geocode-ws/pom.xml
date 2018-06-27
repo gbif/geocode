@@ -96,6 +96,20 @@
   </repositories>
 
   <dependencies>
+    <!-- gbif-microservice: embedded jetty -->
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-microservice</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-ws</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -147,11 +161,10 @@
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -163,10 +176,6 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-parsers</artifactId>
     </dependency>
     <dependency>
       <groupId>org.gbif.geocode</groupId>
@@ -203,19 +212,20 @@
       <artifactId>postgresql</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- gbif-microservice: embedded jetty -->
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-microservice</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common</artifactId>
-    </dependency>
   </dependencies>
 
 
   <profiles>
+    <profile>
+      <id>local</id>
+      <properties>
+        <geocode-ws.db.host>127.0.0.1:15432</geocode-ws.db.host>
+        <geocode-ws.db.name>eez</geocode-ws.db.name>
+        <geocode-ws.db.username>eez</geocode-ws.db.username>
+        <geocode-ws.db.password>eez</geocode-ws.db.password>
+      </properties>
+    </profile>
+
     <profile>
       <id>dev</id>
       <properties>
