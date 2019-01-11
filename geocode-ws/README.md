@@ -44,7 +44,7 @@ To run the WebService in a local Jetty instance run
 
 And make sure to provide database credentials in one of the ways mentioned above.
 
-Then go to: http://localhost:8080/geocode-ws/reverse?lat=55.68&lng=12.00
+Then go to: http://localhost:8080/geocode/reverse?lat=55.68&lng=12.00
 
 Response should be:
 
