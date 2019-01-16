@@ -2,20 +2,20 @@ package org.gbif.geocode.ws.resource;
 
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
 public class BitmapFirstGeocoderTest {
 
