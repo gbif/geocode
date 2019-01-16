@@ -6,8 +6,8 @@ import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.junit.Assert;
@@ -23,12 +23,11 @@ import static org.mockito.Mockito.when;
 
 public class HbaseCacheTest {
 
-  private static HBaseTestingUtility utility;
   private static HbaseProperties properties;
 
   @BeforeClass
   public static void setup() throws Exception {
-    utility = new HBaseTestingUtility();
+    HBaseTestingUtility utility = new HBaseTestingUtility();
     utility.startMiniCluster();
     properties = new HbaseProperties(utility.getConfiguration(), "geo", "locations", 1000);
   }
@@ -46,7 +45,7 @@ public class HbaseCacheTest {
     Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
     Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF");
 
-    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Collections.singletonList(locationTest));
 
     Collection<Location> locations = geocoder.get(-21.0d, -147.0d, null);
     Collection<Location> locations2 = geocoder.get(-21.0d, -147.0d, null);
@@ -67,14 +66,13 @@ public class HbaseCacheTest {
     geocoder.initialize();
     // In the Pacific within French Polynesia's EEZ.
     Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
-    Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF");
 
-    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Collections.singletonList(locationTest));
 
-    Collection<Location> locations = geocoder.get(0.0d, 0.0d, null);
+    Collection<Location> locations = geocoder.get(null, null, null);
     Collection<Location> locations1 = geocoder.get(0.0d, 0.0d, null);
 
-    Assert.assertEquals( 0,locations.size());
-    Assert.assertEquals( 0,locations1.size());
+    Assert.assertEquals(0, locations.size());
+    Assert.assertEquals(0, locations1.size());
   }
 }

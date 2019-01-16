@@ -20,9 +20,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +91,7 @@ public class GeocodeResource implements GeocodeService {
   @Override
   public byte[] bitmap() {
     try {
-      return ByteStreams.toByteArray(this.getClass().getResourceAsStream("world.png"));
+      return IOUtils.toByteArray(this.getClass().getResourceAsStream("world.png"));
     } catch (IOException e) {
       return null;
     }

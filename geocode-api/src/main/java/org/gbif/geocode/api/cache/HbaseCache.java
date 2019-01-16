@@ -8,8 +8,8 @@ import org.gbif.geocode.api.service.GeocodeService;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,26 +37,27 @@ import org.slf4j.LoggerFactory;
  */
 public class HbaseCache implements GeocodeService {
 
-  public static final String LOCATIONS = "locations";
+  private static final String LOCATIONS = "locations";
   private final String tableName;
   private final String columnFamily;
   private final Configuration configuration;
-  private int modulus = 10;
+  private int modulus;
   private Connection connection;
   private TableName tbName;
-  private ObjectMapper mapper = new ObjectMapper();
-  private GeocodeService databaseService;
+  private final ObjectMapper mapper = new ObjectMapper();
+  private final GeocodeService databaseService;
 
   private static final Logger LOG = LoggerFactory.getLogger(HbaseCache.class);
 
   /**
    * salted key generator
    */
-  private Function<GeoCacheKey, String> rowKeyGenerator =
+  private final Function<GeoCacheKey, String> rowKeyGenerator =
     key -> String.format("%s|%s", Math.abs(key.hashCode() % modulus), key);
 
   public HbaseCache(
-    GeocodeService service, HbaseProperties properties) {
+    GeocodeService service, HbaseProperties properties
+  ) {
     this.databaseService = service;
     this.tableName = properties.getTableName();
     this.columnFamily = properties.getColumnFamily();
@@ -66,7 +67,6 @@ public class HbaseCache implements GeocodeService {
 
   /**
    * Initializes hbase connection and creates table if not available.
-   * @throws IOException
    */
   public void initialize() throws IOException {
     connection = ConnectionFactory.createConnection(configuration);
@@ -85,20 +85,22 @@ public class HbaseCache implements GeocodeService {
 
   /**
    * fetches the desired key from hbase cache or get it from lower level attached service.
+   *
    * @param key geo key
+   *
    * @return locations
    */
-  public Collection<Location> get(GeoCacheKey key) {
-    return Optional.ofNullable(bulkGet(Arrays.asList(key)))
+  private Collection<Location> get(GeoCacheKey key) {
+    return Optional.ofNullable(bulkGet(Collections.singletonList(key)))
       .filter(result -> !result.isEmpty())
       .map(result -> result.get(0).getLocations())
-      .orElse(Arrays.asList());
+      .orElse(Collections.emptyList());
   }
 
-  public List<GeoInfo> bulkGet(List<GeoCacheKey> keys) {
+  private List<GeoInfo> bulkGet(List<GeoCacheKey> keys) {
     try (Table table = connection.getTable(tbName)) {
 
-      List<Get> gets = new ArrayList();
+      List<Get> gets = new ArrayList<>();
 
       for (GeoCacheKey key : keys) {
         String rowKey = rowKeyGenerator.apply(key);
@@ -107,7 +109,7 @@ public class HbaseCache implements GeocodeService {
         gets.add(get);
       }
       Result[] results = table.get(gets);
-      List<GeoInfo> geoInfos = new ArrayList();
+      List<GeoInfo> geoInfos = new ArrayList<>();
 
       for (int i = 0; i < results.length; i++) {
         byte[] bytes = results[i].getValue(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS));
@@ -126,20 +128,20 @@ public class HbaseCache implements GeocodeService {
 
   /**
    * Puts the missed entry to hbase cache.
-   * @param info
    */
-  public void put(GeoInfo info) {
-    bulkPut(Arrays.asList(info));
+  private void put(GeoInfo info) {
+    bulkPut(Collections.singletonList(info));
   }
 
   /**
    * Does batch puts to hbase cache.
+   *
    * @param geoInfos information of key with locations.
    */
-  public void bulkPut(List<GeoInfo> geoInfos) {
+  private void bulkPut(List<GeoInfo> geoInfos) {
     try (Table table = connection.getTable(tbName)) {
 
-      List<Put> puts = new ArrayList();
+      List<Put> puts = new ArrayList<>();
 
       for (GeoInfo geoInfo : geoInfos) {
         GeoCacheKey key = geoInfo.getKey();
@@ -166,7 +168,6 @@ public class HbaseCache implements GeocodeService {
 
   /**
    * closes the connection once done.
-   * @throws Exception
    */
   public void cleanUp() throws Exception {
     if (connection != null) {

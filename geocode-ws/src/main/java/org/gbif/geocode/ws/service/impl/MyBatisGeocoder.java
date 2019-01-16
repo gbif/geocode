@@ -11,10 +11,9 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.Optional;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.ibatis.session.SqlSession;
@@ -63,8 +62,7 @@ public class MyBatisGeocoder implements GeocodeService {
     // TODO DOCUMENT
     uncertainty = Math.max(uncertainty, DEFAULT_DISTANCE);
 
-    SqlSession session = sqlSessionFactory.openSession();
-    try {
+    try (SqlSession session = sqlSessionFactory.openSession()) {
       LocationMapper locationMapper = session.getMapper(LocationMapper.class);
       String point = "POINT(" + lng + ' ' + lat + ')';
 
@@ -82,8 +80,6 @@ public class MyBatisGeocoder implements GeocodeService {
       }
 
       statistics.servedFromDatabase();
-    } finally {
-      session.close();
     }
 
     statistics.resultSize(locations.size());
@@ -110,7 +106,7 @@ public class MyBatisGeocoder implements GeocodeService {
     }
 
     if (locations.isEmpty()) {
-      return Optional.absent();
+      return Optional.empty();
     } else {
       return Optional.of(locations);
     }

@@ -1,6 +1,7 @@
 package org.gbif.geocode.api.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents a location.
@@ -70,37 +71,40 @@ public class Location implements Serializable {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-
-    if (!(obj instanceof Location)) {
-      return false;
-    }
-    Location other = (Location) obj;
-
-    return (id == null ? other.id == null : id.equals(other.id))
-           && (isoCountryCode2Digit == null ? other.isoCountryCode2Digit == null
-      : isoCountryCode2Digit.equals(other.isoCountryCode2Digit))
-           && (source == null ? other.source == null : source.equals(other.source))
-           && (title == null ? other.title == null : title.equals(other.title)) && (type == null ? other.type == null
-      : type.equals(other.type));
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Location)) return false;
+    Location location = (Location) o;
+    return getId().equals(location.getId())
+           && getType().equals(location.getType())
+           && getSource().equals(location.getSource())
+           && getTitle().equals(location.getTitle())
+           && getIsoCountryCode2Digit().equals(location.getIsoCountryCode2Digit());
   }
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + type.hashCode();
-    result = 31 * result + source.hashCode();
-    result = 31 * result + title.hashCode();
-    result = 31 * result + (isoCountryCode2Digit != null ? isoCountryCode2Digit.hashCode() : 0);
-    return result;
+    return Objects.hash(getId(), getType(), getSource(), getTitle(), getIsoCountryCode2Digit());
   }
 
   @Override
   public String toString() {
-    return "Location{" + "id='" + id + '\'' + ", type='" + type + '\'' + ", source='" + source + '\'' + ", title='"
-           + title + '\'' + ", isoCountryCode2Digit='" + isoCountryCode2Digit + '\'' + '}';
+    return "Location{"
+           + "id='"
+           + id
+           + '\''
+           + ", type='"
+           + type
+           + '\''
+           + ", source='"
+           + source
+           + '\''
+           + ", title='"
+           + title
+           + '\''
+           + ", isoCountryCode2Digit='"
+           + isoCountryCode2Digit
+           + '\''
+           + '}';
   }
 }

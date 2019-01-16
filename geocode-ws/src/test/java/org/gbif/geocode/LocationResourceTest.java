@@ -7,9 +7,8 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.GeocodeResource;
 import org.gbif.geocode.ws.resource.OffWorldException;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.junit.BeforeClass;
@@ -23,12 +22,11 @@ import static org.mockito.Mockito.when;
 
 public class LocationResourceTest {
 
-  private static HBaseTestingUtility utility;
   private static HbaseProperties properties;
 
   @BeforeClass
   public static void setup() throws Exception {
-    utility = new HBaseTestingUtility();
+    HBaseTestingUtility utility = new HBaseTestingUtility();
     utility.startMiniCluster();
     properties = new HbaseProperties(utility.getConfiguration(), "geo", "locations", 1000);
   }
@@ -52,7 +50,7 @@ public class LocationResourceTest {
   }
 
   @Test
-  public void testGoodRequest() throws IOException {
+  public void testGoodRequest() {
     GeocodeService geocoder = mock(GeocodeService.class);
     GeocodeWsStatistics statistics = mock(GeocodeWsStatistics.class);
 
@@ -60,7 +58,7 @@ public class LocationResourceTest {
 
     Location locationTest = new Location("test", "political", "source", "Germany", "DE");
     Location locationTest2 = new Location("test", "political", "source", "Germany", "DE");
-    when(geocoder.get(10.0d, 53.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(geocoder.get(10.0d, 53.0d, null)).thenReturn(Collections.singletonList(locationTest));
     Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null);
 
     verify(geocoder).get(10.0d, 53.0d, null);

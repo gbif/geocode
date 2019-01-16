@@ -2,10 +2,7 @@ package org.gbif.geocode.api.cache;
 
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,12 +11,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A cache which uses a bitmap to cache coordinate lookups.
  */
 public class GeocodeBitmapCache implements GeocodeService {
-  public static Logger LOG = LoggerFactory.getLogger(GeocodeBitmapCache.class);
+
+  private static final Logger LOG = LoggerFactory.getLogger(GeocodeBitmapCache.class);
 
   private final GeocodeService geocodeService;
 
@@ -74,13 +76,14 @@ public class GeocodeBitmapCache implements GeocodeService {
    * <br/>
    * Other than the special cases, the colours are looked up using the web service the first
    * time they are found.
+   *
    * @return Locations or null if the bitmap can't answer.
    */
-  protected Collection<Location> getFromBitmap(double lat, double lng) {
+  private Collection<Location> getFromBitmap(double lat, double lng) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
-    int x = (int) (Math.round ((lng+180d)/360d*(img_width-1)));
-    int y = img_height-1 - (int) (Math.round ((lat+90d)/180d*(img_height-1)));
+    int x = (int) (Math.round((lng + 180d) / 360d * (img_width - 1)));
+    int y = img_height - 1 - (int) (Math.round((lat + 90d) / 180d * (img_height - 1)));
 
     int colour = img.getRGB(x, y) & 0x00FFFFFF; // Ignore possible transparency.
 
@@ -109,12 +112,30 @@ public class GeocodeBitmapCache implements GeocodeService {
 
             // Don't store if the ISO code is -99; this code is used for some exceptional bits of territory (e.g. Baikonur Cosmodrome, the Korean DMZ).
             if ("-99".equals(locations.iterator().next().getIsoCountryCode2Digit())) {
-              LOG.info("New colour {} (LL {},{}; pixel {},{}); exceptional territory of {} will not be cached", hex, lat, lng, x, y, joinLocations(locations));
+              LOG.info("New colour {} (LL {},{}; pixel {},{}); exceptional territory of {} will not be cached",
+                       hex,
+                       lat,
+                       lng,
+                       x,
+                       y,
+                       joinLocations(locations));
             } else {
               if (joinLocations(locations).length() > 2) {
-                LOG.error("More than two countries for a colour! {} (LL {},{}; pixel {},{}); countries {}", hex, lat, lng, x, y, joinLocations(locations));
+                LOG.error("More than two countries for a colour! {} (LL {},{}; pixel {},{}); countries {}",
+                          hex,
+                          lat,
+                          lng,
+                          x,
+                          y,
+                          joinLocations(locations));
               } else {
-                LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}", hex, lat, lng, x, y, joinLocations(locations));
+                LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}",
+                         hex,
+                         lat,
+                         lng,
+                         x,
+                         y,
+                         joinLocations(locations));
                 colourKey.put(colour, locations);
               }
             }
@@ -129,6 +150,6 @@ public class GeocodeBitmapCache implements GeocodeService {
   }
 
   private String joinLocations(Collection<Location> loc) {
-    return loc.stream().map(l -> l.getIsoCountryCode2Digit()).distinct().collect(Collectors.joining(", "));
+    return loc.stream().map(Location::getIsoCountryCode2Digit).distinct().collect(Collectors.joining(", "));
   }
 }

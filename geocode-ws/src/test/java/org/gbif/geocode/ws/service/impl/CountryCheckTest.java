@@ -5,6 +5,7 @@ import org.gbif.common.parsers.geospatial.LatLng;
 import org.gbif.geocode.api.model.Location;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.ws.rs.core.MultivaluedMap;
@@ -21,8 +22,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
 import static org.gbif.api.vocabulary.Country.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Check we give the preferred response for dependent territories, overseas regions,
@@ -32,10 +34,11 @@ import static org.gbif.api.vocabulary.Country.*;
  */
 @Ignore("Run manually with a local server")
 public class CountryCheckTest {
+
   private static final Logger LOG = LoggerFactory.getLogger(CountryCheckTest.class);
 
   private static final String api = "http://localhost:8080/geocode/reverse";
-  WebResource r;
+  private final WebResource r;
 
   @Test
   public void testVariousLocations() {
@@ -87,7 +90,7 @@ public class CountryCheckTest {
     testCountry("Mont 'Orohena, Tahiti, French Polynesia", -17.62, -149.50, FRENCH_POLYNESIA);
     testCountry("Ocean surrounding French Polynesia", -15.64, -145.81, FRENCH_POLYNESIA);
     testCountry("Saint Pierre and Miquelon", 47.04, -56.32, SAINT_PIERRE_MIQUELON);
-    testCountry("Ocean by Saint Pierre and Miquelon", 46.92, -56.37,SAINT_PIERRE_MIQUELON);
+    testCountry("Ocean by Saint Pierre and Miquelon", 46.92, -56.37, SAINT_PIERRE_MIQUELON);
     testCountry("Wallis and Futuna", -14.28, -178.14, WALLIS_FUTUNA);
     testCountry("Ocean by Wallis and Futuna", -14.27, -178.05, WALLIS_FUTUNA);
     testCountry("Cul-de-Sac, Saint Martin", 18.10, -63.03, SAINT_MARTIN_FRENCH);
@@ -396,7 +399,7 @@ public class CountryCheckTest {
     queryParams.add("lng", coord.getLng().toString());
     queryParams.add("uncertainty", "0.0");
 
-    WebResource res = null;
+    WebResource res;
     res = r.queryParams(queryParams);
     Location[] lookups = res.get(Location[].class);
     if (lookups != null && lookups.length > 0) {
@@ -407,7 +410,7 @@ public class CountryCheckTest {
       }
       LOG.debug("Countries are {}", countries);
     }
-    LOG.debug("[{}] locations for coord {}: {}", lookups.length, coord, countries);
+    LOG.debug("[{}] locations for coord {}: {}", Objects.requireNonNull(lookups).length, coord, countries);
 
     return countries;
   }
@@ -415,6 +418,6 @@ public class CountryCheckTest {
   private void testCountry(String explanation, double lat, double lng, Country... countries) {
     LOG.info("Testing {} ({},{}); want {}", explanation, lat, lng, countries);
     assertEquals(Arrays.asList(countries),
-        Arrays.asList(getCountryForLatLng(new LatLng(lat, lng)).toArray(new Country[0])));
+                 Arrays.asList(getCountryForLatLng(new LatLng(lat, lng)).toArray(new Country[0])));
   }
 }

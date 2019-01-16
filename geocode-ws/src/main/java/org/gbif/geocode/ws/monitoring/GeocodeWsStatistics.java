@@ -1,7 +1,6 @@
 package org.gbif.geocode.ws.monitoring;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -85,7 +84,6 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
   public void foundEez() {
     eezHits.incrementAndGet();
   }
-
 
   @Override
   public long getTotalEezHits() {

@@ -16,19 +16,24 @@ public class MakeColours {
   public static void main(String[] args) throws Exception {
 
     int hues = 21; // Number of sectors to divide the colour wheel
-    double[] saturations = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
-    double[] values = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+    double[] saturations = {2 / 6d, 3 / 6d, 4 / 6d, 5 / 6d, 1.0d};
+    double[] values = {2 / 6d, 3 / 6d, 4 / 6d, 5 / 6d, 1.0d};
 
     Stack<String> colours = new Stack<>();
 
     System.out.println("<pre>");
     for (int hueSegment = 0; hueSegment < hues; hueSegment++) {
-      double h = (hueSegment / ((double)hues)) * 360;
+      double h = (hueSegment / ((double) hues)) * 360;
 
       for (double s : saturations) {
         for (double v : values) {
           String hex = HSVtoRGB(h, s, v);
-          System.out.print(String.format("<span style='background: %s'>%s (%.2f&deg;, %.2f, %.2f)</span>  ", hex, hex, h, s, v));
+          System.out.print(String.format("<span style='background: %s'>%s (%.2f&deg;, %.2f, %.2f)</span>  ",
+                                         hex,
+                                         hex,
+                                         h,
+                                         s,
+                                         v));
           colours.add(hex);
         }
         System.out.println();
@@ -62,14 +67,14 @@ public class MakeColours {
       return toRgbHex(v, v, v);
     }
 
-    h /= 60;	// sector 0 to 5
+    h /= 60;  // sector 0 to 5
     i = (int) Math.floor(h);
-    f = h - i;	// factorial part of h
+    f = h - i;  // factorial part of h
     p = v * (1 - s);
     q = v * (1 - s * f);
     t = v * (1 - s * (1 - f));
 
-    switch(i) {
+    switch (i) {
       case 0:
         return toRgbHex(v, t, p);
       case 1:

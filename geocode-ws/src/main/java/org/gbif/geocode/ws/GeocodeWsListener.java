@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -58,6 +59,7 @@ public class GeocodeWsListener extends GbifServletListener {
     Map<Boolean, List<Map.Entry<Object, Object>>> partitionedproperties = properties.entrySet()
       .stream()
       .collect(Collectors.partitioningBy(entry -> entry.getKey().toString().startsWith("hbase")));
+
     Properties hbaseProperties = new Properties();
     hbaseProperties.putAll(partitionedproperties.get(true)
                              .stream()
@@ -87,7 +89,7 @@ public class GeocodeWsListener extends GbifServletListener {
    */
   private static class InternalMyBatisModule extends MyBatisModule {
 
-    public InternalMyBatisModule(Properties props) {
+    InternalMyBatisModule(Properties props) {
       super("geocode", props);
     }
 
@@ -111,9 +113,9 @@ public class GeocodeWsListener extends GbifServletListener {
 
   private static class HbaseModule extends AbstractModule {
 
-    Properties properties;
+    final Properties properties;
 
-    public HbaseModule(Properties properties) {
+    HbaseModule(Properties properties) {
       this.properties = properties;
     }
 
@@ -126,28 +128,28 @@ public class GeocodeWsListener extends GbifServletListener {
     @Provides
     @Singleton
     public HbaseProperties getConfiguration(
-      @Named("hbase.env") String environment,
-      @Named("hbaseclient.config.path") String hbaseXmlProperties,
+      @Named("hbase.client.config.path") String hbaseXmlProperties,
       @Named("hbase.table") String tableName,
       @Named("hbase.cf") String cf,
       @Named("hbase.mod") int mod
     ) {
 
       Configuration configuration = new Configuration();
-      String filePath = Optional.ofNullable(environment.isEmpty() ? null : environment)
-        .map(env -> GeocodeResource.class.getClassLoader().getResource(env).getFile())
-        .orElse(hbaseXmlProperties);
+      String filePath = Optional.ofNullable(hbaseXmlProperties.isEmpty() ? null : hbaseXmlProperties)
+        .orElseThrow(() -> new RuntimeException("HBase client configuration file is invalid"));
 
       File f = new File(filePath);
       if (f.exists()) System.out.println(f.getAbsolutePath());
-      List<URL> files =
-        Arrays.asList(f.listFiles()).stream().filter(file -> file.getName().endsWith(".xml")).map(file -> {
+      List<URL> files = Arrays.stream(Objects.requireNonNull(f.listFiles()))
+        .filter(file -> file.getName().endsWith(".xml"))
+        .map(file -> {
           try {
-            return file.toURL();
+            return file.toURI().toURL();
           } catch (Exception ex) {
-            throw new RuntimeException();
+            throw new RuntimeException(ex);
           }
-        }).collect(Collectors.toList());
+        })
+        .collect(Collectors.toList());
       for (URL url : files) {
         configuration.addResource(new org.apache.hadoop.fs.Path(url.toString()));
       }

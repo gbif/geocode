@@ -7,11 +7,8 @@ import java.util.Collection;
  */
 public class GeoInfo {
 
-  private GeoCacheKey key;
-  private Collection<Location> locations;
-
-  public GeoInfo() {
-  }
+  private final GeoCacheKey key;
+  private final Collection<Location> locations;
 
   public GeoInfo(GeoCacheKey key, Collection<Location> locations) {
     this.key = key;
@@ -22,16 +19,8 @@ public class GeoInfo {
     return key;
   }
 
-  public void setKey(GeoCacheKey key) {
-    this.key = key;
-  }
-
   public Collection<Location> getLocations() {
     return locations;
-  }
-
-  public void setLocations(Collection<Location> locations) {
-    this.locations = locations;
   }
 
   @Override

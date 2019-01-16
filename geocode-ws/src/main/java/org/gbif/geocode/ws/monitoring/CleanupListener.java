@@ -19,9 +19,7 @@ public class CleanupListener implements ServletContextListener {
       MBeanServer mbeanServer = injector.getInstance(MBeanServer.class);
       try {
         mbeanServer.unregisterMBean(new ObjectName("Geocode WS:type=Statistics"));
-      } catch (InstanceNotFoundException ignored) {
-      } catch (MBeanRegistrationException ignored) {
-      } catch (MalformedObjectNameException ignored) {
+      } catch (InstanceNotFoundException | MalformedObjectNameException | MBeanRegistrationException ignored) {
       }
     }
   }

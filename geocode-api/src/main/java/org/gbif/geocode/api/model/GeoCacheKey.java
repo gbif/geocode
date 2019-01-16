@@ -7,9 +7,9 @@ import java.util.Objects;
  */
 public class GeoCacheKey {
 
-  private Double lat;
-  private Double lng;
-  private Double uncertainity;
+  private final Double lat;
+  private final Double lng;
+  private final Double uncertainity;
 
   public GeoCacheKey(Double lat, Double lng, Double uncertainity) {
     this.lat = lat;
@@ -21,24 +21,12 @@ public class GeoCacheKey {
     return lat;
   }
 
-  public void setLat(double lat) {
-    this.lat = lat;
-  }
-
   public Double getLng() {
     return lng;
   }
 
-  public void setLng(double lng) {
-    this.lng = lng;
-  }
-
   public Double getUncertainity() {
     return uncertainity;
-  }
-
-  public void setUncertainity(Double uncertainity) {
-    this.uncertainity = uncertainity;
   }
 
   @Override

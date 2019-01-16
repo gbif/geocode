@@ -4,8 +4,8 @@ import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "Greenland", "GD");
     Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD");
 
-    when(dbGeocoder.get(75.0, -40.0, 0.0)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(75.0, -40.0, 0.0)).thenReturn(Collections.singletonList(locationTest));
 
     Collection<Location> locations = geocoder.get(75.0, -40.0, null);
     Collection<Location> locations2 = geocoder.get(75.1, -40.1, null);
@@ -59,7 +59,7 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "Sri Lanka", "LK");
     Location locationTest2 = new Location("test", "political", "source", "Sri Lanka", "LK");
 
-    when(dbGeocoder.get(7.0d, 81.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(7.0d, 81.0d, null)).thenReturn(Collections.singletonList(locationTest));
 
     Collection<Location> locations = geocoder.get(7.0d, 81.0d, null);
     Collection<Location> locations2 = geocoder.get(7.0d, 81.0d, null);
@@ -85,7 +85,7 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
     Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF");
 
-    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Collections.singletonList(locationTest));
 
     Collection<Location> locations = geocoder.get(-21.0d, -147.0d, null);
     Collection<Location> locations2 = geocoder.get(-21.0d, -147.0d, null);
@@ -127,8 +127,8 @@ public class BitmapFirstGeocoderTest {
     Location locationKazakhstan = new Location("test", "political", "source", "Kazakhstan", "KZ");
     Location locationKazakhstan2 = new Location("test", "political", "source", "Kazakhstan", "KZ");
 
-    when(dbGeocoder.get(45.965, 63.305, 0.0)).thenReturn(Arrays.asList(locationCosmodrome));
-    when(dbGeocoder.get(47.0, 69.0, 0.0)).thenReturn(Arrays.asList(locationKazakhstan));
+    when(dbGeocoder.get(45.965, 63.305, 0.0)).thenReturn(Collections.singletonList(locationCosmodrome));
+    when(dbGeocoder.get(47.0, 69.0, 0.0)).thenReturn(Collections.singletonList(locationKazakhstan));
 
     Collection<Location> locations = geocoder.get(45.965, 63.305, null);
     Collection<Location> locations2 = geocoder.get(47.0, 69.0, null);
