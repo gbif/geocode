@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>geocode-ws</artifactId>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>Geocode Web service</name>
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
@@ -33,7 +33,16 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty-maven-plugin.version}</version>
         <configuration>
+          <supportedPackagings>
+            <supportedPackaging>jar</supportedPackaging>
+          </supportedPackagings>
+          <stopKey>stop</stopKey>
+          <stopPort>15327</stopPort>
           <scanIntervalSeconds>10</scanIntervalSeconds>
+          <webAppConfig>
+            <contextPath>/</contextPath>
+            <webInfIncludeJarPattern>.*/classes/.*</webInfIncludeJarPattern>
+          </webAppConfig>
         </configuration>
       </plugin>
       <plugin>

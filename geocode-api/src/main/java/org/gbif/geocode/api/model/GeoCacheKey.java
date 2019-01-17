@@ -1,6 +1,6 @@
 package org.gbif.geocode.api.model;
 
-import java.util.Objects;
+import static java.lang.Double.doubleToLongBits;
 
 /**
  * composite data model of latitude, longitude and uncertainity.
@@ -41,7 +41,25 @@ public class GeoCacheKey {
 
   @Override
   public int hashCode() {
-    return Objects.hash(getLat(), getLng(), getUncertainity());
+    return arraysHashCode(getLat(), getLng(), getUncertainity());
+  }
+
+  // This utility implementation is to ensure that hashCode implementation remains same, across all implementations and different versions of jvm
+  private int doublesHashCode(Double value) {
+    long bits = doubleToLongBits(value);
+    return (int) (bits ^ (bits >>> 32));
+  }
+
+  private int arraysHashCode(Double... a) {
+    if (a == null) return 0;
+
+    int result = 1;
+
+    for (Double element : a) {
+      result = 31 * result + (element == null ? 0 : doublesHashCode(element));
+    }
+
+    return result;
   }
 
   @Override
