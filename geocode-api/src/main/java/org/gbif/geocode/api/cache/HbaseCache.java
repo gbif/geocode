@@ -1,17 +1,13 @@
 package org.gbif.geocode.api.cache;
 
 import org.gbif.geocode.api.model.GeoCacheKey;
-import org.gbif.geocode.api.model.GeoInfo;
 import org.gbif.geocode.api.model.HbaseProperties;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -90,36 +86,20 @@ public class HbaseCache implements GeocodeService {
    *
    * @return locations
    */
-  private Collection<Location> get(GeoCacheKey key) {
-    return Optional.ofNullable(bulkGet(Collections.singletonList(key)))
-      .filter(result -> !result.isEmpty())
-      .map(result -> result.get(0).getLocations())
-      .orElse(Collections.emptyList());
-  }
-
-  private List<GeoInfo> bulkGet(List<GeoCacheKey> keys) {
+  private List<Location> get(GeoCacheKey key) {
     try (Table table = connection.getTable(tbName)) {
 
-      List<Get> gets = new ArrayList<>();
+      String rowKey = rowKeyGenerator.apply(key);
+      Get get = new Get(Bytes.toBytes(rowKey));
+      get.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS));
 
-      for (GeoCacheKey key : keys) {
-        String rowKey = rowKeyGenerator.apply(key);
-        Get get = new Get(Bytes.toBytes(rowKey));
-        get.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS));
-        gets.add(get);
-      }
-      Result[] results = table.get(gets);
-      List<GeoInfo> geoInfos = new ArrayList<>();
+      Result result = table.get(get);
 
-      for (int i = 0; i < results.length; i++) {
-        byte[] bytes = results[i].getValue(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS));
-        // fail entire batch if not found
-        if (bytes == null) return null;
-        List<Location> locations = mapper.readValue(bytes, new TypeReference<List<Location>>() {});
-        GeoCacheKey key = keys.get(i);
-        geoInfos.add(new GeoInfo(key, locations));
-      }
-      return geoInfos;
+      byte[] bytes = result.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS));
+      // fail entire batch if not found
+      if (bytes == null) return null;
+
+      return mapper.readValue(bytes, new TypeReference<List<Location>>() {});
     } catch (IOException e) {
       LOG.error("Error reading values from {}.", tableName, e);
     }
@@ -127,40 +107,25 @@ public class HbaseCache implements GeocodeService {
   }
 
   /**
-   * Puts the missed entry to hbase cache.
+   * Puts the provided data to hbase cache.
    */
-  private void put(GeoInfo info) {
-    bulkPut(Collections.singletonList(info));
-  }
-
-  /**
-   * Does batch puts to hbase cache.
-   *
-   * @param geoInfos information of key with locations.
-   */
-  private void bulkPut(List<GeoInfo> geoInfos) {
+  private void put(GeoCacheKey key, Collection<Location> locations) {
     try (Table table = connection.getTable(tbName)) {
 
-      List<Put> puts = new ArrayList<>();
+      String rowKey = rowKeyGenerator.apply(key);
+      Put put = new Put(Bytes.toBytes(rowKey));
 
-      for (GeoInfo geoInfo : geoInfos) {
-        GeoCacheKey key = geoInfo.getKey();
-        Collection<Location> locations = geoInfo.getLocations();
-        String rowKey = rowKeyGenerator.apply(key);
-        Put put = new Put(Bytes.toBytes(rowKey));
-
-        byte[] serializedLocations = new byte[0];
-        try {
-          serializedLocations = mapper.writeValueAsBytes(locations);
-        } catch (JsonProcessingException e) {
-          LOG.error("Could not serialize {}.", locations, e);
-        }
-        put.addImmutable(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS), serializedLocations);
-        puts.add(put);
+      byte[] serializedLocations = new byte[0];
+      try {
+        serializedLocations = mapper.writeValueAsBytes(locations);
+      } catch (JsonProcessingException e) {
+        LOG.error("Could not serialize {}.", locations, e);
       }
-      LOG.debug("Writing put to table {}, size: {}", tableName, puts.size());
-      table.put(puts);
-      LOG.debug("Updated table {}, with size: {}", tableName, puts.size());
+      put.addImmutable(Bytes.toBytes(columnFamily), Bytes.toBytes(LOCATIONS), serializedLocations);
+
+      LOG.debug("Writing put to table {}", tableName);
+      table.put(put);
+      LOG.debug("Updated table {}, with key: {} -> {}", tableName, key, locations);
     } catch (IOException e) {
       LOG.error("Could not write to the hbase table {}", tableName, e);
     }
@@ -182,11 +147,11 @@ public class HbaseCache implements GeocodeService {
     LOG.info("Received request: {}", key);
     Collection<Location> result = get(key);
 
-    if (result.isEmpty()) {
+    if (result == null) {
       LOG.info("HBase cache missed for: {}", key);
       Collection<Location> locations = databaseService.get(latitude, longitude, uncertainty);
       LOG.info("SRS identified locations for: {} as {}", key, locations);
-      put(new GeoInfo(key, locations));
+      put(key, locations);
       LOG.info("HBase saved for: {} as {}", key, locations);
       return locations;
     }
