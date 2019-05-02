@@ -127,7 +127,7 @@ layers['baselayer'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
-		url: 'https://tile.gbif-uat.org/4326/omt/{z}/{x}/{y}@2x.png?style=osm-bright',
+		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=osm-bright-en',
 		tilePixelRatio: 2,
 		wrapX: false
 	}),
@@ -223,7 +223,7 @@ map.on('singleclick', function(evt) {
 		}
 	};
 	var template = 'lat={y}&lng={x}';
-	var url = "http://api.gbif.org/v1/geocode/reverse?"+ol.coordinate.format(coordinate, template, 5);
+	var url = "https://api.gbif.org/v1/geocode/reverse?"+ol.coordinate.format(coordinate, template, 5);
 	console.log(url);
 	xhttp.open("GET", url, true);
 	xhttp.send();

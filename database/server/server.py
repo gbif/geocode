@@ -38,7 +38,7 @@ def GeneratePrepared():
 
     political_layer = { "name": "political", "query": "SELECT gid as __id__, 'political' AS type, name AS title, iso_a2 AS iso_a2, __geom__ FROM political" }
 
-    eez_layer = { "name": "eez", "query": "SELECT eez.gid AS __id__, 'eez' AS type, eez.sovereign1 AS title, iso_map.iso2 AS iso_a2, __geom__ FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3" }
+    eez_layer = { "name": "eez", "query": "SELECT eez.gid AS __id__, 'eez' AS type, geoname AS title, CONCAT(iso_map1.iso2, iso_map2.iso2, iso_map3.iso2) AS iso_a2, __geom__ FROM eez LEFT OUTER JOIN iso_map iso_map1 ON eez.iso_ter1 = iso_map1.iso3 LEFT OUTER JOIN iso_map iso_map2 ON eez.iso_ter2 = iso_map2.iso3 LEFT OUTER JOIN iso_map iso_map3 ON eez.iso_ter3 = iso_map3.iso3" }
 
     for layer in [political_layer, eez_layer]:
         layer_query = layer['query']

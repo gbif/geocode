@@ -6,18 +6,36 @@
 
   <!-- Searches the public.political table -->
   <select id="listPolitical" resultType="Location">
-    SELECT gid as id, 'Political' AS type, 'http://www.naturalearthdata.com' AS source, name AS title, iso_a2 AS isoCountryCode2Digit
+    SELECT ne_id as id, 'Political' AS type, 'http://www.naturalearthdata.com' AS source, name AS title, iso_a2 AS isoCountryCode2Digit
     FROM political
     WHERE ST_DWithin(geom, ST_GeomFromText(#{point}, 4326), #{distance})
     ORDER BY ST_Distance(geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
   <!-- Searches the public.eez table -->
+  <!-- The three queries search for joint regime areas and overlapping claims.
+       The mrgid_ter2 value is 0 if there is no second claim, so ordering by this being 0 or >0 means the country comes
+       first if we are within an ordinary EEZ and a JRA.
+       The ordinal column is to keep the previous behaviour if there's still a tie, e.g. we are within an ordinary
+       overlapping region.  In that case, the value from the iso_ter1 is chosen.
+       -->
   <select id="listEez" resultType="Location">
-    SELECT eez.gid AS id, 'EEZ' as TYPE, 'http://vliz.be/vmdcdata/marbound/' as SOURCE, eez.sovereign1 AS title, iso_map.iso2 AS isoCountryCode2Digit
-    FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
-    WHERE ST_DWithin(eez.geom, ST_GeomFromText(#{point}, 4326), #{distance})
-    ORDER BY ST_Distance(eez.geom, ST_Geomfromtext(#{point},4326)) ASC
+    SELECT id, type, source, title, isoCountryCode2Digit FROM (
+      SELECT eez.mrgid AS id, 'EEZ' AS type, 'http://www.marineregions.org/' AS source, eez.geoname AS title, iso_map.iso2 AS isoCountryCode2Digit, ST_Distance(eez.geom, ST_Geomfromtext(#{point},4326)) AS distance, mrgid_ter2, 1 AS ordinal
+        FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
+        WHERE ST_DWithin(eez.geom, ST_GeomFromText(#{point}, 4326), #{distance})
+      UNION
+      SELECT eez.mrgid AS id, 'EEZ' AS type, 'http://www.marineregions.org/' AS source, eez.geoname AS title, iso_map.iso2 AS isoCountryCode2Digit, ST_Distance(eez.geom, ST_Geomfromtext(#{point},4326)) AS distance, mrgid_ter2, 2 AS ordinal
+        FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter2 = iso_map.iso3
+        WHERE ST_DWithin(eez.geom, ST_GeomFromText(#{point}, 4326), #{distance})
+        AND eez.iso_ter2 IS NOT NULL
+      UNION
+      SELECT eez.mrgid AS id, 'EEZ' AS type, 'http://www.marineregions.org/' AS source, eez.geoname AS title, iso_map.iso2 AS isoCountryCode2Digit, ST_Distance(eez.geom, ST_Geomfromtext(#{point},4326)) AS distance, mrgid_ter2, 3 AS ordinal
+        FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter3 = iso_map.iso3
+        WHERE ST_DWithin(eez.geom, ST_GeomFromText(#{point}, 4326), #{distance})
+        AND eez.iso_ter3 IS NOT NULL
+    ) x
+    ORDER BY x.distance ASC, SIGN(mrgid_ter2) ASC, ordinal ASC
   </select>
 
 </mapper>

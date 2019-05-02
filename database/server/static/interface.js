@@ -67,7 +67,7 @@ layers['baselayer'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 	projection: 'EPSG:4326',
 	tileGrid: tileGrid,
-	url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=osm-bright',
+	url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=osm-bright-en',
 	tilePixelRatio: 2,
 		wrapX: true
 	}),
