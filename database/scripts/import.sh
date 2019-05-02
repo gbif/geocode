@@ -6,21 +6,26 @@ set -o nounset
 readonly PGCONN="dbname=$POSTGRES_DB user=$POSTGRES_USER host=$POSTGRES_HOST password=$POSTGRES_PASSWORD port=$POSTGRES_PORT"
 
 function exec_psql() {
-    PGPASSWORD=$POSTGRES_PASSWORD psql --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	echo psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
 }
 
 function exec_psql_file() {
-    PGPASSWORD=$POSTGRES_PASSWORD psql --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+}
+
+function wrap_drop_geometry_commands() {
+	sed -e '/SELECT DropGeometryColumn/i \\\set ON_ERROR_STOP off' -e '/SELECT DropGeometryColumn/a \\\set ON_ERROR_STOP on'
 }
 
 function import_shp() {
-    local shp_file=$1
-    local table_name=$2
-    shp2pgsql -s 4326 -I -g geometry "$shp_file" "$table_name" | exec_psql | hide_inserts
+	local shp_file=$1
+	local table_name=$2
+	shp2pgsql -s 4326 -I -g geometry "$shp_file" "$table_name" | exec_psql | hide_inserts
 }
 
 function hide_inserts() {
-    grep -v "INSERT 0 1"
+	grep -v "INSERT 0 1"
 }
 
 function import_natural_earth() {
@@ -46,7 +51,7 @@ function import_natural_earth() {
 	echo "DROP TABLE IF EXISTS political;" | exec_psql
 	echo "DROP TABLE IF EXISTS political_map_units;" | exec_psql
 
-    echo "Importing Natural Earth to PostGIS"
+	echo "Importing Natural Earth to PostGIS"
 	exec_psql_file ne/political.sql
 	exec_psql_file ne/political_map_units.sql
 
@@ -62,7 +67,7 @@ function import_marine_regions() {
 	# Download the Low res version from here: http://vliz.be/vmdcdata/marbound/download.php
 
 	mkdir -p /var/tmp/import
-    cd /var/tmp/import
+	cd /var/tmp/import
 	wget --quiet http://download.gbif.org/2017/08/World_EEZ_v9_20161021_LR.zip
 	mkdir -p eez
 	unzip -oj World_EEZ_v9_20161021_LR.zip -d eez/
