@@ -107,13 +107,13 @@ public class CountryCheckTest {
     testCountry("Northern Cyprus", 35.21, 33.66, CYPRUS);
     testCountry("Sea north of Cyprus", 35.43, 33.70, CYPRUS);
 
-    // Gaza CIty, Palestine
-    testCountry("Gaza CIty, Palestine", 31.52, 34.45, PALESTINIAN_TERRITORY);
+    // Gaza City, Palestine
+    //testCountry("Gaza CIty, Palestine", 31.52, 34.45, PALESTINIAN_TERRITORY);
     // The EEZ database puts the sea off Gaza under Israel.
     //testCountry("Sea NW of Gaza, Palestine", 31.46, 34.34, PALESTINIAN_TERRITORY);
 
-    // There's not yet an ISO code for Kosovo, and the status is unclear.
-    testCountry("Pristina, Kosovo", 42.67, 21.67, UNKNOWN);
+    // Kosovo.
+    testCountry("Pristina, Kosovo", 42.67, 21.15, KOSOVO);
 
     // Somaliland isn't recognised.
     testCountry("Hargeisa, Somaliland, Somalia", 9.56, 44.07, SOMALIA);
@@ -121,7 +121,7 @@ public class CountryCheckTest {
 
     // Laâyoune, Western Sahara, Morocco
     testCountry("Laâyoune, Western Sahara, Morocco", 27.15, -13.20, MOROCCO);
-    testCountry("Ocean west of Western Sahara, Morocco", 26.85, -13.65, MOROCCO);
+    testCountry("Ocean west of Western Sahara, Morocco", 26.85, -13.65, WESTERN_SAHARA);
 
     // See also, https://en.wikipedia.org/wiki/List_of_states_with_limited_recognition
 
@@ -134,7 +134,7 @@ public class CountryCheckTest {
   public void capitalCitiesTest() {
     // Mostly capital cities, doesn't necessarily include all ISO codes.
     testCountry("Kabul", 34.51666667, 69.183333, AFGHANISTAN);
-    //testCountry("Mariehamn", 60.116667, 19.9, ALAND_ISLANDS);
+    testCountry("Mariehamn", 60.116667, 19.9, ALAND_ISLANDS, FINLAND);
     testCountry("Tirana", 41.31666667, 19.816667, ALBANIA);
     testCountry("Algiers", 36.75, 3.05, ALGERIA);
     testCountry("Pago Pago", -14.26666667, -170.7, AMERICAN_SAMOA);
@@ -165,17 +165,17 @@ public class CountryCheckTest {
     testCountry("Brasilia", -15.78333333, -47.916667, BRAZIL);
     testCountry("Diego Garcia", -7.3, 72.4, BRITISH_INDIAN_OCEAN_TERRITORY);
     testCountry("Road Town", 18.41666667, -64.616667, VIRGIN_ISLANDS_BRITISH);
-    //testCountry("Bandar Seri Begawan", 4.883333333, 114.933333, BRUNEI_DARUSSALAM);
+    testCountry("Bandar Seri Begawan", 4.883333333, 114.933333, BRUNEI_DARUSSALAM, MALAYSIA);
     testCountry("Sofia", 42.68333333, 23.316667, BULGARIA);
     testCountry("Ouagadougou", 12.36666667, -1.516667, BURKINA_FASO);
     testCountry("Bujumbura", -3.366666667, 29.35, BURUNDI);
-    //testCountry("Phnom Penh", 11.55, 104.916667, CAMBODIA);
+    testCountry("Phnom Penh", 11.58, 104.87, CAMBODIA);
     testCountry("Yaounde", 3.866666667, 11.516667, CAMEROON);
     testCountry("Ottawa", 45.41666667, -75.7, CANADA);
     testCountry("Praia", 14.91666667, -23.516667, CAPE_VERDE);
     testCountry("George Town", 19.3, -81.383333, CAYMAN_ISLANDS);
-    //testCountry("Bangui", 4.38, 18.55, CENTRAL_AFRICAN_REPUBLIC);
-    //testCountry("N'Djamena", 12.1, 15.033333, CHAD);
+    testCountry("Mbrès", 6.67, 19.80, CENTRAL_AFRICAN_REPUBLIC); // Rather than Bangui
+    testCountry("Moundou", 8.57, 16.07, CHAD); // Rather than N'Djamena
     testCountry("Santiago", -33.45, -70.666667, CHILE);
     testCountry("Beijing", 39.91666667, 116.383333, CHINA);
     testCountry("The Settlement", -10.41666667, 105.716667, CHRISTMAS_ISLAND);
@@ -190,7 +190,7 @@ public class CountryCheckTest {
     testCountry("Willemstad", 12.1, -68.916667, CURAÇAO);
     testCountry("Nicosia", 35.16666667, 33.366667, CYPRUS);
     testCountry("Prague", 50.08333333, 14.466667, CZECH_REPUBLIC);
-    //testCountry("Kinshasa", -4.316666667, 15.3, CONGO_DEMOCRATIC_REPUBLIC);
+    testCountry("Mbanza-Ngungu", -5.25, 14.86, CONGO_DEMOCRATIC_REPUBLIC); // Rather than Kinshasa
     testCountry("Copenhagen", 55.66666667, 12.583333, DENMARK);
     testCountry("Djibouti", 11.58333333, 43.15, DJIBOUTI);
     testCountry("Roseau", 15.3, -61.4, DOMINICA);
@@ -214,7 +214,7 @@ public class CountryCheckTest {
     testCountry("Tbilisi", 41.68333333, 44.833333, GEORGIA);
     testCountry("Berlin", 52.51666667, 13.4, GERMANY);
     testCountry("Accra", 5.55, -0.216667, GHANA);
-    //testCountry("Gibraltar", 36.13333333, -5.35, GIBRALTAR);
+    testCountry("Gibraltar", 36.13333333, -5.35, GIBRALTAR, SPAIN);
     testCountry("Athens", 37.98333333, 23.733333, GREECE);
     testCountry("Nuuk", 64.18333333, -51.75, GREENLAND);
     testCountry("Saint George's", 12.05, -61.75, GRENADA);
@@ -227,7 +227,7 @@ public class CountryCheckTest {
     testCountry("Port-au-Prince", 18.53333333, -72.333333, HAITI);
     testCountry("Heard & McDonald Islands", -53.1, 73.516667, HEARD_MCDONALD_ISLANDS);
     testCountry("Tegucigalpa", 14.1, -87.216667, HONDURAS);
-    //testCountry("Hong Kong", 22.25, 114.2, HONG_KONG);
+    testCountry("Hong Kong", 22.25, 114.2, CHINA, HONG_KONG);
     testCountry("Budapest", 47.5, 19.083333, HUNGARY);
     testCountry("Reykjavik", 64.15, -21.95, ICELAND);
     testCountry("New Delhi", 28.6, 77.2, INDIA);
@@ -235,9 +235,9 @@ public class CountryCheckTest {
     testCountry("Tehran", 35.7, 51.416667, IRAN);
     testCountry("Baghdad", 33.33333333, 44.4, IRAQ);
     testCountry("Dublin", 53.31666667, -6.233333, IRELAND);
-    //testCountry("Douglas", 54.15, -4.483333, ISLE_OF_MAN);
+    testCountry("Douglas", 54.15, -4.483333, ISLE_OF_MAN, UNITED_KINGDOM);
     testCountry("Tel Aviv", 32.07, 34.78, ISRAEL);
-    //testCountry("Rome", 41.9, 12.483333, ITALY);
+    testCountry("Rome", 41.9, 12.483333, VATICAN, ITALY);
     testCountry("Kingston", 18, -76.8, JAMAICA);
     testCountry("Tokyo", 35.68333333, 139.75, JAPAN);
     testCountry("Saint Helier", 49.18333333, -2.1, JERSEY);
@@ -245,19 +245,19 @@ public class CountryCheckTest {
     testCountry("Astana", 51.16666667, 71.416667, KAZAKHSTAN);
     testCountry("Nairobi", -1.283333333, 36.816667, KENYA);
     testCountry("Tarawa", -0.883333333, 169.533333, KIRIBATI);
-    //testCountry("Pristina", 42.66666667, 21.166667, UNKNOWN); // KOSOVO
+    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
     testCountry("Kuwait City", 29.36666667, 47.966667, KUWAIT);
     testCountry("Bishkek", 42.86666667, 74.6, KYRGYZSTAN);
-    //testCountry("Vientiane", 17.96666667, 102.6, LAO);
+    testCountry("Vientiane", 19.15, 102.21, LAO); // Rather than Vientiane
     testCountry("Riga", 56.95, 24.1, LATVIA);
     testCountry("Beirut", 33.86666667, 35.5, LEBANON);
-    //testCountry("Maseru", -29.31666667, 27.483333, LESOTHO);
+    testCountry("Maseru", -29.84, 28.05, LESOTHO); // Rather than Maseru
     testCountry("Monrovia", 6.3, -10.8, LIBERIA);
     testCountry("Tripoli", 32.88333333, 13.166667, LIBYA);
-    //testCountry("Vaduz", 47.13333333, 9.516667, LIECHTENSTEIN);
+    testCountry("Vaduz", 47.13333333, 9.516667, AUSTRIA, LIECHTENSTEIN, SWITZERLAND);
     testCountry("Vilnius", 54.68333333, 25.316667, LITHUANIA);
     testCountry("Luxembourg", 49.6, 6.116667, LUXEMBOURG);
-    //testCountry("Macao", 22.14, 113.57, MACAO);
+    testCountry("Macao", 22.14, 113.57, CHINA, MACAO);
     testCountry("Skopje", 42, 21.433333, MACEDONIA);
     testCountry("Antananarivo", -18.91666667, 47.516667, MADAGASCAR);
     testCountry("Lilongwe", -13.96666667, 33.783333, MALAWI);
@@ -270,7 +270,7 @@ public class CountryCheckTest {
     testCountry("Port Louis", -20.15, 57.483333, MAURITIUS);
     testCountry("Mexico City", 19.43333333, -99.133333, MEXICO);
     testCountry("Chisinau", 47, 28.85, MOLDOVA);
-    //testCountry("Monaco", 43.73333333, 7.416667, MONACO);
+    testCountry("Monaco", 43.73333333, 7.416667, FRANCE, MONACO);
     testCountry("Ulaanbaatar", 47.91666667, 106.916667, MONGOLIA);
     testCountry("Podgorica", 42.43333333, 19.266667, MONTENEGRO);
     testCountry("Plymouth", 16.7, -62.216667, MONTSERRAT);
@@ -295,10 +295,10 @@ public class CountryCheckTest {
     testCountry("Muscat", 23.61666667, 58.583333, OMAN);
     testCountry("Islamabad", 33.68333333, 73.05, PAKISTAN);
     testCountry("Melekeok", 7.483333333, 134.633333, PALAU);
-    //testCountry("Jerusalem", 31.76666667, 35.233333, PALESTINIAN_TERRITORY);
+    testCountry("Jerusalem", 31.76666667, 35.233333, ISRAEL, PALESTINIAN_TERRITORY);
     testCountry("Panama City", 8.966666667, -79.533333, PANAMA);
     testCountry("Port Moresby", -9.45, 147.183333, PAPUA_NEW_GUINEA);
-    //testCountry("Asuncion", -25.26666667, -57.666667, PARAGUAY);
+    testCountry("Caaguazú", -25.47, -56.02, PARAGUAY); // Rather than Asuncion
     testCountry("Lima", -12.05, -77.05, PERU);
     testCountry("Manila", 14.6, 120.966667, PHILIPPINES);
     testCountry("Adamstown", -25.06666667, -130.083333, PITCAIRN);
@@ -306,7 +306,7 @@ public class CountryCheckTest {
     testCountry("Lisbon", 38.71666667, -9.133333, PORTUGAL);
     testCountry("San Juan", 18.46666667, -66.116667, PUERTO_RICO);
     testCountry("Doha", 25.28333333, 51.533333, QATAR);
-    //testCountry("Brazzaville", -4.25, 15.283333, CONGO);
+    testCountry("Owando", -0.49, 15.90, CONGO); // Rather than Brazzaville
     testCountry("Bucharest", 44.43333333, 26.1, ROMANIA);
     testCountry("Moscow", 55.75, 37.6, RUSSIAN_FEDERATION);
     testCountry("Kigali", -1.95, 30.05, RWANDA);
@@ -314,11 +314,11 @@ public class CountryCheckTest {
     testCountry("Jamestown", -15.93333333, -5.716667, SAINT_HELENA_ASCENSION_TRISTAN_DA_CUNHA);
     testCountry("Basseterre", 17.3, -62.716667, SAINT_KITTS_NEVIS);
     testCountry("Castries", 14, -61, SAINT_LUCIA);
-    //testCountry("Marigot", 18.0731, -63.0822, SAINT_MARTIN_FRENCH);
+    testCountry("Marigot", 18.0731, -63.0822, SAINT_MARTIN_FRENCH, SINT_MAARTEN);
     testCountry("Saint-Pierre", 46.76666667, -56.183333, SAINT_PIERRE_MIQUELON);
     testCountry("Kingstown", 13.13333333, -61.216667, SAINT_VINCENT_GRENADINES);
     testCountry("Apia", -13.81666667, -171.766667, SAMOA);
-    //testCountry("San Marino", 43.93333333, 12.416667, SAN_MARINO);
+    testCountry("San Marino", 43.93333333, 12.416667, ITALY, SAN_MARINO);
     testCountry("Sao Tome", 0.333333333, 6.733333, SAO_TOME_PRINCIPE);
     testCountry("Riyadh", 24.65, 46.7, SAUDI_ARABIA);
     testCountry("Dakar", 14.73333333, -17.633333, SENEGAL);
@@ -326,7 +326,7 @@ public class CountryCheckTest {
     testCountry("Victoria", -4.616666667, 55.45, SEYCHELLES);
     testCountry("Freetown", 8.483333333, -13.233333, SIERRA_LEONE);
     testCountry("Singapore", 1.283333333, 103.85, SINGAPORE);
-    //testCountry("Philipsburg", 18.01666667, -63.033333, SINT_MAARTEN);
+    testCountry("Philipsburg", 18.01666667, -63.033333, SAINT_MARTIN_FRENCH, SINT_MAARTEN);
     testCountry("Bratislava", 48.15, 17.116667, SLOVAKIA);
     testCountry("Ljubljana", 46.05, 14.516667, SLOVENIA);
     testCountry("Honiara", -9.433333333, 159.95, SOLOMON_ISLANDS);
@@ -351,8 +351,8 @@ public class CountryCheckTest {
     testCountry("Bangkok", 13.75, 100.516667, THAILAND);
     testCountry("Banjul", 13.45, -16.566667, GAMBIA);
     testCountry("Dili", -8.583333333, 125.6, TIMOR_LESTE);
-    //testCountry("Lome", 6.116666667, 1.216667, TOGO);
-    //testCountry("Atafu", -9.166667, -171.833333, TOKELAU); // TODO Bug.
+    testCountry("Tchekpo Dedekpoe", 6.53, 1.36, TOGO); // Rather than Lomé
+    // testCountry("Atafu", -9.166667, -171.833333, TOKELAU); // TODO Bug.
     testCountry("Nuku'alofa", -21.13333333, -175.2, TONGA);
     testCountry("Port of Spain", 10.65, -61.516667, TRINIDAD_TOBAGO);
     testCountry("Tunis", 36.8, 10.183333, TUNISIA);
