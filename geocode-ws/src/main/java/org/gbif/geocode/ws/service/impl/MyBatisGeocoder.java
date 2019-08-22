@@ -19,12 +19,15 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link GeocodeService} using MyBatis to search for results.
  */
 @Singleton
 public class MyBatisGeocoder implements GeocodeService {
+  public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
 
   private final static CountryParser COUNTRY_PARSER = CountryParser.getInstance();
 
@@ -70,12 +73,14 @@ public class MyBatisGeocoder implements GeocodeService {
 
       Optional<List<Location>> optLocations = tryWithin(point, uncertainty, locationMapper);
       if (optLocations.isPresent()) {
+        statistics.foundWithin5Km();
         locations.addAll(optLocations.get());
       } else {
         optLocations = tryWithin(point, LARGER_DISTANCE, locationMapper);
         if (optLocations.isPresent()) {
           statistics.foundWithin5Km();
           locations.addAll(optLocations.get());
+          LOG.warn("Had to use larger distance {} to resolve {}", LARGER_DISTANCE, point);
         } else {
           statistics.noResult();
         }
