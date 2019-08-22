@@ -15,7 +15,7 @@ public class MakeColours {
 
   public static void main(String[] args) throws Exception {
 
-    int hues = 21; // Number of sectors to divide the colour wheel
+    int hues = 36; // Number of sectors to divide the colour wheel
     double[] saturations = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
     double[] values = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
 

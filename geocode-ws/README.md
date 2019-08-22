@@ -65,9 +65,9 @@ See [../database/scripts/import.sh](../database/scripts/import.sh) for a script 
 
 ## Map image for faster lookups
 
-There is a PNG image used to speed up queries — roughly half the world's area can be determined without referring to the database at all.
+There is a PNG image used to speed up queries — after an initial query, roughly 95% of the world's area can be determined without referring to the database at all.
 
-![PNG map cache](src/main/resources/org/gbif/geocode/ws/service/resource/world.png)
+![PNG map cache](src/main/resources/org/gbif/geocode/ws/resource/world.png)
 
 See [Map Image Lookup](./MapImageLookup.md) for how the image is created.
 
