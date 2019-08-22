@@ -32,13 +32,13 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "Greenland", "GD");
     Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD");
 
-    when(dbGeocoder.get(75.0, -40.0, 0.0)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(75.0, -40.0, null)).thenReturn(Arrays.asList(locationTest));
 
     Collection<Location> locations = geocoder.get(75.0, -40.0, null);
     Collection<Location> locations2 = geocoder.get(75.1, -40.1, null);
 
-    verify(dbGeocoder, times(1)).get(75.0, -40.0, 0.0);
-    verify(dbGeocoder, never()).get(75.1, -40.1, 0.0);
+    verify(dbGeocoder, times(1)).get(75.0, -40.0, null);
+    verify(dbGeocoder, never()).get(75.1, -40.1, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -56,15 +56,15 @@ public class BitmapFirstGeocoderTest {
     GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
 
     // All of Sri Lanka is covered with black borders in the bitmap image.
-    Location locationTest = new Location("test", "political", "source", "Sri Lanka", "LK");
-    Location locationTest2 = new Location("test", "political", "source", "Sri Lanka", "LK");
+    Location locationTest = new Location("test", "political", "source", "Denmark", "DK");
+    Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK");
 
-    when(dbGeocoder.get(7.0d, 81.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(55.102d, 14.685d, null)).thenReturn(Arrays.asList(locationTest));
 
-    Collection<Location> locations = geocoder.get(7.0d, 81.0d, null);
-    Collection<Location> locations2 = geocoder.get(7.0d, 81.0d, null);
+    Collection<Location> locations = geocoder.get(55.102d, 14.685d, null);
+    Collection<Location> locations2 = geocoder.get(55.102d, 14.685d, null);
 
-    verify(dbGeocoder, times(2)).get(7.0d, 81.0d, null);
+    verify(dbGeocoder, times(2)).get(55.102d, 14.685d, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -73,7 +73,7 @@ public class BitmapFirstGeocoderTest {
   }
 
   /**
-   * Test that EEZ areas are read from the database every time.
+   * Test that EEZ areas are cached (if reasonable).
    */
   @Test
   public void testEezRequest() {
@@ -88,9 +88,10 @@ public class BitmapFirstGeocoderTest {
     when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Arrays.asList(locationTest));
 
     Collection<Location> locations = geocoder.get(-21.0d, -147.0d, null);
-    Collection<Location> locations2 = geocoder.get(-21.0d, -147.0d, null);
+    Collection<Location> locations2 = geocoder.get(-21.0d, -147.1d, null);
 
-    verify(dbGeocoder, times(2)).get(-21.0d, -147.0d, null);
+    verify(dbGeocoder, times(1)).get(-21.0d, -147.0d, null);
+    verify(dbGeocoder, never()).get(-21.0, -147.1, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -127,14 +128,14 @@ public class BitmapFirstGeocoderTest {
     Location locationKazakhstan = new Location("test", "political", "source", "Kazakhstan", "KZ");
     Location locationKazakhstan2 = new Location("test", "political", "source", "Kazakhstan", "KZ");
 
-    when(dbGeocoder.get(45.965, 63.305, 0.0)).thenReturn(Arrays.asList(locationCosmodrome));
-    when(dbGeocoder.get(47.0, 69.0, 0.0)).thenReturn(Arrays.asList(locationKazakhstan));
+    when(dbGeocoder.get(45.965, 63.305, null)).thenReturn(Arrays.asList(locationCosmodrome));
+    when(dbGeocoder.get(47.0, 69.0, null)).thenReturn(Arrays.asList(locationKazakhstan));
 
     Collection<Location> locations = geocoder.get(45.965, 63.305, null);
     Collection<Location> locations2 = geocoder.get(47.0, 69.0, null);
 
-    verify(dbGeocoder, times(1)).get(45.965, 63.305, 0.0);
-    verify(dbGeocoder, times(1)).get(47.0, 69.0, 0.0);
+    verify(dbGeocoder, times(1)).get(45.965, 63.305, null);
+    verify(dbGeocoder, times(1)).get(47.0, 69.0, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());

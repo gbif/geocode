@@ -91,8 +91,6 @@ public class GeocodeBitmapCache implements GeocodeService {
 
     switch (colour) {
       case BORDER:
-        return null;
-
       case EEZ:
         return null;
 
@@ -101,7 +99,7 @@ public class GeocodeBitmapCache implements GeocodeService {
 
       default:
         if (!colourKey.containsKey(colour)) {
-          locations = geocodeService.get(lat, lng, 0d);
+          locations = geocodeService.get(lat, lng, null);
           // Don't store this if there aren't any locations.
           if (locations.size() == 0) {
             LOG.error("For colour {} (LL {},{}; pixel {},{}) the webservice gave zero locations.", hex, lat, lng, x, y);
