@@ -45,6 +45,15 @@ var tileGridZoom6Only = new ol.tilegrid.TileGrid({
 	tileSize: 512,
 });
 
+// This is for the bitmap cache, just use a single rectangulare 'tile'.
+var tileGridBitmapCache = new ol.tilegrid.TileGrid({
+	extent: ol.proj.get('EPSG:4326').getExtent(),
+	minZoom: 0,
+	maxZoom: 16,
+	resolutions: [extent / 3600],
+	tileSize: [7200, 3600],
+});
+
 var layers = [];
 
 String.prototype.hashCode = function() {
@@ -133,6 +142,17 @@ layers['baselayer'] = new ol.layer.Tile({
 	}),
 });
 
+layers['bitmapCache'] = new ol.layer.Tile({
+	source: new ol.source.TileImage({
+		projection: 'EPSG:4326',
+		tileGrid: tileGridBitmapCache,
+		url: 'https://api.gbif.org/v1/geocode/bitmap',
+		tilePixelRatio: 1,
+		wrapX: false
+	}),
+	opacity: 0.5
+});
+
 layers['geocode'] = new ol.layer.VectorTile({
 	renderMode: 'vector',
 	source: new ol.source.VectorTile({
@@ -166,6 +186,7 @@ layers['geocodeFast'] = new ol.layer.VectorTile({
 var map = new ol.Map({
 	layers: [
 		layers['baselayer'],
+		layers['bitmapCache'],
 		layers['geocode'],
 		layers['geocodeFast']
 	],
