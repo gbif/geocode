@@ -9,7 +9,7 @@ The class `BitmapFirstGeocoder` refers to a PNG bitmap of the world, with each c
 
 The bitmap is generated using data from MarineRegions.org, the same data source as is used in our database.
 
-The default uncertainty for lookups is 0.05°.  With a 7200px-wide image, that corresponds to 1 pixel per 0.05°.  The black lines have a width of 6px.  5px is 0.25° — the larger lookup distance.
+The default uncertainty for lookups is 0.05°.  With a 7200px-wide image, that corresponds to 1 pixel per 0.05°.  The black lines have a width of 7px.  5px is 0.25° — the larger lookup distance.
 
 1. Download the map data.
 
@@ -35,7 +35,7 @@ Open this in a text editor, and remove the styling attributes from the SVG eleme
 <style type="text/css">
     path {
         stroke: #000000;
-        stroke-width: 2.5px;
+        stroke-width: 3.5px;
         stroke-linecap: round;
         stroke-linejoin: round;
         fill: #000000;
