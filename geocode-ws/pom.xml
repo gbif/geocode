@@ -29,10 +29,13 @@
 
     <plugins>
       <plugin>
-        <groupId>org.mortbay.jetty</groupId>
+        <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty-maven-plugin.version}</version>
         <configuration>
+          <webAppConfig>
+            <contextPath>/</contextPath>
+          </webAppConfig>
           <scanIntervalSeconds>10</scanIntervalSeconds>
         </configuration>
       </plugin>
@@ -230,7 +233,7 @@
       <id>dev</id>
       <properties>
         <geocode-ws.db.host>pg1.gbif-dev.org</geocode-ws.db.host>
-        <geocode-ws.db.name>eez</geocode-ws.db.name>
+        <geocode-ws.db.name>dev_eez</geocode-ws.db.name>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
       </properties>

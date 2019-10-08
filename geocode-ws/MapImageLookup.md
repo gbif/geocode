@@ -77,3 +77,13 @@ a) Export as PDF.
 b) Use GhostScript to turn this into a PNG:
 
     gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=png16m -r90 -sOutputFile=world.png world.pdf
+
+5. Make manual edits to the PNG, where the VLIZ service has differences to our own:
+
+   * Ensure Taiwan and China are different colours
+   * Colour the disputed area of the South China Sea in black (east of Vietnam)
+   * Colour Kosovo in black
+   * Colour South Sudan in black
+   * Colour Western Sahara etc in black
+
+   This avoids us having "opinions" in the cache, and leaves those determinations to the database.
