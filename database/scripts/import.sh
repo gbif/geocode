@@ -3,13 +3,15 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+readonly PGCONN="dbname=$POSTGRES_DB user=$POSTGRES_USER host=$POSTGRES_HOST password=$POSTGRES_PASSWORD port=$POSTGRES_PORT"
+
 function exec_psql() {
-	echo psql -v ON_ERROR_STOP=1 --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
-	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	echo psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
 }
 
 function exec_psql_file() {
-	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
 }
 
 function wrap_drop_geometry_commands() {
@@ -175,13 +177,9 @@ function align_marine_regions() {
 	#   This doesn't matter for our processing.
 }
 
-if [[ -e eez_complete ]]; then
-	echo "Data already imported"
-else
-	echo "Importing data"
-	import_natural_earth
-	align_natural_earth
-	import_marine_regions
-	align_marine_regions
-	touch eez_complete
-fi
+which wget unzip || (apt install -y wget unzip)
+
+import_natural_earth
+align_natural_earth
+import_marine_regions
+align_marine_regions

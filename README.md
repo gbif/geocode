@@ -28,24 +28,3 @@ A Maven profile containing the following settings is required:
   </properties>
 </profile>
 ```
-
-# Docker usage
-
-(Work in progress.)
-
-First, start up the database.  This also imports the necessary data:
-
-```
-docker-compose up -d db
-```
-
-Then, start up the webservice and (optionally) the debug interface, postserve.
-
-```
-docker-compose up -d ws
-docker-compose up -d postserve
-```
-
-Then http://localhost:8080/index.html and http://127.0.0.1:4444/geocode/reverse?lat=50&lng=0
-
-(This is very rough-and-ready.  Based on components of OpenMapTiles, see https://openmaptiles.org/.)
