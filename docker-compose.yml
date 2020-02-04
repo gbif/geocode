@@ -1,0 +1,32 @@
+version: "3"
+services:
+  db:
+    build: database
+    ports:
+      - "15432:5432"
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=localhost
+
+  ws:
+    build: geocode-ws
+    ports:
+      - "4444:4444"
+    depends_on:
+      - db
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=db
+
+  postserve:
+    image: "openmaptiles/postserve:0.2"
+    env_file: .env
+    environment:
+      - POSTGRES_HOST=db
+    ports:
+     - "8090:8080"
+    depends_on:
+      - db
+    volumes:
+     - ./postserve:/server
+    command: python -u /server/server.py
