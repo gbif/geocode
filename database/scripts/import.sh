@@ -37,12 +37,12 @@ function import_natural_earth() {
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	wget --quiet --continue http://download.gbif.org/2019/04/ne_10m_admin_0_countries.zip
-	#wget                   https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip
-	wget --quiet --continue http://download.gbif.org/2019/04/ne_10m_admin_0_map_units.zip
-	#wget                   https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_map_units.zip
-	wget --quiet --continue http://download.gbif.org/2019/04/ne_10m_admin_0_map_subunits.zip
-	#wget --quiet --continue http://download.gbif.org/2019/04/ne_10m_admin_1_states_provinces.zip
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_countries.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_map_units.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_map_units.zip
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_map_subunits.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_map_subunits.zip
 	mkdir -p ne
 	unzip -oj ne_10m_admin_0_countries.zip -d ne/
 	unzip -oj ne_10m_admin_0_map_units.zip -d ne/
@@ -86,7 +86,7 @@ function import_marine_regions() {
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	wget --quiet http://download.gbif.org/2019/04/World_EEZ_v10_20180221.zip
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/World_EEZ_v10_20180221.zip
 	mkdir -p eez
 	unzip -oj World_EEZ_v10_20180221.zip -d eez/
 
@@ -128,11 +128,12 @@ function align_natural_earth() {
 	#
 	# Import France, so the overseas territories retain their ISO codes.
 	echo "DROP TABLE IF EXISTS splitup;" | exec_psql
-	echo "DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France');" | exec_psql
-	echo "CREATE TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France');" | exec_psql
+	echo "DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'New Zealand');" | exec_psql
+	echo "CREATE TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'New Zealand');" | exec_psql
 	echo "UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);" | exec_psql
 	echo "UPDATE splitup SET iso_a2 = 'SJ', iso_a3 = 'SJM' WHERE geounit = 'Jan Mayen';" | exec_psql
 	echo "UPDATE splitup SET iso_a2 = 'NL', iso_a3 = 'NLD' WHERE geounit = 'Netherlands';" | exec_psql
+	echo "UPDATE splitup SET iso_a2 = 'FR', iso_a3 = 'FRA' WHERE geounit = 'Clipperton Island';" | exec_psql
 	echo "SELECT sovereignt, admin, geounit, iso_a2 FROM splitup ORDER BY sovereignt, admin, geounit;" | exec_psql
 	echo "ALTER TABLE political ALTER COLUMN featurecla TYPE CHARACTER VARYING(16);" | exec_psql
 	echo "INSERT INTO political (SELECT * FROM splitup);" | exec_psql
@@ -153,6 +154,8 @@ function align_natural_earth() {
 function align_marine_regions() {
 	# Ascension Island no longer has its own code
 	echo "UPDATE eez SET iso_ter1 = 'SHN' WHERE iso_ter1 = 'ASC';" | exec_psql
+	# Clipperton Island doesn't have its own code
+	echo "UPDATE eez SET iso_ter1 = 'FRA' WHERE iso_ter1 = 'CPT';" | exec_psql
 	# Tristan da Cunha no longer has its own code
 	echo "UPDATE eez SET iso_ter1 = 'SHN' WHERE iso_ter1 = 'TAA';" | exec_psql
 	# Consistent with land in Natural Earth, except for a tiny sliver
@@ -200,8 +203,6 @@ function create_cache() {
 EOF
 
 }
-
-which wget unzip || (apt install -y wget unzip)
 
 import_natural_earth
 align_natural_earth
