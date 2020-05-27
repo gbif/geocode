@@ -8,9 +8,12 @@ import java.util.List;
 /**
  * Used by MyBatis to provide a typed interface to the mapped queries.
  * <p/>
- * Allows to get Mapbox Vector Tiles from PostgreSQL.
+ * Allows to get Mapbox Vector Tiles or SVG shapes from PostgreSQL.
  */
 public interface TileMapper {
+
+  List<SvgShape> svgPolitical();
+  List<SvgShape> svgEez();
 
   Tile tilePolitical(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileEez(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);

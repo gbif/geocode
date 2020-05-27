@@ -1,15 +1,20 @@
 package org.gbif.geocode.ws;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provides;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.model.TileMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
+import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
+import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
+import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.ws.app.ConfUtils;
 import org.gbif.ws.mixin.Mixins;
@@ -67,6 +72,17 @@ public class GeocodeWsListener extends GbifServletListener {
 
     @Override
     protected void bindTypeHandlers() {
+    }
+
+    @Provides
+    protected List<AbstractBitmapCachedLayer> provideLayers(
+      PoliticalLayer politicalLayer,
+      EezLayer eezLayer)
+    {
+      return ImmutableList.of(
+        politicalLayer,
+        eezLayer
+      );
     }
 
     @Override

@@ -69,7 +69,20 @@
     ) AS tile;
   </select>
 
+
+  <insert id="toCache">
+    INSERT INTO tile_cache (layer, z, x, y, tile, timeTaken) VALUES (#{layer}, #{z}, #{x}, #{y}, #{tile.t}, #{timeTaken});
+  </insert>
+
   <select id="fromCache" resultMap="tileMap">
     SELECT tile AS t FROM tile_cache WHERE layer = #{layer} AND z = #{z} AND x = #{x} AND y = #{y} LIMIT 1;
+  </select>
+
+  <select id="svgPolitical" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT iso_a2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM political
+  </select>
+
+  <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT iso2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
   </select>
 </mapper>

@@ -1,53 +1,33 @@
 package org.gbif.geocode.ws.util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Stack;
 
 /**
  * Generate evenly distributed colours, to make human interpretation of the lookup map image nicer.
- * <br/>
- * Reads a list of identifiers from stdin, one per line, and outputs (to stdout) a very basic HTML file with the generated colours
- * and CSS declarations for them.
  */
 public class MakeColours {
 
-  public static void main(String[] args) throws Exception {
-
-    int hues = 36; // Number of sectors to divide the colour wheel
+  public static Stack<String> makeColours(int minimum) {
+    int hues = (int)Math.ceil(minimum / 25d); // Number of sectors in which to divide the colour wheel
     double[] saturations = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
     double[] values = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
 
     Stack<String> colours = new Stack<>();
 
-    System.out.println("<pre>");
     for (int hueSegment = 0; hueSegment < hues; hueSegment++) {
       double h = (hueSegment / ((double)hues)) * 360;
 
       for (double s : saturations) {
         for (double v : values) {
           String hex = HSVtoRGB(h, s, v);
-          System.out.print(String.format("<span style='background: %s'>%s (%.2f&deg;, %.2f, %.2f)</span>  ", hex, hex, h, s, v));
           colours.add(hex);
         }
-        System.out.println();
       }
-      System.out.println();
     }
-
-    System.out.println("<p>" + colours.size() + " colours.</p>");
 
     Collections.shuffle(colours);
-
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-    String line;
-    while ((line = br.readLine()) != null) {
-      System.out.println(String.format("#%s { fill: %s; }", line, colours.pop()));
-    }
-
-    System.out.println("</pre>");
+    return colours;
   }
 
   /**

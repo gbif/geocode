@@ -1,7 +1,6 @@
 package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.api.vocabulary.Country;
-import org.gbif.common.parsers.geospatial.LatLng;
 import org.gbif.geocode.api.model.Location;
 
 import java.util.Arrays;
@@ -636,12 +635,30 @@ public class CountryCheckTest {
     r = Client.create(cc).resource(api);
   }
 
+  class LatLng {
+    double lat;
+    double lng;
+
+    LatLng(double lat, double lng) {
+      this.lat = lat;
+      this.lng = lng;
+    }
+
+    public double getLat() {
+      return lat;
+    }
+
+    public double getLng() {
+      return lng;
+    }
+  }
+
   private Set<Country> getCountryForLatLng(LatLng coord) {
     Set<Country> countries = new TreeSet<>();
 
     MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-    queryParams.add("lat", coord.getLat().toString());
-    queryParams.add("lng", coord.getLng().toString());
+    queryParams.add("lat", String.valueOf(coord.getLat()));
+    queryParams.add("lng", String.valueOf(coord.getLng()));
     queryParams.add("uncertainty", "0.0");
 
     WebResource res = null;
