@@ -23,11 +23,12 @@ public class GeocodeBitmapCache implements GeocodeService {
 
   private final GeocodeService geocodeService;
 
-  // World map image lookup
+  // Bitmap image cache
   private final BufferedImage img;
+  // Border colour must be queried
   private final static int BORDER = 0x000000;
-  private final static int EEZ = 0x888888;
-  private final static int INTERNATIONAL_WATER = 0xFFFFFF;
+  // Nothing colour is not part of this layer (e.g. ocean for a land layer)
+  private final static int NOTHING = 0xFFFFFF;
   private final int img_width;
   private final int img_height;
   private final Map<Integer, Collection<Location>> colourKey = new HashMap<>();
@@ -91,10 +92,9 @@ public class GeocodeBitmapCache implements GeocodeService {
 
     switch (colour) {
       case BORDER:
-      case EEZ:
         return null;
 
-      case INTERNATIONAL_WATER:
+      case NOTHING:
         return new ArrayList<>();
 
       default:

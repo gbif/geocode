@@ -17,6 +17,6 @@
   </filter>
   <filter-mapping>
     <filter-name>Guice Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/geocode/*</url-pattern>
   </filter-mapping>
 </web-app>

@@ -34,19 +34,24 @@ public class GeocodeResource implements GeocodeService {
 
   private final GeocodeWsStatistics statistics;
 
+  private static final String ALL_LAYER_CACHE_BITMAP = "black.png";
   private final EntityTag eTag = EntityTag.valueOf('"'+getClass().getPackage().getImplementationVersion()+'"');
 
   @Inject
   public GeocodeResource(GeocodeService geocoder, GeocodeWsStatistics statistics) {
     this.statistics = statistics;
-    this.geocoder = new GeocodeBitmapCache(geocoder, this.getClass().getResourceAsStream("world.png"));
+    this.geocoder = new GeocodeBitmapCache(geocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
   }
 
   @Override
   @GET
   @Path("reverse")
   @Produces(MediaType.APPLICATION_JSON)
-  public Collection<Location> get(@QueryParam("lat") Double latitude, @QueryParam("lng") Double longitude, @QueryParam("uncertainty") @Nullable Double uncertainty) {
+  public Collection<Location> get(
+    @QueryParam("lat") Double latitude,
+    @QueryParam("lng") Double longitude,
+    @QueryParam("uncertainty") @Nullable Double uncertainty
+  ) {
     if (latitude == null || longitude == null
         || latitude < -90 || latitude > 90
         || longitude < -180 || longitude > 180) {
@@ -57,14 +62,16 @@ public class GeocodeResource implements GeocodeService {
     return geocoder.get(latitude, longitude, uncertainty);
   }
 
+  /*
+   * Disable client-side caching until I work out a reasonable way to do it.
+   */
   @GET
   @Path("bitmap")
   @Produces("image/png")
   public Response bitmap(@Context Request request) {
     Response.ResponseBuilder responseBuilder = request.evaluatePreconditions(eTag);
-
     if (responseBuilder == null) {
-      return Response.ok(this.getClass().getResourceAsStream("world.png"))
+      return Response.ok(this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP))
           .tag(eTag)
           .build();
     } else {
@@ -72,10 +79,13 @@ public class GeocodeResource implements GeocodeService {
     }
   }
 
+  /*
+   * Disable client-side caching until I work out a reasonable way to do it.
+   */
   @Override
   public byte[] bitmap() {
     try {
-      return ByteStreams.toByteArray(this.getClass().getResourceAsStream("world.png"));
+      return ByteStreams.toByteArray(this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
     } catch (IOException e) {
       return null;
     }
