@@ -7,6 +7,7 @@ import com.google.inject.Module;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.model.LocationMapper;
+import org.gbif.geocode.ws.model.TileMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 import org.gbif.mybatis.guice.MyBatisModule;
@@ -61,6 +62,7 @@ public class GeocodeWsListener extends GbifServletListener {
     protected void bindMappers() {
       addAlias("Location").to(Location.class);
       addMapperClass(LocationMapper.class);
+      addMapperClass(TileMapper.class);
     }
 
     @Override

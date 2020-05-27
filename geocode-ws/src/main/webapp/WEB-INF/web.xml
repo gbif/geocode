@@ -19,4 +19,8 @@
     <filter-name>Guice Filter</filter-name>
     <url-pattern>/geocode/*</url-pattern>
   </filter-mapping>
+  <filter-mapping>
+    <filter-name>Guice Filter</filter-name>
+    <url-pattern>/tile/*</url-pattern>
+  </filter-mapping>
 </web-app>

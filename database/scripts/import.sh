@@ -72,6 +72,9 @@ function import_natural_earth() {
 
 	rm ne_10m_admin_0_countries.zip ne_10m_admin_0_map_units.zip ne_10m_admin_0_map_subunits.zip ne/ -Rf
 
+	echo "SELECT AddGeometryColumn('political', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
 	echo "CREATE INDEX political_iso_a3 ON political (iso_a3);" | exec_psql
 }
 
@@ -101,6 +104,10 @@ function import_marine_regions() {
 	#echo "ALTER TABLE eez RENAME TO eez_original;" | exec_psql
 	echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
 
+	echo "SELECT AddGeometryColumn('political', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
 	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
 }
 
@@ -177,9 +184,27 @@ function align_marine_regions() {
 	#   This doesn't matter for our processing.
 }
 
+function create_cache() {
+
+	exec_psql <<EOF
+	CREATE TABLE IF NOT EXISTS tile_cache (
+	    layer      varchar(128)  NOT NULL,
+	    z          int           NOT NULL,
+	    x          int           NOT NULL,
+	    y          int           NOT NULL,
+	    tile       bytea         NOT NULL,
+	    timeTaken  int           NULL,
+	    created    timestamp     DEFAULT NOW()
+	);
+	GRANT INSERT ON tile_cache TO eez;
+EOF
+
+}
+
 which wget unzip || (apt install -y wget unzip)
 
 import_natural_earth
 align_natural_earth
 import_marine_regions
 align_marine_regions
+create_cache
