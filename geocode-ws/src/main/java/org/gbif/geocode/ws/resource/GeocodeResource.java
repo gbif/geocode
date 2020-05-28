@@ -1,14 +1,13 @@
 package org.gbif.geocode.ws.resource;
 
 import com.google.common.io.ByteStreams;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collection;
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,9 +18,8 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Provides the web service interface to query our Geocoder.

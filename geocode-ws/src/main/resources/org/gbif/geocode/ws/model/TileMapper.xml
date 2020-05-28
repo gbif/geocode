@@ -69,6 +69,314 @@
     ) AS tile;
   </select>
 
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM gadm
+      LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm5" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level5
+      LEFT OUTER JOIN iso_map ON level5.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm4" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_4, name_3, name_2, name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level4
+      LEFT OUTER JOIN iso_map ON level4.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm3" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_3, gid_2, gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_3, name_2, name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level3
+      LEFT OUTER JOIN iso_map ON level3.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm2" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_2, gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_2, name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level2
+      LEFT OUTER JOIN iso_map ON level2.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm1" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_1, gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_1, name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level1
+      LEFT OUTER JOIN iso_map ON level1.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.gadm table -->
+  <select id="tileGadm0" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        COALESCE(gid_0) AS id,
+        'GADM' AS type,
+        'http://gadm.org' AS source,
+        COALESCE(name_0) AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        wkb_geometry AS geom,
+        centroid_geom
+      FROM level0
+      LEFT OUTER JOIN iso_map ON level0.gid_0 = iso_map.iso3
+      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'gadm', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.iho table -->
+  <select id="tileIho" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'IHO' AS type,
+        'http://marineregions.org' AS source,
+        name AS title,
+        geom,
+        centroid_geom
+      FROM iho
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.seavox table -->
+  <select id="tileSeaVoX" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        skos_url AS id,
+        'SeaVoX' AS type,
+        'http://marineregions.org' AS source,
+        sub_region AS title,
+        geom,
+        centroid_geom
+      FROM seavox
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.geolocate_centroids table -->
+  <select id="tileGeolocateCentroids" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        gid AS id,
+        'GEOLOCATE_CENTROIDS' AS type,
+        'http://geo-locate.org/webservices/geolocatesvcv2/' AS source,
+        iso_a2 AS title,
+        iso_a2 AS isoCountryCode2Digit,
+        geom AS geom
+      FROM geolocate_centroids
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'geolocate_centroids', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
 
   <insert id="toCache">
     INSERT INTO tile_cache (layer, z, x, y, tile, timeTaken) VALUES (#{layer}, #{z}, #{x}, #{y}, #{tile.t}, #{timeTaken});
@@ -84,5 +392,21 @@
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT iso2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
+  </select>
+
+  <select id="svgGadm" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm
+  </select>
+
+  <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM iho
+  </select>
+
+  <select id="svgSeaVoX" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT skos_url AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM seavox
+  </select>
+
+  <select id="svgGeolocateCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT gid AS id, ST_AsSVG(ST_Buffer(geom, 0.005, 'quad_segs=4')) AS shape FROM geolocate_centroids
   </select>
 </mapper>

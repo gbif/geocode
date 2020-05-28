@@ -40,7 +40,7 @@
         <executions>
           <execution>
             <id>bitmaps</id>
-            <phase>package</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>exec</goal>
             </goals>

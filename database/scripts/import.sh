@@ -104,11 +104,139 @@ function import_marine_regions() {
 	#echo "ALTER TABLE eez RENAME TO eez_original;" | exec_psql
 	echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
 
-	echo "SELECT AddGeometryColumn('political', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
-	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
+}
+
+function import_gadm() {
+	echo "Downloading GADM dataset"
+
+	# GADM, version 3.6: https://gadm.org/download_world.html
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/gadm36_gpkg.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip
+	mkdir -p gadm
+	unzip -oj gadm36_gpkg.zip -d gadm/
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS gadm;" | exec_psql
+
+	echo "Importing GADM to PostGIS"
+	ogr2ogr -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm/gadm36.gpkg
+
+	rm gadm36_gpkg.zip gadm/ -Rf
+
+	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
+}
+
+function import_gadm_levels() {
+	echo "Downloading GADM levels dataset"
+
+	# GADM, version 3.6: https://gadm.org/download_world.html
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/gadm36_levels_gpkg.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_levels_gpkg.zip
+	mkdir -p gadm_levels
+	unzip -oj gadm36_levels_gpkg.zip -d gadm_levels/
+
+	echo "Dropping old tables"
+	for i in 0 1 2 3 4 5; do echo "DROP TABLE IF EXISTS level$l;" | exec_psql; done
+
+	echo "Importing GADM to PostGIS"
+	ogr2ogr -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm_levels/gadm36_levels.gpkg
+
+	rm gadm36_levels_gpkg.zip gadm_levels/ -Rf
+
+	for i in 0 1 2 3 4 5; do
+		echo "SELECT AddGeometryColumn('level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+		echo "UPDATE level$i SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
+	done
+}
+
+function import_seavox() {
+	echo "Downloading Seavox dataset"
+
+	# SeaVoX version 17: http://www.marineregions.org/downloads.php#seavox
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/SeaVoX_sea_areas_polygons_v17.zip
+	mkdir -p seavox
+	unzip -oj SeaVoX_sea_areas_polygons_v17.zip -d seavox/
+
+	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 seavox/SeaVoX_sea_areas_polygons_v17_att.shp public.seavox | wrap_drop_geometry_commands > seavox/seavox.sql
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS seavox;" | exec_psql
+
+	echo "Importing SeaVoX to PostGIS"
+	exec_psql_file seavox/seavox.sql
+
+	rm SeaVoX_sea_areas_polygons_v17.zip seavox/ -Rf
+
+	echo "SELECT AddGeometryColumn('seavox', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE seavox SET centroid_geom = ST_Centroid(geom);" | exec_psql
+}
+
+function import_iho() {
+	echo "Downloading IHO dataset"
+
+	# IHO version 3: http://www.marineregions.org/downloads.php#iho
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/World_Seas_IHO_v3.zip
+	mkdir -p iho
+	unzip -oj World_Seas_IHO_v3.zip -d iho/
+
+	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 iho/World_Seas_IHO_v3.shp public.iho | wrap_drop_geometry_commands > iho/iho.sql
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS iho;" | exec_psql
+
+	echo "Importing IHO to PostGIS"
+	exec_psql_file iho/iho.sql
+
+	rm World_IHO_v10_20180221.zip iho/ -Rf
+
+	echo "SELECT AddGeometryColumn('iho', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE iho SET centroid_geom = ST_Centroid(geom);" | exec_psql
+}
+
+function import_wgsrpd() {
+	echo "Downloading WGSRPD dataset"
+
+	# WGSRPD version 2.0: http://www.kew.org/gis/tdwg/index.html or http://web.archive.org/web/20170215024211/http://www.kew.org/gis/tdwg/index.html
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+
+	for i in 1 2 3 4; do
+		curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/level$i.zip || \
+			curl -LSs --remote-name --continue-at - --fail http://web.archive.org/web/20170215024211/http://www.kew.org/gis/tdwg/downloads/level$i.zip
+		mkdir -p wgsrpd/level$i
+		unzip -oj level$i.zip -d wgsrpd/level$i/
+
+		shp2pgsql -d -D -s 4326 -i -I -W UTF-8 wgsrpd/level$i/level$i.shp public.wgsrpd_level$i | wrap_drop_geometry_commands > wgsrpd/level$i/wgsrpd_level$i.sql
+
+		echo "Dropping old tables"
+		echo "DROP TABLE IF EXISTS wgsrpd_level$i;" | exec_psql
+
+		echo "Importing WGSRPD level $i to PostGIS"
+		exec_psql_file wgsrpd/level$i/wgsrpd_level$i.sql
+
+		rm level$i.zip wgsrpd/level$i/ -Rf
+
+		echo "SELECT AddGeometryColumn('wgsrpd_level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+		echo "UPDATE wgsrpd_level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
+	done
 }
 
 function align_natural_earth() {
@@ -204,8 +332,18 @@ EOF
 
 }
 
+create_cache
+
 import_natural_earth
 align_natural_earth
+
 import_marine_regions
 align_marine_regions
-create_cache
+
+import_gadm
+
+import_iho
+
+import_seavox
+
+import_wgsrpd

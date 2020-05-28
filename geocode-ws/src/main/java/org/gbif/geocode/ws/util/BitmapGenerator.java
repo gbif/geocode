@@ -95,6 +95,10 @@ public class BitmapGenerator {
       ImmutableMap<String, Supplier<List<SvgShape>>> svgSuppliers = new ImmutableMap.Builder<String, Supplier<List<SvgShape>>>()
         .put("political", tileMapper::svgPolitical)
         .put("eez", tileMapper::svgEez)
+        .put("gadm", tileMapper::svgGadm)
+        .put("iho", tileMapper::svgIho)
+        .put("seavox", tileMapper::svgSeaVoX)
+        .put("geolocate_centroids", tileMapper::svgGeolocateCentroids)
         .build();
 
       for (Map.Entry<String, Supplier<List<SvgShape>>> x : svgSuppliers.entrySet()) {

@@ -17,4 +17,11 @@ public interface LocationMapper {
 
   List<Location> listEez(@Param("point") String point, @Param("distance") double distance);
 
+  List<Location> listGeolocateCentroids(@Param("point") String point, @Param("distance") double distance);
+
+  List<Location> listGadm(@Param("point") String point, @Param("distance") double distance);
+
+  List<Location> listIho(@Param("point") String point, @Param("distance") double distance);
+
+  List<Location> listSeaVoX(@Param("point") String point, @Param("distance") double distance);
 }

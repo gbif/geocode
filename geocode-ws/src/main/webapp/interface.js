@@ -267,6 +267,154 @@ layers['eez'] = new ol.layer.VectorTile({
 	visible: false
 });
 
+layers['gadm'] = new ol.layer.VectorTile({
+	title: 'GADM',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['gadm5'] = new ol.layer.VectorTile({
+	title: 'GADM5',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm5/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['gadm4'] = new ol.layer.VectorTile({
+	title: 'GADM4',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm4/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['gadm3'] = new ol.layer.VectorTile({
+	title: 'GADM3',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm3/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['gadm2'] = new ol.layer.VectorTile({
+	title: 'GADM2',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm2/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['gadm1'] = new ol.layer.VectorTile({
+	title: 'GADM1',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm1/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+});
+
+layers['gadm0'] = new ol.layer.VectorTile({
+	title: 'GADM0',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/gadm0/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['iho'] = new ol.layer.VectorTile({
+	title: 'IHO',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/iho/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false,
+});
+
+layers['seavox'] = new ol.layer.VectorTile({
+	title: 'SeaVoX',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/seavox/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
+});
+
+layers['geolocate_centroids'] = new ol.layer.VectorTile({
+	title: 'Geolocate centroids',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/geolocate_centroids/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+});
+
 var map = new ol.Map({
 	layers: [
 		layers['baselayer'],
@@ -276,6 +424,16 @@ var map = new ol.Map({
 			layers: [
 				layers['political'],
 				layers['eez'],
+				layers['gadm'],
+				layers['gadm5'],
+				layers['gadm4'],
+				layers['gadm3'],
+				layers['gadm2'],
+				layers['gadm1'],
+				layers['gadm0'],
+				layers['iho'],
+				layers['seavox'],
+				layers['geolocate_centroids'],
 			]
 		}),
 		layers['bitmapCache'],
