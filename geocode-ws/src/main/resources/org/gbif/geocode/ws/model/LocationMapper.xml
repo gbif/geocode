@@ -77,7 +77,7 @@
       gc.iso_a2 AS isoCountryCode2Digit
     FROM geolocate_centroids gc
     WHERE ST_DWithin(gc.geom, ST_GeomFromText(#{point}, 4326), #{distance})
-    ORDER BY distance ASC
+    ORDER BY ST_Distance(geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
 </mapper>
