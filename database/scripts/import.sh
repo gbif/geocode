@@ -39,6 +39,9 @@ function import_geolocate_centroids() {
 
 	echo "Importing Geolocate Centroids to PostGIS"
 	exec_psql_file $SCRIPT_DIR/geolocate_centroids.sql
+
+	echo "Geolocate Centroids import complete"
+	echo
 }
 
 function import_natural_earth() {
@@ -89,6 +92,9 @@ function import_natural_earth() {
 	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "CREATE INDEX political_iso_a3 ON political (iso_a3);" | exec_psql
+
+	echo "Natural Earth import complete"
+	echo
 }
 
 function import_marine_regions() {
@@ -121,6 +127,9 @@ function import_marine_regions() {
 	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
+
+	echo "Marine Regions import complete"
+	echo
 }
 
 function import_gadm() {
@@ -145,6 +154,9 @@ function import_gadm() {
 
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
+
+	echo "GADM import complete"
+	echo
 }
 
 function import_gadm_levels() {
@@ -171,6 +183,9 @@ function import_gadm_levels() {
 		echo "SELECT AddGeometryColumn('level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 		echo "UPDATE level$i SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
 	done
+
+	echo "GADM levels import complete"
+	echo
 }
 
 function import_seavox() {
@@ -196,6 +211,9 @@ function import_seavox() {
 
 	echo "SELECT AddGeometryColumn('seavox', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE seavox SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "Seavox import complete"
+	echo
 }
 
 function import_iho() {
@@ -217,10 +235,13 @@ function import_iho() {
 	echo "Importing IHO to PostGIS"
 	exec_psql_file iho/iho.sql
 
-	rm World_IHO_v10_20180221.zip iho/ -Rf
+	rm World_Seas_IHO_v3.zip iho/ -Rf
 
 	echo "SELECT AddGeometryColumn('iho', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE iho SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "IHO import complete"
+	echo
 }
 
 function import_wgsrpd() {
@@ -250,6 +271,9 @@ function import_wgsrpd() {
 		echo "SELECT AddGeometryColumn('wgsrpd_level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 		echo "UPDATE wgsrpd_level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
 	done
+
+	echo "WGSRPD import complete"
+	echo
 }
 
 function align_natural_earth() {
