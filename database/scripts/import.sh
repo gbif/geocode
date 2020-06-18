@@ -4,6 +4,7 @@ set -o pipefail
 set -o nounset
 
 readonly PGCONN="dbname=$POSTGRES_DB user=$POSTGRES_USER host=$POSTGRES_HOST password=$POSTGRES_PASSWORD port=$POSTGRES_PORT"
+readonly SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 
 function exec_psql() {
 	echo psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
@@ -26,6 +27,18 @@ function import_shp() {
 
 function hide_inserts() {
 	grep -v "INSERT 0 1"
+}
+
+function import_geolocate_centroids() {
+	echo "Importing Geolocate Centroids dataset"
+
+	# Generated (for the moment) with GeoLocateCentroids.java "test" in the geocode-ws module.
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS geolocate_centroids;" | exec_psql
+
+	echo "Importing Geolocate Centroids to PostGIS"
+	exec_psql_file $SCRIPT_DIR/geolocate_centroids.sql
 }
 
 function import_natural_earth() {
@@ -333,6 +346,8 @@ EOF
 }
 
 create_cache
+
+import_geolocate_centroids
 
 import_natural_earth
 align_natural_earth
