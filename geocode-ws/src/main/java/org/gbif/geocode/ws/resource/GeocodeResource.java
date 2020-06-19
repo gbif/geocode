@@ -32,7 +32,7 @@ public class GeocodeResource implements GeocodeService {
 
   private final GeocodeWsStatistics statistics;
 
-  private static final String ALL_LAYER_CACHE_BITMAP = "black.png";
+  private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
   private final EntityTag eTag = EntityTag.valueOf('"'+getClass().getPackage().getImplementationVersion()+'"');
 
   @Inject

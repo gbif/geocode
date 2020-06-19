@@ -28,15 +28,22 @@ public abstract class AbstractBitmapCachedLayer {
   private final static int BORDER = 0x000000;
   // Empty colour is not part of this layer (e.g. ocean for a land layer)
   private final static int EMPTY = 0xFFFFFF;
-  private final int img_width;
-  private final int img_height;
+  private final int imgWidth;
+  private final int imgHeight;
+  // Maximum number of locations in a coloured part of the map
+  private final int maxLocations;
   private final Map<Integer, Collection<Location>> colourKey = new HashMap<>();
 
   public AbstractBitmapCachedLayer(InputStream bitmap) {
+    this(bitmap, 1);
+  }
+
+  public AbstractBitmapCachedLayer(InputStream bitmap, int maxLocations) {
     try {
       img = ImageIO.read(bitmap);
-      img_height = img.getHeight();
-      img_width = img.getWidth();
+      imgHeight = img.getHeight();
+      imgWidth = img.getWidth();
+      this.maxLocations = maxLocations;
     } catch (IOException e) {
       throw new RuntimeException("Unable to load map image", e);
     }
@@ -76,8 +83,8 @@ public abstract class AbstractBitmapCachedLayer {
   protected Collection<Location> getFromBitmap(LocationMapper locationMapper, double lat, double lng) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
-    int x = (int) (Math.round ((lng+180d)/360d*(img_width-1)));
-    int y = img_height-1 - (int) (Math.round ((lat+90d)/180d*(img_height-1)));
+    int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
+    int y = imgHeight -1 - (int) (Math.round ((lat+90d)/180d*(imgHeight -1)));
 
     int colour = img.getRGB(x, y) & 0x00FFFFFF; // Ignore possible transparency.
 
@@ -101,9 +108,9 @@ public abstract class AbstractBitmapCachedLayer {
           if (locations.size() == 0) {
             LOG.error("For colour {} (LL {},{}; pixel {},{}) the webservice gave zero locations.", hex, lat, lng, x, y);
           } else {
-            if (countLocations(locations) > 2) {
-              LOG.error("More than two locations for a colour! {} (LL {},{}; pixel {},{}); locations {}",
-                hex, lat, lng, x, y, joinLocations(locations));
+            if (countLocations(locations) > maxLocations) {
+              LOG.error("More than {} locations for a colour! {} (LL {},{}; pixel {},{}); locations {}",
+                maxLocations, hex, lat, lng, x, y, joinLocations(locations));
             } else {
               LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}",
                 hex, lat, lng, x, y, joinLocations(locations));

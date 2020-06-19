@@ -407,6 +407,6 @@
   </select>
 
   <select id="svgGeolocateCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT gid AS id, ST_AsSVG(ST_Buffer(geom, 0.005, 'quad_segs=4')) AS shape FROM geolocate_centroids
+    SELECT gid AS id, ST_AsSVG(ST_Buffer(geom, 0.05, 'quad_segs=4')) AS shape FROM geolocate_centroids
   </select>
 </mapper>

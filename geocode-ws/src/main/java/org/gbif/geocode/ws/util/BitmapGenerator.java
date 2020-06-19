@@ -15,9 +15,13 @@ import org.gbif.geocode.ws.model.TileMapper;
 import org.gbif.mybatis.guice.MyBatisModule;
 import org.gbif.utils.file.properties.PropertiesUtil;
 
+import javax.imageio.ImageIO;
 import javax.management.MBeanServer;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -26,13 +30,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_COLOR;
 
 /**
@@ -82,6 +90,8 @@ public class BitmapGenerator {
 
     BitmapGenerator bitmapGenerator = new BitmapGenerator(injector.getInstance(SqlSessionFactory.class));
     bitmapGenerator.generateAllBitmaps(targetDirectory);
+
+    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm", "iho", "seavox", "geolocate_centroids");
   }
 
   /**
@@ -129,6 +139,10 @@ public class BitmapGenerator {
     Path svgFile = Files.createTempFile(layerName, ".svg");
     Path pngFile = targetDirectory.resolve(layerName + ".png");
 
+    if (pngFile.toFile().exists()) {
+      throw new IOException("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
+    }
+
     // TODO: Pixels need to get bigger towards the poles.
 
     // Read SVG paths from the database, and write them into an SVG file.
@@ -157,6 +171,78 @@ public class BitmapGenerator {
     }
 
     System.out.println("Layer "+layerName+" completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
+  }
+
+  /**
+   * Map string keys to equally-stepped positions in the colourspace (dumb implementation).
+   */
+  Map<String, Integer> colourKey = new HashMap<>();
+  Set<Integer> usedColours = new HashSet<>();
+  int lastColour = 0;
+  int inc = 0;
+  private synchronized int getColour(String key) {
+    if (inc == 0) {
+      usedColours.add(0x000000);
+      usedColours.add(0xFFFFFF);
+      // Parameter will need changing if the number of polygons increases significantly.
+      // (The idea is to go through the FFFFFF colours ~three times, so nearby polygons aren't such close colours.)
+      for (inc = 2400; inc < 20000; inc++) {
+        if (0xFFFFFF % inc == 3) break;
+      }
+      System.out.println("Colour increment is "+inc);
+    }
+
+    if (key.equals("BLACK")) {
+      return 0x000000;
+    }
+
+    if (!colourKey.containsKey(key)) {
+      lastColour = (lastColour + inc) % 0xFFFFFF;
+      System.out.println("Colour "+key+" is now "+String.format("#%06x", lastColour));
+      assert !usedColours.contains(lastColour);
+      colourKey.put(key, lastColour);
+      usedColours.add(lastColour);
+    }
+    return colourKey.get(key);
+  }
+
+  /**
+   * Combines the bitmaps for every layer into a single bitmap, for use as a client cache.
+   */
+  public void combineAllBitmaps(Path targetDirectory, String... layerNames) throws Exception {
+    System.out.println("Generating combined layer bitmap.");
+    Stopwatch sw = Stopwatch.createStarted();
+    Path pngFile = targetDirectory.resolve("cache-bitmap.png");
+
+    int height = 3600;
+    int width = 7200;
+    BufferedImage combined = new BufferedImage(width, height, TYPE_INT_RGB);
+
+    BufferedImage[] images = new BufferedImage[layerNames.length];
+    for (int i = 0; i < layerNames.length; i++) {
+      images[i] = ImageIO.read(new FileInputStream(targetDirectory.resolve(layerNames[i] + ".png").toFile()));
+      assert (height == combined.getHeight());
+      assert (width == combined.getWidth());
+    }
+
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        String key = "";
+        for (int i = 0; i < images.length; i++) {
+          int colour = images[i].getRGB(x, y) & 0x00FFFFFF;
+          if (colour == 0x000000) {
+            key = "BLACK";
+            break;
+          }
+          key += (colour);
+        }
+        combined.setRGB(x, y, getColour(key));
+      }
+    }
+
+    ImageIO.write(combined, "PNG", pngFile.toFile());
+
+    System.out.println("Combined bitmap completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
   }
 
   /**

@@ -40,7 +40,7 @@
         <executions>
           <execution>
             <id>bitmaps</id>
-            <phase>prepare-package</phase>
+            <!--phase>prepare-package</phase-->
             <goals>
               <goal>exec</goal>
             </goals>
@@ -51,7 +51,7 @@
                 <argument>-classpath</argument>
                 <classpath />
                 <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
-                <argument>${project.build.outputDirectory}/org/gbif/geocode/ws/layers</argument>
+                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws/resource</argument>
               </arguments>
             </configuration>
           </execution>
