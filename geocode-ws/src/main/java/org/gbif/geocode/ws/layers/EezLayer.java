@@ -18,7 +18,7 @@ public class EezLayer extends AbstractBitmapCachedLayer {
   }
 
   @Override
-  String name() {
+  public String name() {
     return "EEZ";
   }
 

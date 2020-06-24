@@ -1,5 +1,7 @@
 package org.gbif.geocode.ws.service.impl;
 
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.ibatis.session.SqlSession;
@@ -12,6 +14,7 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,12 +47,14 @@ public class MyBatisGeocoder implements GeocodeService {
     this.layers = layers;
   }
 
+  List<String> layerList = Lists.newArrayList("Political", "EEZ", "GADM", "SeaVox", "IHO", "WGSRPD", "GEOLOCATE_CENTROIDS");
+
   /**
    * Simple get candidates by point.
    */
   @Override
   public Collection<Location> get(Double lat, Double lng, Double uncertaintyInDegrees) {
-    Collection<Location> locations;
+    List<Location> locations = new ArrayList<>();
 
     if (uncertaintyInDegrees == null) uncertaintyInDegrees = DEFAULT_DISTANCE;
     uncertaintyInDegrees = Math.max(uncertaintyInDegrees, DEFAULT_DISTANCE);
@@ -59,11 +64,32 @@ public class MyBatisGeocoder implements GeocodeService {
     try (SqlSession session = sqlSessionFactory.openSession()) {
       LocationMapper locationMapper = session.getMapper(LocationMapper.class);
 
-      locations = layers.stream()
-        .flatMap(
-          layer -> layer.get(locationMapper, lat, lng, unc).stream()
-        )
-        .collect(Collectors.toList());
+      List<String> toQuery = new ArrayList<>();
+
+      // Check the bitmaps
+      for (AbstractBitmapCachedLayer layer : layers) {
+        Collection<Location> found = layer.checkBitmap(lat, lng);
+        if (found == null) {
+          toQuery.add(layer.name());
+        } else {
+          locations.addAll(found);
+        }
+      }
+
+      // Retrieve anything the bitmaps couldn't help with, or didn't yet have
+      Stopwatch sw = Stopwatch.createStarted();
+      List<Location> queriedLocations = locationMapper.queryLayers(lng, lat, uncertaintyInDegrees, toQuery);
+      locations.addAll(queriedLocations);
+      LOG.info("Time for {} is {}", toQuery, sw.stop());
+
+      // Push values into the bitmap caches
+      for (AbstractBitmapCachedLayer layer : layers) {
+        if (toQuery.contains(layer.name())) {
+            List<Location> found = new ArrayList<>();
+            found.addAll(queriedLocations.stream().filter(l -> l.getType().equals(layer.name())).collect(Collectors.toList()));
+            layer.putBitmap(lat, lng, found);
+        }
+      }
 
       statistics.servedFromDatabase();
     }

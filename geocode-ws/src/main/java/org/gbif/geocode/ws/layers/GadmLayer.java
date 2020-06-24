@@ -18,7 +18,7 @@ public class GadmLayer extends AbstractBitmapCachedLayer {
   }
 
   @Override
-  String name() {
+  public String name() {
     return "GADM";
   }
 

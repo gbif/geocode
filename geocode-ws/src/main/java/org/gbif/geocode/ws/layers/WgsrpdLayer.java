@@ -10,19 +10,19 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 
 @Singleton
-public class SeaVoXLayer extends AbstractBitmapCachedLayer {
+public class WgsrpdLayer extends AbstractBitmapCachedLayer {
   public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
 
-  public SeaVoXLayer() {
-    super(SeaVoXLayer.class.getResourceAsStream("seavox.png"));
+  public WgsrpdLayer() {
+    super(WgsrpdLayer.class.getResourceAsStream("wgsrpd.png"));
   }
 
   @Override
   public String name() {
-    return "SeaVoX";
+    return "WGSRPD";
   }
 
   public Collection<Location> checkDatabase(LocationMapper locationMapper, String point, double uncertainty) {
-    return locationMapper.listSeaVoX(point, uncertainty);
+    return locationMapper.listWgsrpd(point, uncertainty);
   }
 }

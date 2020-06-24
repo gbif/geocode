@@ -49,7 +49,7 @@ public abstract class AbstractBitmapCachedLayer {
     }
   }
 
-  abstract String name();
+  public abstract String name();
 
   public abstract Collection<Location> checkDatabase(LocationMapper locationMapper, String point, double uncertainty);
 
@@ -124,6 +124,74 @@ public abstract class AbstractBitmapCachedLayer {
     }
 
     return locations;
+  }
+
+  /**
+   * Check the colour of a pixel from the map image to determine the country.
+   * @return Locations or null if the bitmap can't answer.
+   */
+  public Collection<Location> checkBitmap(double lat, double lng) {
+    // Convert the latitude and longitude to x,y coordinates on the image.
+    // The axes are swapped, and the image's origin is the top left.
+    int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
+    int y = imgHeight -1 - (int) (Math.round ((lat+90d)/180d*(imgHeight -1)));
+
+    int colour = img.getRGB(x, y) & 0x00FFFFFF; // Ignore possible transparency.
+
+    String hex = String.format("#%06x", colour);
+    LOG.debug("LatLong {},{} has pixel {},{} with colour {}", lat, lng, x, y, hex);
+
+    Collection<Location> locations;
+
+    switch (colour) {
+      case BORDER:
+        return null;
+
+      case EMPTY:
+        return Collections.EMPTY_LIST;
+
+      default:
+        if (!colourKey.containsKey(colour)) {
+          return null;
+        } else {
+          locations = colourKey.get(colour);
+          LOG.debug("Known colour {} (LL {},{}; pixel {},{}) is {}", hex, lat, lng, x, y, joinLocations(locations));
+        }
+    }
+
+    return locations;
+  }
+
+  /**
+   * Store a result in the bitmap's cache, if it's not a border region.
+   */
+  public void putBitmap(double lat, double lng, Collection<Location> locations) {
+    // Convert the latitude and longitude to x,y coordinates on the image.
+    // The axes are swapped, and the image's origin is the top left.
+    int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
+    int y = imgHeight -1 - (int) (Math.round ((lat+90d)/180d*(imgHeight -1)));
+
+    int colour = img.getRGB(x, y) & 0x00FFFFFF; // Ignore possible transparency.
+
+    String hex = String.format("#%06x", colour);
+
+    switch (colour) {
+      case BORDER:
+      case EMPTY:
+        return;
+
+      default:
+        if (!colourKey.containsKey(colour)) {
+          if (locations.isEmpty() || locations.size() > maxLocations) {
+            LOG.error("Zero or more than {} locations for a colour! {} (LL {},{}; pixel {},{}); locations {}",
+              maxLocations, hex, lat, lng, x, y, joinLocations(locations));
+          } else {
+            LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}",
+              hex, lat, lng, x, y, joinLocations(locations));
+            colourKey.put(colour, locations);
+          }
+        }
+    }
   }
 
   protected Collection<Location> getFromDatabase(LocationMapper locationMapper, String point, double uncertainty) {

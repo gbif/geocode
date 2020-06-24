@@ -89,9 +89,9 @@ public class BitmapGenerator {
     Injector injector = Guice.createInjector(m);
 
     BitmapGenerator bitmapGenerator = new BitmapGenerator(injector.getInstance(SqlSessionFactory.class));
-    bitmapGenerator.generateAllBitmaps(targetDirectory);
+    bitmapGenerator.generateAllBitmaps(targetDirectory.resolve("layers"));
 
-    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm", "iho", "seavox", "geolocate_centroids");
+    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm", "iho", "seavox", "wgsrpd", "geolocate_centroids");
   }
 
   /**
@@ -106,8 +106,15 @@ public class BitmapGenerator {
         .put("political", tileMapper::svgPolitical)
         .put("eez", tileMapper::svgEez)
         .put("gadm", tileMapper::svgGadm)
+        .put("gadm5", tileMapper::svgGadm5)
+        .put("gadm4", tileMapper::svgGadm4)
+        .put("gadm3", tileMapper::svgGadm3)
+        .put("gadm2", tileMapper::svgGadm2)
+        .put("gadm1", tileMapper::svgGadm1)
+        .put("gadm0", tileMapper::svgGadm0)
         .put("iho", tileMapper::svgIho)
         .put("seavox", tileMapper::svgSeaVoX)
+        .put("wgsrpd", tileMapper::svgWgsrpd)
         .put("geolocate_centroids", tileMapper::svgGeolocateCentroids)
         .build();
 
@@ -134,14 +141,15 @@ public class BitmapGenerator {
   public void generateBitmap(Supplier<List<SvgShape>> shapeSupplier, Path targetDirectory, String layerName)
     throws Exception
   {
+    Path pngFile = targetDirectory.resolve(layerName + ".png");
+    if (pngFile.toFile().exists()) {
+      System.err.println("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
+      return;
+    }
+
     System.out.println("Generating bitmap for "+layerName);
     Stopwatch sw = Stopwatch.createStarted();
     Path svgFile = Files.createTempFile(layerName, ".svg");
-    Path pngFile = targetDirectory.resolve(layerName + ".png");
-
-    if (pngFile.toFile().exists()) {
-      throw new IOException("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
-    }
 
     // TODO: Pixels need to get bigger towards the poles.
 
@@ -212,7 +220,7 @@ public class BitmapGenerator {
   public void combineAllBitmaps(Path targetDirectory, String... layerNames) throws Exception {
     System.out.println("Generating combined layer bitmap.");
     Stopwatch sw = Stopwatch.createStarted();
-    Path pngFile = targetDirectory.resolve("cache-bitmap.png");
+    Path pngFile = targetDirectory.resolve("resource/cache-bitmap.png");
 
     int height = 3600;
     int width = 7200;
@@ -220,7 +228,7 @@ public class BitmapGenerator {
 
     BufferedImage[] images = new BufferedImage[layerNames.length];
     for (int i = 0; i < layerNames.length; i++) {
-      images[i] = ImageIO.read(new FileInputStream(targetDirectory.resolve(layerNames[i] + ".png").toFile()));
+      images[i] = ImageIO.read(new FileInputStream(targetDirectory.resolve("layers/" + layerNames[i] + ".png").toFile()));
       assert (height == combined.getHeight());
       assert (width == combined.getWidth());
     }
@@ -242,7 +250,7 @@ public class BitmapGenerator {
 
     ImageIO.write(combined, "PNG", pngFile.toFile());
 
-    System.out.println("Combined bitmap completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
+    System.out.println("Combined bitmap with "+usedColours.size()+" colours completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
   }
 
   /**

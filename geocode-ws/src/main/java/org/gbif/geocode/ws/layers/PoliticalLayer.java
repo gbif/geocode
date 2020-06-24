@@ -18,7 +18,7 @@ public class PoliticalLayer extends AbstractBitmapCachedLayer {
   }
 
   @Override
-  String name() {
+  public String name() {
     return "Political";
   }
 

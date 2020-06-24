@@ -18,7 +18,7 @@ public class GeolocateCentroidsLayer extends AbstractBitmapCachedLayer {
   }
 
   @Override
-  String name() {
+  public String name() {
     return "GeolocateCentroids";
   }
 

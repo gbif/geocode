@@ -24,4 +24,8 @@ public interface LocationMapper {
   List<Location> listIho(@Param("point") String point, @Param("distance") double distance);
 
   List<Location> listSeaVoX(@Param("point") String point, @Param("distance") double distance);
+
+  List<Location> listWgsrpd(@Param("point") String point, @Param("distance") double distance);
+
+  List<Location> queryLayers(@Param("lng") double point, @Param("lat") double latitude, @Param("distance") double distance, @Param("layers") List<String> layers);
 }

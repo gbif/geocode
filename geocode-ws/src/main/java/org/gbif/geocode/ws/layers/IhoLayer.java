@@ -18,7 +18,7 @@ public class IhoLayer extends AbstractBitmapCachedLayer {
   }
 
   @Override
-  String name() {
+  public String name() {
     return "IHO";
   }
 

@@ -80,4 +80,8 @@
     ORDER BY ST_Distance(geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
+  <select id="queryLayers" resultType="Location">
+    SELECT layer AS type, id, source, title, isoCountryCode2Digit
+    FROM query_layers(#{lng}, #{lat}, #{distance}, <foreach item="item" collection="layers" open="ARRAY[" separator="," close="]">#{item}</foreach>);
+  </select>
 </mapper>

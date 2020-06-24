@@ -124,7 +124,7 @@ function import_marine_regions() {
 	echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
 
 	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
+	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
 
@@ -172,7 +172,7 @@ function import_gadm_levels() {
 	unzip -oj gadm36_levels_gpkg.zip -d gadm_levels/
 
 	echo "Dropping old tables"
-	for i in 0 1 2 3 4 5; do echo "DROP TABLE IF EXISTS level$l;" | exec_psql; done
+	for i in 0 1 2 3 4 5; do echo "DROP TABLE IF EXISTS level$i;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
 	ogr2ogr -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm_levels/gadm36_levels.gpkg
@@ -313,7 +313,7 @@ function align_natural_earth() {
 	echo "UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';" | exec_psql
 
 	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
-	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, name FROM political WHERE iso_a3 != '-99');" | exec_psql
+	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, STRING_AGG(name) FROM political WHERE iso_a3 != '-99' GROUP BY iso_a2, iso_a3);" | exec_psql
 }
 
 function align_marine_regions() {
@@ -366,7 +366,10 @@ function create_cache() {
 	);
 	GRANT INSERT ON tile_cache TO eez;
 EOF
+}
 
+function create_combined_function() {
+	exec_psql_file $SCRIPT_DIR/all_layer_function.sql
 }
 
 create_cache
@@ -381,8 +384,12 @@ align_marine_regions
 
 import_gadm
 
+import_gadm_levels
+
 import_iho
 
 import_seavox
 
 import_wgsrpd
+
+create_combined_function

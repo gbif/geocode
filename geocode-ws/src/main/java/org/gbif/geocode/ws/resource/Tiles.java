@@ -33,7 +33,7 @@ public class Tiles {
   private static final List<String> layers = Arrays.asList(
     "political", "eez", "gadm", "geolocate_centroids",
     "gadm5", "gadm4", "gadm3", "gadm2", "gadm1", "gadm0",
-    "iho", "seavox");
+    "iho", "seavox", "wgsrpd");
 
   @Inject
   public Tiles(SqlSessionFactory sqlSessionFactory) {
@@ -114,14 +114,22 @@ public class Tiles {
           tile = tileMapper.tileSeaVoX(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
 
+        case "wgsrpd":
+          tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+          break;
+
         case "geolocate_centroids":
           tile = tileMapper.tileGeolocateCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
+
+        default:
+          throw new UnsupportedOperationException("Unknown layer "+layer);
       }
       sw.stop();
-      LOG.debug("Tile {}/{}/{}/{} generated in {}ms ({}B)", layer, z, x, y, sw.elapsed(TimeUnit.MILLISECONDS), tile.getT().length);
 
       if (tile != null) {
+        LOG.debug("Tile {}/{}/{}/{} generated in {}ms ({}B)", layer, z, x, y, sw.elapsed(TimeUnit.MILLISECONDS), tile.getT().length);
+
         tileMapper.toCache(layer, z, x, y, tile, sw.elapsed(TimeUnit.MILLISECONDS));
         session.commit();
         return tile.getT();

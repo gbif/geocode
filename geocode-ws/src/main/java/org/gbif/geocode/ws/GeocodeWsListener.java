@@ -12,6 +12,7 @@ import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.GeolocateCentroidsLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
+import org.gbif.geocode.ws.layers.WgsrpdLayer;
 import org.gbif.geocode.ws.model.LocationMapper;
 import org.gbif.geocode.ws.model.TileMapper;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
@@ -85,6 +86,7 @@ public class GeocodeWsListener extends GbifServletListener {
       GadmLayer gadmLayer,
       IhoLayer ihoLayer,
       SeaVoXLayer seaVoxLayer,
+      WgsrpdLayer wgsrpdLayer,
       GeolocateCentroidsLayer geolocateCentroidsLayer)
     {
       return ImmutableList.of(
@@ -93,6 +95,7 @@ public class GeocodeWsListener extends GbifServletListener {
         gadmLayer,
         ihoLayer,
         seaVoxLayer,
+        wgsrpdLayer,
         geolocateCentroidsLayer
       );
     }

@@ -40,18 +40,18 @@
         <executions>
           <execution>
             <id>bitmaps</id>
-            <!--phase>prepare-package</phase-->
+            <phase>prepare-package</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-Xmx4G</argument>
+                <argument>-Xmx16G</argument>
                 <argument>-classpath</argument>
                 <classpath />
                 <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
-                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws/resource</argument>
+                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>
               </arguments>
             </configuration>
           </execution>

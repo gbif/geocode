@@ -353,6 +353,36 @@
     ) AS tile;
   </select>
 
+  <!-- Tiles from the public.wgsrpd_level4 table -->
+  <select id="tileWgsrpd" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        level4_cod AS id,
+        'WGSRPD' AS type,
+        'http://www.tdwg.org/standards/109' AS source,
+        level_4_na AS title,
+        geom,
+        centroid_geom
+      FROM wgsrpd_level4
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
   <!-- Tiles from the public.geolocate_centroids table -->
   <select id="tileGeolocateCentroids" resultMap="tileMap">
     WITH overlappings AS (
@@ -391,11 +421,35 @@
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
+    SELECT iso2 AS id, ST_AsSVG((geom)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE  iso2 = 'AU'
   </select>
 
   <select id="svgGadm" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm
+  </select>
+
+  <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_5 IS NOT NULL
+  </select>
+
+  <select id="svgGadm4" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_4 IS NOT NULL AND gid_5 IS NULL
+  </select>
+
+  <select id="svgGadm3" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_3 IS NOT NULL AND gid_4 IS NULL
+  </select>
+
+  <select id="svgGadm2" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_2 IS NOT NULL AND gid_3 IS NULL
+  </select>
+
+  <select id="svgGadm1" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_1 IS NOT NULL AND gid_2 IS NULL
+  </select>
+
+  <select id="svgGadm0" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_0 IS NOT NULL AND gid_1 IS NULL
   </select>
 
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
@@ -404,6 +458,10 @@
 
   <select id="svgSeaVoX" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT skos_url AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM seavox
+  </select>
+
+  <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT level4_cod AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM wgsrpd_level4
   </select>
 
   <select id="svgGeolocateCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
