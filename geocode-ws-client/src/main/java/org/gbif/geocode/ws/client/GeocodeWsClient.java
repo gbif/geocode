@@ -12,6 +12,8 @@ import org.gbif.ws.client.BaseWsClient;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Singleton
 public class GeocodeWsClient extends BaseWsClient implements GeocodeService {
@@ -25,17 +27,22 @@ public class GeocodeWsClient extends BaseWsClient implements GeocodeService {
 
   @Override
   public Collection<Location> get(Double latitude, Double longitude, Double uncertainty) {
+    return get(latitude, longitude, uncertainty, Collections.EMPTY_LIST);
+  }
+
+  @Override
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty, List<String> layers) {
     MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
     queryParams.add("lat", latitude.toString());
     queryParams.add("lng", longitude.toString());
     if (uncertainty != null) queryParams.add("uncertainty", uncertainty.toString());
+    layers.stream().forEach(l -> queryParams.add("layer", l));
 
     return Arrays.asList(resource.path("reverse").queryParams(queryParams).get(Location[].class));
   }
 
   @Override
   public byte[] bitmap() {
-
     return resource.path("bitmap").get(byte[].class);
   }
 }

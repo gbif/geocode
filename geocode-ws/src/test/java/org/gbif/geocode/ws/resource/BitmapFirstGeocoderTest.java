@@ -5,7 +5,9 @@ import org.gbif.geocode.api.model.Location;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
+import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 import org.junit.Test;
 
@@ -27,7 +29,7 @@ public class BitmapFirstGeocoderTest {
   public void testGoodRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
-    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
+    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
 
     Location locationTest = new Location("test", "political", "source", "Greenland", "GD");
     Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD");
@@ -53,7 +55,7 @@ public class BitmapFirstGeocoderTest {
   public void testBorderRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
-    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
+    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
 
     // All of Sri Lanka is covered with black borders in the bitmap image.
     Location locationTest = new Location("test", "political", "source", "Denmark", "DK");
@@ -79,7 +81,7 @@ public class BitmapFirstGeocoderTest {
   public void testEezRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
-    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
+    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
 
     // In the Pacific within French Polynesia's EEZ.
     Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
@@ -106,7 +108,7 @@ public class BitmapFirstGeocoderTest {
   public void testInternationalWaterRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
-    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
+    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
 
     Collection<Location> locations = geocoder.get(0d, 0d, null);
 
@@ -116,30 +118,20 @@ public class BitmapFirstGeocoderTest {
   }
 
   /**
-   * Test that exceptional areas aren't cached for the whole country.
+   * Test that layer requests always go to the database.
    */
   @Test
-  public void testExceptionalAreasRequest() {
+  public void testLayerRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
-    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("world.png"));
+    GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
 
-    Location locationCosmodrome = new Location("test", "political", "source", "Baikonur Cosmodrome", "-99");
-    Location locationKazakhstan = new Location("test", "political", "source", "Kazakhstan", "KZ");
-    Location locationKazakhstan2 = new Location("test", "political", "source", "Kazakhstan", "KZ");
+    List<String> eezLayer = Arrays.asList(new String[]{"EEZ"});
 
-    when(dbGeocoder.get(45.965, 63.305, null)).thenReturn(Arrays.asList(locationCosmodrome));
-    when(dbGeocoder.get(47.0, 69.0, null)).thenReturn(Arrays.asList(locationKazakhstan));
+    Collection<Location> locations = geocoder.get(0d, 0d, null, eezLayer);
 
-    Collection<Location> locations = geocoder.get(45.965, 63.305, null);
-    Collection<Location> locations2 = geocoder.get(47.0, 69.0, null);
+    verify(dbGeocoder, times(1)).get(0d, 0d, null, eezLayer);
 
-    verify(dbGeocoder, times(1)).get(45.965, 63.305, null);
-    verify(dbGeocoder, times(1)).get(47.0, 69.0, null);
-
-    assertEquals(1, locations.size());
-    assertEquals(1, locations2.size());
-    assertTrue(locations.contains(locationCosmodrome));
-    assertTrue(locations2.contains(locationKazakhstan2));
+    assertEquals(0, locations.size());
   }
 }

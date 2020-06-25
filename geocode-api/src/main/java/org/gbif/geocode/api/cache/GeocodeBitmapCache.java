@@ -9,9 +9,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,20 @@ public class GeocodeBitmapCache implements GeocodeService {
       imgWidth = img.getWidth();
     } catch (IOException e) {
       throw new RuntimeException("Unable to load map image", e);
+    }
+  }
+
+  /**
+   * Simple get candidates by point.  No cache if layers are specified.
+   */
+  @Override
+  public Collection<Location> get(Double lat, Double lng, Double uncertainty, List<String> layers) {
+    if (layers == null || layers.isEmpty()) {
+      // No layers, use the method below
+      return get(lat, lng, uncertainty);
+    } else {
+      // Layers, skip the cache and go straight to the database.
+      return geocodeService.get(lat, lng, uncertainty, layers);
     }
   }
 
@@ -95,7 +110,7 @@ public class GeocodeBitmapCache implements GeocodeService {
         return null;
 
       case NOTHING:
-        return new ArrayList<>();
+        return Collections.EMPTY_LIST;
 
       default:
         if (!colourKey.containsKey(colour)) {
@@ -104,19 +119,12 @@ public class GeocodeBitmapCache implements GeocodeService {
           if (locations.size() == 0) {
             LOG.error("For colour {} (LL {},{}; pixel {},{}) the webservice gave zero locations.", hex, lat, lng, x, y);
           } else {
-
-            // TODO
-            // Don't store if the ISO code is -99; this code is used for some exceptional bits of territory (e.g. Baikonur Cosmodrome, the Korean DMZ).
-            if ("-99".equals(locations.iterator().next().getIsoCountryCode2Digit())) {
-              LOG.info("New colour {} (LL {},{}; pixel {},{}); exceptional territory of {} will not be cached", hex, lat, lng, x, y, joinLocations(locations));
-            } else {
-              LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}", hex, lat, lng, x, y, joinLocations(locations));
-              colourKey.put(colour, locations);
-            }
+            if (LOG.isInfoEnabled()) LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}", hex, lat, lng, x, y, joinLocations(locations));
+            colourKey.put(colour, locations);
           }
         } else {
           locations = colourKey.get(colour);
-          LOG.debug("Known colour {} (LL {},{}; pixel {},{}) is {}", hex, lat, lng, x, y, joinLocations(locations));
+          if (LOG.isDebugEnabled()) LOG.debug("Known colour {} (LL {},{}; pixel {},{}) is {}", hex, lat, lng, x, y, joinLocations(locations));
         }
     }
 
@@ -124,6 +132,6 @@ public class GeocodeBitmapCache implements GeocodeService {
   }
 
   private String joinLocations(Collection<Location> loc) {
-    return loc.stream().map(l -> l.getIsoCountryCode2Digit()).distinct().collect(Collectors.joining(", "));
+    return loc.stream().map(l -> l.getId()).distinct().collect(Collectors.joining(", "));
   }
 }

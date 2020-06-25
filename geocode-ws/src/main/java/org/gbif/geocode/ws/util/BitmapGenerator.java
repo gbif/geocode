@@ -218,9 +218,14 @@ public class BitmapGenerator {
    * Combines the bitmaps for every layer into a single bitmap, for use as a client cache.
    */
   public void combineAllBitmaps(Path targetDirectory, String... layerNames) throws Exception {
+    Path pngFile = targetDirectory.resolve("resource/cache-bitmap.png");
+    if (pngFile.toFile().exists()) {
+      System.err.println("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
+      return;
+    }
+
     System.out.println("Generating combined layer bitmap.");
     Stopwatch sw = Stopwatch.createStarted();
-    Path pngFile = targetDirectory.resolve("resource/cache-bitmap.png");
 
     int height = 3600;
     int width = 7200;

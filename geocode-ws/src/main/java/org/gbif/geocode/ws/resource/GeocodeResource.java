@@ -20,6 +20,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Provides the web service interface to query our Geocoder.
@@ -48,7 +50,8 @@ public class GeocodeResource implements GeocodeService {
   public Collection<Location> get(
     @QueryParam("lat") Double latitude,
     @QueryParam("lng") Double longitude,
-    @QueryParam("uncertainty") @Nullable Double uncertainty
+    @QueryParam("uncertainty") @Nullable Double uncertainty,
+    @QueryParam("layer") @Nullable List<String> layers
   ) {
     if (latitude == null || longitude == null
         || latitude < -90 || latitude > 90
@@ -57,7 +60,12 @@ public class GeocodeResource implements GeocodeService {
     }
 
     statistics.goodRequest();
-    return geocoder.get(latitude, longitude, uncertainty);
+    return geocoder.get(latitude, longitude, uncertainty, layers);
+  }
+
+  @Override
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty) {
+    return get(latitude, longitude, uncertainty, Collections.EMPTY_LIST);
   }
 
   /*
