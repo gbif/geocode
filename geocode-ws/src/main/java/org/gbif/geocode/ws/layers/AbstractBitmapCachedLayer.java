@@ -183,8 +183,8 @@ public abstract class AbstractBitmapCachedLayer {
       default:
         if (!colourKey.containsKey(colour)) {
           if (locations.isEmpty() || locations.size() > maxLocations) {
-            LOG.error("Zero or more than {} locations for a colour! {} (LL {},{}; pixel {},{}); locations {}",
-              maxLocations, hex, lat, lng, x, y, joinLocations(locations));
+            LOG.error("{} (max {}) locations for a colour! {} (LL {},{}; pixel {},{}); locations {}",
+              locations.size(), maxLocations, hex, lat, lng, x, y, joinLocations(locations));
           } else {
             LOG.info("New colour {} (LL {},{}; pixel {},{}); remembering as {}",
               hex, lat, lng, x, y, joinLocations(locations));
@@ -209,6 +209,6 @@ public abstract class AbstractBitmapCachedLayer {
    * Only used for the log message.
    */
   private String joinLocations(Collection<Location> loc) {
-    return loc.stream().map(l -> l.getId()).distinct().collect(Collectors.joining(", "));
+    return loc.stream().map(l -> l.getId()).collect(Collectors.joining(", "));
   }
 }
