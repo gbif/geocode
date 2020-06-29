@@ -354,6 +354,7 @@ layers['gadm1'] = new ol.layer.VectorTile({
 		wrapX: false,
 	}),
 	style: countryStyle(),
+	visible: false
 });
 
 layers['gadm0'] = new ol.layer.VectorTile({
@@ -430,6 +431,22 @@ layers['geolocate_centroids'] = new ol.layer.VectorTile({
 	style: countryStyle(),
 });
 
+var source = new ol.source.Vector({
+	projection: 'EPSG:4326',
+});
+var vector = new ol.layer.Vector({
+	source: source,
+	style: new ol.style.Style({
+		fill: new ol.style.Fill({
+			color: 'rgba(255, 255, 255, 0.4)'
+		}),
+		stroke: new ol.style.Stroke({
+			color: '#ffcc33',
+			width: 0.5
+		}),
+	})
+});
+
 var map = new ol.Map({
 	layers: [
 		layers['baselayer'],
@@ -453,6 +470,7 @@ var map = new ol.Map({
 			]
 		}),
 		layers['bitmapCache'],
+		vector
 	],
 	target: 'map',
 	view: view,
@@ -496,8 +514,13 @@ closer.onclick = function() {
 /**
  * Add a click handler to the map to render the popup.
  */
+var wgs84Sphere = new ol.Sphere(6378137);
 map.on('singleclick', function(evt) {
 	var coordinate = evt.coordinate;
+
+	var radius = 110698.10348827201*0.05
+	var circle = ol.geom.Polygon.circular(wgs84Sphere, coordinate, radius, 32);
+	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
 	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5);

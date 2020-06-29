@@ -120,8 +120,7 @@ function import_marine_regions() {
 	rm World_EEZ_v10_20180221.zip eez/ -Rf
 
 	echo "Simplifying Marine Regions EEZs"
-	#echo "ALTER TABLE eez RENAME TO eez_original;" | exec_psql
-	echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
+	#echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
 
 	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql

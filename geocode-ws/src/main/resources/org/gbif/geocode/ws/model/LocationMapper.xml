@@ -84,4 +84,5 @@
     SELECT layer AS type, id, source, title, isoCountryCode2Digit
     FROM query_layers(#{lng}, #{lat}, #{distance}, <foreach item="item" collection="layers" open="ARRAY[" separator="," close="]">#{item}</foreach>);
   </select>
+
 </mapper>

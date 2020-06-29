@@ -421,7 +421,7 @@
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso2 AS id, ST_AsSVG((geom)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE  iso2 = 'AU'
+    SELECT iso2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
   </select>
 
   <select id="svgGadm" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -6,9 +6,7 @@ RESTful service that provides the reverse geocode functionality. The REST resour
 
 No credentials are hardcoded. You can provide credentials in one of multiple ways:
 
-For these two remember not to check your changes in:
- - Change the src/resources/mybatis.properties file
- - Change the src/resources/mybatis-config.xml file
+ - Change the src/resources/geocode.properties file
 
  - Provide the connection details on the command line while running Maven:
     ```-Dgeocode-ws.url=<url> -Dgeocode-ws.username=<user> -Dgeocode-ws.password=<password>```
@@ -67,7 +65,7 @@ See [../database/scripts/import.sh](../database/scripts/import.sh) for a script 
 
 There is a PNG image used to speed up queries — after an initial query, roughly 95% of the world's area can be determined without referring to the database at all.
 
-![PNG map cache](src/main/resources/org/gbif/geocode/ws/resource/world.png)
+![PNG map cache](src/main/resources/org/gbif/geocode/ws/resource/cache-bitmap.png)
 
 See [Map Image Lookup](./MapImageLookup.md) for how the image is created.
 

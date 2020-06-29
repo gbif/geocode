@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -45,6 +44,8 @@ import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_C
 
 /**
  * Generate large bitmap images from geocoder layer data, to use as a local cache when querying that layer.
+ *
+ * See documentation file MapImageLookup.md for background.
  */
 public class BitmapGenerator {
   private static final String APP_CONF_FILE = "geocode.properties";
@@ -53,8 +54,8 @@ public class BitmapGenerator {
   private static final String SVG_HEADER =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
       "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>\n" +
-      // crispEdges removes anti-aliasing on the default rendering.
-      "<svg shape-rendering=\"crispEdges\" fill=\"black\" fill-opacity=\"1\" stroke=\"none\" " +
+      // geometricPrecision has anti-aliasing, but crispEdges misses out tiny shapes.
+      "<svg shape-rendering=\"geometricPrecision\" " +
       // This gives us a 7200×3600 image, with the "units" (pixels) on a scale -180°–180°, -90°–90°.
       // Therefore, 1px = 1°.
       "height=\"3600\" width=\"7200\" viewBox=\"-180 -90 360 180\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
@@ -66,11 +67,13 @@ public class BitmapGenerator {
       "      stroke-width: 0.20px;\n" +
       "      stroke-linecap: round;\n" +
       "      stroke-linejoin: round;\n" +
-      "      fill: #000000;\n" +
+      "      fill: none;\n" +
       "    }\n" +
       "  </style>\n";
 
-  private static final String PATH_FORMAT = "  <path id='%s' style='fill: %s' d='%s'/>\n";
+  private static final String HOLLOW_PATH_FORMAT = "  <path id='%s' d='%s'/>\n";
+
+  private static final String FILLED_PATH_FORMAT = "  <path id='%s' style='fill: %s' d='%s'/>\n";
 
   private static final String SVG_FOOTER = "</svg>\n";
 
@@ -146,36 +149,73 @@ public class BitmapGenerator {
       System.err.println("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
       return;
     }
+    Path filledPngFile = Files.createTempFile(layerName, "-filled.png");
+    Path hollowPngFile = Files.createTempFile(layerName, "-hollow.png");
 
     System.out.println("Generating bitmap for "+layerName);
     Stopwatch sw = Stopwatch.createStarted();
-    Path svgFile = Files.createTempFile(layerName, ".svg");
-
-    // TODO: Pixels need to get bigger towards the poles.
+    Path filledSvgFile = Files.createTempFile(layerName, "-filled.svg");
+    Path hollowSvgFile = Files.createTempFile(layerName, "-hollow.svg");
 
     // Read SVG paths from the database, and write them into an SVG file.
-    System.out.println("→ Generating SVG for "+layerName+" as "+svgFile.toString());
-    try (Writer svgOut = new OutputStreamWriter(new FileOutputStream(svgFile.toFile()), StandardCharsets.UTF_8)) {
-      svgOut.write(SVG_HEADER);
+    System.out.println("→ Generating SVG for "+layerName+" as "+filledSvgFile+" and "+hollowSvgFile);
+    try (
+      Writer filledSvg = new OutputStreamWriter(new FileOutputStream(filledSvgFile.toFile()), StandardCharsets.UTF_8);
+      Writer hollowSvg = new OutputStreamWriter(new FileOutputStream(hollowSvgFile.toFile()), StandardCharsets.UTF_8);
+    ) {
+      filledSvg.write(SVG_HEADER);
+      hollowSvg.write(SVG_HEADER);
       List<SvgShape> shapes = shapeSupplier.get();
 
       Stack<String> colours = MakeColours.makeColours(shapes.size());
 
       for (SvgShape shape : shapes) {
-        svgOut.write(String.format(PATH_FORMAT, shape.getId(), colours.pop(), shape.getShape()));
+        filledSvg.write(String.format(FILLED_PATH_FORMAT, shape.getId(), colours.pop(), shape.getShape()));
+        hollowSvg.write(String.format(HOLLOW_PATH_FORMAT, shape.getId(), shape.getShape()));
       }
 
-      svgOut.write(SVG_FOOTER);
+      filledSvg.write(SVG_FOOTER);
+      hollowSvg.write(SVG_FOOTER);
     }
 
     // Convert the SVG file to PNG.
-    System.out.println("→ Converting SVG to PNG for "+layerName+" as "+pngFile.toString());
-    try (OutputStream pngOut = new FileOutputStream(pngFile.toFile())) {
-      TranscoderInput svgImage = new TranscoderInput(svgFile.toString());
+    System.out.println("→ Converting SVG to PNG for "+layerName+" as "+hollowPngFile);
+    try (OutputStream pngOut = new FileOutputStream(hollowPngFile.toFile())) {
+      TranscoderInput svgImage = new TranscoderInput(hollowSvgFile.toString());
       TranscoderOutput pngImage = new TranscoderOutput(pngOut);
       PNGTranscoder pngTranscoder = new PNGTranscoder();
       pngTranscoder.addTranscodingHint(KEY_BACKGROUND_COLOR, Color.white);
       pngTranscoder.transcode(svgImage, pngImage);
+    }
+
+    System.out.println("→ Converting SVG to PNG for "+layerName+" as "+filledPngFile);
+    try (OutputStream pngOut = new FileOutputStream(filledPngFile.toFile())) {
+      TranscoderInput svgImage = new TranscoderInput(filledSvgFile.toString());
+      TranscoderOutput pngImage = new TranscoderOutput(pngOut);
+      PNGTranscoder pngTranscoder = new PNGTranscoder();
+      pngTranscoder.addTranscodingHint(KEY_BACKGROUND_COLOR, Color.white);
+      pngTranscoder.transcode(svgImage, pngImage);
+    }
+
+    // TODO: Pixels need to get bigger towards the poles.
+
+    System.out.println("→ Combining both PNGs for "+layerName+" as "+pngFile);
+    {
+      BufferedImage filled = ImageIO.read(filledPngFile.toFile());
+      BufferedImage hollow = ImageIO.read(hollowPngFile.toFile());
+
+      int height = filled.getHeight();
+      int width = filled.getWidth();
+
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
+            filled.setRGB(x, y, 0xFF000000);
+          }
+        }
+      }
+
+      ImageIO.write(filled, "png", pngFile.toFile());
     }
 
     System.out.println("Layer "+layerName+" completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
