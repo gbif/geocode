@@ -79,11 +79,15 @@ public class MyBatisGeocoder implements GeocodeService {
       // Check the bitmaps
       for (AbstractBitmapCachedLayer layer : availableLayers) {
         if (useLayers.isEmpty() || useLayers.contains(layer.name())) {
-          Collection<Location> found = layer.checkBitmap(lat, lng);
-          if (found == null) {
-            toQuery.add(layer.name());
+          if (unc <= DEFAULT_DISTANCE) {
+            Collection<Location> found = layer.checkBitmap(lat, lng);
+            if (found == null) {
+              toQuery.add(layer.name());
+            } else {
+              locations.addAll(found);
+            }
           } else {
-            locations.addAll(found);
+            toQuery.add(layer.name());
           }
         }
       }
