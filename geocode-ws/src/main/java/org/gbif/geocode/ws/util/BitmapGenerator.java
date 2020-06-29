@@ -45,7 +45,7 @@ import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_C
 /**
  * Generate large bitmap images from geocoder layer data, to use as a local cache when querying that layer.
  *
- * See documentation file MapImageLookup.md for background.
+ * See documentation file MapImageLookup.adoc for background.
  */
 public class BitmapGenerator {
   private static final String APP_CONF_FILE = "geocode.properties";

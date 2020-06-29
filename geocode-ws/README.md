@@ -67,7 +67,7 @@ There is a PNG image used to speed up queries — after an initial query, roughl
 
 ![PNG map cache](src/main/resources/org/gbif/geocode/ws/resource/cache-bitmap.png)
 
-See [Map Image Lookup](./MapImageLookup.md) for how the image is created.
+See [Map Image Lookup](./MapImageLookup.adoc) for how the image is created.
 
 ## How to run this service
 
