@@ -63,8 +63,8 @@ public class BitmapGenerator {
       "  <style type=\"text/css\">\n" +
       "    path {\n" +
       "      stroke: #000000;\n" +
-      // 0.2° outlines, which seem reasonable after the simplification applied in the SQL.
-      "      stroke-width: 0.20px;\n" +
+      // Very thin outlines are used (this is 0.01°), and increased as required later.
+      "      stroke-width: 0.01px;\n" +
       "      stroke-linecap: round;\n" +
       "      stroke-linejoin: round;\n" +
       "      fill: none;\n" +
@@ -197,8 +197,6 @@ public class BitmapGenerator {
       pngTranscoder.transcode(svgImage, pngImage);
     }
 
-    // TODO: Pixels need to get bigger towards the poles.
-
     System.out.println("→ Combining both PNGs for "+layerName+" as "+pngFile);
     {
       BufferedImage filled = ImageIO.read(filledPngFile.toFile());
@@ -208,9 +206,15 @@ public class BitmapGenerator {
       int width = filled.getWidth();
 
       for (int y = 0; y < height; y++) {
+        double latitude = (1800d-y)/1800d*90d;
+        int spread = (int) Math.round(Math.ceil(kmToPx(latitude, 5)));
+
         for (int x = 0; x < width; x++) {
           if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
-            filled.setRGB(x, y, 0xFF000000);
+            // Spread left and right.
+            for (int xs = Math.max(0, x-spread); xs <= x+spread && xs < width; xs++) {
+              filled.setRGB(xs, y, 0xFF000000);
+            }
           }
         }
       }
@@ -296,6 +300,22 @@ public class BitmapGenerator {
     ImageIO.write(combined, "PNG", pngFile.toFile());
 
     System.out.println("Combined bitmap with "+usedColours.size()+" colours completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
+  }
+
+  /**
+   * The circumference of a parallel (line of longitude at a particular latitude) in kilometres.
+   *
+   * Earth approximated as a sphere, which is sufficient for these bitmaps.
+   */
+  private double lengthParallelKm(double latitude) {
+    return 2d * Math.PI * 6378.137 /* Earth radius */ * Math.cos(Math.toRadians(latitude));
+  }
+
+  /**
+   * Length of N kilometres in pixels, on a 7200×3600 pixel map.
+   */
+  private double kmToPx(double latitude, double n_km) {
+    return n_km / (lengthParallelKm(latitude) / 7200d);
   }
 
   /**

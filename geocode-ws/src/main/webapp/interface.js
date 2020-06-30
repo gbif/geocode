@@ -438,7 +438,7 @@ var vector = new ol.layer.Vector({
 	source: source,
 	style: new ol.style.Style({
 		fill: new ol.style.Fill({
-			color: 'rgba(255, 255, 255, 0.4)'
+			color: 'rgba(255, 255, 255, 0.8)'
 		}),
 		stroke: new ol.style.Stroke({
 			color: '#ffcc33',
@@ -515,15 +515,14 @@ closer.onclick = function() {
  * Add a click handler to the map to render the popup.
  */
 var wgs84Sphere = new ol.Sphere(6378137);
-map.on('singleclick', function(evt) {
-	var coordinate = evt.coordinate;
-
-	var radius = 110698.10348827201*0.05
+function geocode(coordinate) {
+  var uncertainty = parseFloat(uncertainty_input.value);
+	var radius = 110698.10348827201*uncertainty
 	var circle = ol.geom.Polygon.circular(wgs84Sphere, coordinate, radius, 32);
 	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
-	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5);
+	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertainty="+uncertainty_input.value;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -542,7 +541,17 @@ map.on('singleclick', function(evt) {
 	var template = '{y}N,{x}E';
 	content.innerHTML = '<code>' + ol.coordinate.format(coordinate, template, 5) + '</code><ul><li>Loading</li></ul>';
 	overlay.setPosition(coordinate);
+}
+map.on('singleclick', function(evt) {
+	var coordinate = evt.coordinate;
+  geocode(coordinate);
 });
 
 var layerSwitcher = new ol.control.LayerSwitcher();
 map.addControl(layerSwitcher);
+
+var longitude_input = document.getElementById('longitude_input');
+longitude_input.onchange = (function(e) {
+  var coordinate = [parseFloat(longitude_input.value), parseFloat(latitude_input.value)];
+  geocode(coordinate);
+});

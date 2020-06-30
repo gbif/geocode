@@ -417,51 +417,55 @@
   </select>
 
   <select id="svgPolitical" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso_a2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM political
+    SELECT iso_a2 AS id, ST_AsSVG(geom) AS shape FROM political
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso2 AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
+    SELECT iso2 AS id, ST_AsSVG(geom) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid != 8492
+  UNION ALL
+    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
+  UNION ALL
+    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
   </select>
 
   <select id="svgGadm" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm
   </select>
 
   <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_5 IS NOT NULL
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_5 IS NOT NULL
   </select>
 
   <select id="svgGadm4" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_4 IS NOT NULL AND gid_5 IS NULL
+    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_4 IS NOT NULL AND gid_5 IS NULL
   </select>
 
   <select id="svgGadm3" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_3 IS NOT NULL AND gid_4 IS NULL
+    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_3 IS NOT NULL AND gid_4 IS NULL
   </select>
 
   <select id="svgGadm2" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_2 IS NOT NULL AND gid_3 IS NULL
+    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_2 IS NOT NULL AND gid_3 IS NULL
   </select>
 
   <select id="svgGadm1" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_1 IS NOT NULL AND gid_2 IS NULL
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_1 IS NOT NULL AND gid_2 IS NULL
   </select>
 
   <select id="svgGadm0" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_0) AS id, ST_AsSVG(ST_SimplifyPreserveTopology(wkb_geometry, 0.05)) AS shape FROM gadm WHERE gid_0 IS NOT NULL AND gid_1 IS NULL
+    SELECT COALESCE(gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_0 IS NOT NULL AND gid_1 IS NULL
   </select>
 
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM iho
+    SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM iho
   </select>
 
   <select id="svgSeaVoX" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT skos_url AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM seavox
+    SELECT skos_url AS id, ST_AsSVG(geom) AS shape FROM seavox
   </select>
 
   <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT level4_cod AS id, ST_AsSVG(ST_SimplifyPreserveTopology(geom, 0.05)) AS shape FROM wgsrpd_level4
+    SELECT level4_cod AS id, ST_AsSVG(geom) AS shape FROM wgsrpd_level4
   </select>
 
   <select id="svgGeolocateCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -47,7 +47,8 @@
             <configuration>
               <executable>java</executable>
               <arguments>
-                <argument>-Xmx16G</argument>
+                <!-- Around 36GB is required to generate the GADM map. -->
+                <argument>-Xmx40G</argument>
                 <argument>-classpath</argument>
                 <classpath />
                 <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
