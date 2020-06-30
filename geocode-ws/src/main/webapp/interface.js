@@ -514,15 +514,20 @@ closer.onclick = function() {
 /**
  * Add a click handler to the map to render the popup.
  */
+function updateUncertainty() {
+	uncertaintyDegrees_input.value = uncertaintyMeters_input.value / (111319.491 * Math.cos(latitude_input.value * Math.PI / 180));
+}
+
 var wgs84Sphere = new ol.Sphere(6378137);
 function geocode(coordinate) {
-  var uncertainty = parseFloat(uncertainty_input.value);
+  updateUncertainty();
+  var uncertainty = parseFloat(uncertaintyDegrees_input.value);
 	var radius = 110698.10348827201*uncertainty
 	var circle = ol.geom.Polygon.circular(wgs84Sphere, coordinate, radius, 32);
 	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
-	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertainty="+uncertainty_input.value;
+	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertaintyDegrees="+uncertaintyDegrees_input.value;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -544,14 +549,25 @@ function geocode(coordinate) {
 }
 map.on('singleclick', function(evt) {
 	var coordinate = evt.coordinate;
+	longitude_input.value = coordinate[0];
+	latitude_input.value = coordinate[1];
   geocode(coordinate);
 });
 
 var layerSwitcher = new ol.control.LayerSwitcher();
 map.addControl(layerSwitcher);
 
+var latitude_input = document.getElementById('latitude_input');
+latitude_input.onchange = (function(e) {
+	updateUncertainty();
+  var coordinate = [parseFloat(longitude_input.value), parseFloat(latitude_input.value)];
+  geocode(coordinate);
+});
+
 var longitude_input = document.getElementById('longitude_input');
 longitude_input.onchange = (function(e) {
   var coordinate = [parseFloat(longitude_input.value), parseFloat(latitude_input.value)];
   geocode(coordinate);
 });
+
+document.getElementById('uncertaintyMeters_input').onchange = updateUncertainty;

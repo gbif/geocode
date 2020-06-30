@@ -26,16 +26,17 @@ public class GeocodeWsClient extends BaseWsClient implements GeocodeService {
   }
 
   @Override
-  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty) {
-    return get(latitude, longitude, uncertainty, Collections.EMPTY_LIST);
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
   }
 
   @Override
-  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty, List<String> layers) {
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> layers) {
     MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
     queryParams.add("lat", latitude.toString());
     queryParams.add("lng", longitude.toString());
-    if (uncertainty != null) queryParams.add("uncertainty", uncertainty.toString());
+    if (uncertaintyDegrees != null) queryParams.add("uncertaintyDegrees", uncertaintyDegrees.toString());
+    if (uncertaintyMeters != null) queryParams.add("uncertaintyMeters", uncertaintyMeters.toString());
     layers.stream().forEach(l -> queryParams.add("layer", l));
 
     return Arrays.asList(resource.path("reverse").queryParams(queryParams).get(Location[].class));

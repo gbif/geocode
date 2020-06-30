@@ -659,7 +659,6 @@ public class CountryCheckTest {
     MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
     queryParams.add("lat", String.valueOf(coord.getLat()));
     queryParams.add("lng", String.valueOf(coord.getLng()));
-    queryParams.add("uncertainty", "0.0");
 
     WebResource res = null;
     res = r.queryParams(queryParams);

@@ -33,11 +33,8 @@ public class MyBatisGeocoder implements GeocodeService {
   private final List<AbstractBitmapCachedLayer> availableLayers;
   private final List<String> availableLayerNames;
 
-  // Distance are calculated using the approximation that 1 degree is ~ 111 kilometers
-
   // The default distance is chosen at ~5km to allow for gaps between land and sea (political and EEZ)
   // and to cope with the inaccuracies introduced in the simplified datasets.
-
   // 0.05° ~= 5.55 km
   private final static double DEFAULT_DISTANCE = 0.05d;
 
@@ -55,21 +52,32 @@ public class MyBatisGeocoder implements GeocodeService {
    * Simple get candidates by point.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertaintyInDegrees) {
-    return get(lat, lng, uncertaintyInDegrees, Collections.EMPTY_LIST);
+  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    return get(lat, lng, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
   }
 
   /**
    * Simple get candidates by point.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertaintyInDegrees, List<String> useLayers) {
+  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> useLayers) {
     List<Location> locations = new ArrayList<>();
 
-    if (uncertaintyInDegrees == null) uncertaintyInDegrees = DEFAULT_DISTANCE;
-    uncertaintyInDegrees = Math.max(uncertaintyInDegrees, DEFAULT_DISTANCE);
+    // Convert uncertainty in metres to degrees, approximating the Earth as a sphere.
+    if (uncertaintyMeters != null) {
+      uncertaintyDegrees = uncertaintyMeters / (111_319.491 * Math.cos(Math.toRadians(lat)));
+      LOG.debug("{}m uncertainty converted to {}°", uncertaintyMeters, uncertaintyDegrees);
+    }
 
-    final double unc = uncertaintyInDegrees;
+    // Set a default uncertainty, if none was specified.
+    if (uncertaintyDegrees == null) {
+      uncertaintyDegrees = DEFAULT_DISTANCE;
+    }
+
+    // Increase to the default distance if needed, to account for inaccuracies in the layer data.
+    uncertaintyDegrees = Math.max(uncertaintyDegrees, DEFAULT_DISTANCE);
+
+    final double unc = uncertaintyDegrees;
 
     try (SqlSession session = sqlSessionFactory.openSession()) {
       LocationMapper locationMapper = session.getMapper(LocationMapper.class);
@@ -95,7 +103,7 @@ public class MyBatisGeocoder implements GeocodeService {
       if (!toQuery.isEmpty()) {
         // Retrieve anything the bitmaps couldn't help with, or didn't yet have
         Stopwatch sw = Stopwatch.createStarted();
-        List<Location> queriedLocations = locationMapper.queryLayers(lng, lat, uncertaintyInDegrees, toQuery);
+        List<Location> queriedLocations = locationMapper.queryLayers(lng, lat, uncertaintyDegrees, toQuery);
         locations.addAll(queriedLocations);
         LOG.info("Time for {} is {}", toQuery, sw.stop());
 

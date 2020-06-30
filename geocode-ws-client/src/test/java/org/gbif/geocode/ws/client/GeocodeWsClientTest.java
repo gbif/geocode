@@ -45,7 +45,7 @@ public class GeocodeWsClientTest {
     when(resource.path("reverse")).thenReturn(resource);
     when(resource.queryParams(params)).thenReturn(resource);
     when(resource.get(Location[].class)).thenReturn(new Location[] {});
-    client.get(latitude, longitude, null);
+    client.get(latitude, longitude, null, null);
   }
 
   @Test(expected = UniformInterfaceException.class)
@@ -56,7 +56,7 @@ public class GeocodeWsClientTest {
     when(resource.path("reverse")).thenReturn(resource);
     when(resource.queryParams(params)).thenReturn(resource);
     when(resource.get(Location[].class)).thenThrow(ex);
-    client.get(latitude, longitude, null);
+    client.get(latitude, longitude, null, null);
   }
 
 }

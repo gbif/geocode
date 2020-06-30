@@ -50,22 +50,26 @@ public class GeocodeResource implements GeocodeService {
   public Collection<Location> get(
     @QueryParam("lat") Double latitude,
     @QueryParam("lng") Double longitude,
-    @QueryParam("uncertainty") @Nullable Double uncertainty,
+    @QueryParam("uncertaintyDegrees") @Nullable Double uncertaintyDegrees,
+    @QueryParam("uncertaintyMeters") @Nullable Double uncertaintyMeters,
     @QueryParam("layer") @Nullable List<String> layers
   ) {
     if (latitude == null || longitude == null
         || latitude < -90 || latitude > 90
         || longitude < -180 || longitude > 180) {
-      throw new OffWorldException();
+      throw new OffWorldException("Latitude and/or longitude is out of range.");
+    }
+    if (uncertaintyDegrees != null && uncertaintyMeters != null) {
+      throw new VeryUncertainException("Cannot specify uncertainty in both degrees and metres.");
     }
 
     statistics.goodRequest();
-    return geocoder.get(latitude, longitude, uncertainty, layers);
+    return geocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
   }
 
   @Override
-  public Collection<Location> get(Double latitude, Double longitude, Double uncertainty) {
-    return get(latitude, longitude, uncertainty, Collections.EMPTY_LIST);
+  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
   }
 
   /*

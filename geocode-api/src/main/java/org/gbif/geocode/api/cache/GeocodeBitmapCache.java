@@ -50,13 +50,13 @@ public class GeocodeBitmapCache implements GeocodeService {
    * Simple get candidates by point.  No cache if layers are specified.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertainty, List<String> layers) {
+  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> layers) {
     if (layers == null || layers.isEmpty()) {
       // No layers, use the method below
-      return get(lat, lng, uncertainty);
+      return get(lat, lng, uncertaintyDegrees, uncertaintyMeters);
     } else {
       // Layers, skip the cache and go straight to the database.
-      return geocodeService.get(lat, lng, uncertainty, layers);
+      return geocodeService.get(lat, lng, uncertaintyDegrees, uncertaintyMeters, layers);
     }
   }
 
@@ -64,17 +64,23 @@ public class GeocodeBitmapCache implements GeocodeService {
    * Simple get candidates by point.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertainty) {
+  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
     Collection<Location> locations = null;
 
+    // Convert uncertainty in metres to degrees, approximating the Earth as a sphere.
+    if (uncertaintyMeters != null) {
+      uncertaintyDegrees = uncertaintyMeters / (111_319.491 * Math.cos(Math.toRadians(lat)));
+      LOG.debug("{}m uncertainty converted to {}°", uncertaintyMeters, uncertaintyDegrees);
+    }
+
     // Check the image map for a sure location.
-    if (uncertainty == null || uncertainty <= 0.05d) {
+    if (uncertaintyDegrees == null || uncertaintyDegrees <= 0.05d) {
       locations = getFromBitmap(lat, lng);
     }
 
     // If that doesn't help, use the database.
     if (locations == null) {
-      locations = geocodeService.get(lat, lng, uncertainty);
+      locations = geocodeService.get(lat, lng, uncertaintyDegrees, uncertaintyMeters);
     }
 
     return locations;
@@ -114,7 +120,7 @@ public class GeocodeBitmapCache implements GeocodeService {
 
       default:
         if (!colourKey.containsKey(colour)) {
-          locations = geocodeService.get(lat, lng, null);
+          locations = geocodeService.get(lat, lng, null, null);
           // Don't store this if there aren't any locations.
           if (locations.size() == 0) {
             LOG.error("For colour {} (LL {},{}; pixel {},{}) the webservice gave zero locations.", hex, lat, lng, x, y);

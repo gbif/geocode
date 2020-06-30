@@ -34,13 +34,13 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "Greenland", "GD");
     Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD");
 
-    when(dbGeocoder.get(75.0, -40.0, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(75.0, -40.0, null, null)).thenReturn(Arrays.asList(locationTest));
 
-    Collection<Location> locations = geocoder.get(75.0, -40.0, null);
-    Collection<Location> locations2 = geocoder.get(75.1, -40.1, null);
+    Collection<Location> locations = geocoder.get(75.0, -40.0, null, null);
+    Collection<Location> locations2 = geocoder.get(75.1, -40.1, null, null);
 
-    verify(dbGeocoder, times(1)).get(75.0, -40.0, null);
-    verify(dbGeocoder, never()).get(75.1, -40.1, null);
+    verify(dbGeocoder, times(1)).get(75.0, -40.0, null, null);
+    verify(dbGeocoder, never()).get(75.1, -40.1, null, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -61,12 +61,12 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "Denmark", "DK");
     Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK");
 
-    when(dbGeocoder.get(55.102d, 14.685d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(55.102d, 14.685d, null, null)).thenReturn(Arrays.asList(locationTest));
 
-    Collection<Location> locations = geocoder.get(55.102d, 14.685d, null);
-    Collection<Location> locations2 = geocoder.get(55.102d, 14.685d, null);
+    Collection<Location> locations = geocoder.get(55.102d, 14.685d, null, null);
+    Collection<Location> locations2 = geocoder.get(55.102d, 14.685d, null, null);
 
-    verify(dbGeocoder, times(2)).get(55.102d, 14.685d, null);
+    verify(dbGeocoder, times(2)).get(55.102d, 14.685d, null, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -87,13 +87,13 @@ public class BitmapFirstGeocoderTest {
     Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
     Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF");
 
-    when(dbGeocoder.get(-21.0d, -147.0d, null)).thenReturn(Arrays.asList(locationTest));
+    when(dbGeocoder.get(-21.0d, -147.0d, null, null)).thenReturn(Arrays.asList(locationTest));
 
-    Collection<Location> locations = geocoder.get(-21.0d, -147.0d, null);
-    Collection<Location> locations2 = geocoder.get(-21.0d, -147.1d, null);
+    Collection<Location> locations = geocoder.get(-21.0d, -147.0d, null, null);
+    Collection<Location> locations2 = geocoder.get(-21.0d, -147.1d, null, null);
 
-    verify(dbGeocoder, times(1)).get(-21.0d, -147.0d, null);
-    verify(dbGeocoder, never()).get(-21.0, -147.1, null);
+    verify(dbGeocoder, times(1)).get(-21.0d, -147.0d, null, null);
+    verify(dbGeocoder, never()).get(-21.0, -147.1, null, null);
 
     assertEquals(1, locations.size());
     assertEquals(1, locations2.size());
@@ -110,9 +110,9 @@ public class BitmapFirstGeocoderTest {
 
     GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
 
-    Collection<Location> locations = geocoder.get(0d, 0d, null);
+    Collection<Location> locations = geocoder.get(0d, 0d, null, null);
 
-    verify(dbGeocoder, never()).get(0d, 0d, null);
+    verify(dbGeocoder, never()).get(0d, 0d, null, null);
 
     assertEquals(0, locations.size());
   }
@@ -128,9 +128,9 @@ public class BitmapFirstGeocoderTest {
 
     List<String> eezLayer = Arrays.asList(new String[]{"EEZ"});
 
-    Collection<Location> locations = geocoder.get(0d, 0d, null, eezLayer);
+    Collection<Location> locations = geocoder.get(0d, 0d, null, null, eezLayer);
 
-    verify(dbGeocoder, times(1)).get(0d, 0d, null, eezLayer);
+    verify(dbGeocoder, times(1)).get(0d, 0d, null, null, eezLayer);
 
     assertEquals(0, locations.size());
   }
