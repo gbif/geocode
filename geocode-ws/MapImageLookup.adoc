@@ -28,4 +28,4 @@ and set any non-white pixel in this image to black in the coloured image:
 
 image::docs/eez-0.2-combined-crop.svg[combined,width=360,align="center"]
 
-Generating the SVGs and converting them to bitmaps is slow, so the results are committed to the repository.
+Generating the SVGs and converting them to bitmaps is slow, and for some layers takes a huge amount of RAM (40GB+), so the results are committed to the repository.
