@@ -110,11 +110,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level5
       LEFT OUTER JOIN iso_map ON level5.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -142,11 +142,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_4, name_3, name_2, name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level4
       LEFT OUTER JOIN iso_map ON level4.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -174,11 +174,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_3, name_2, name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level3
       LEFT OUTER JOIN iso_map ON level3.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -206,11 +206,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_2, name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level2
       LEFT OUTER JOIN iso_map ON level2.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -238,11 +238,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level1
       LEFT OUTER JOIN iso_map ON level1.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -270,11 +270,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom AS geom,
         centroid_geom
       FROM level0
       LEFT OUTER JOIN iso_map ON level0.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
