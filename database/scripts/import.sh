@@ -180,7 +180,7 @@ function import_gadm_levels() {
 
 	for i in 0 1 2 3 4 5; do
 		echo "SELECT AddGeometryColumn('level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-		echo "UPDATE level$i SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
+		echo "UPDATE level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
 	done
 
 	echo "GADM levels import complete"
