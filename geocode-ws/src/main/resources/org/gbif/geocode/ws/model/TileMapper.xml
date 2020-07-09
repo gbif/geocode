@@ -78,11 +78,11 @@
         'http://gadm.org' AS source,
         COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
-        wkb_geometry AS geom,
+        geom,
         centroid_geom
       FROM gadm
       LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
-      WHERE wkb_geometry &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -429,31 +429,31 @@
   </select>
 
   <select id="svgGadm" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm
   </select>
 
   <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_5 IS NOT NULL
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_5 IS NOT NULL
   </select>
 
   <select id="svgGadm4" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_4 IS NOT NULL AND gid_5 IS NULL
+    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_4 IS NOT NULL AND gid_5 IS NULL
   </select>
 
   <select id="svgGadm3" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_3 IS NOT NULL AND gid_4 IS NULL
+    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_3 IS NOT NULL AND gid_4 IS NULL
   </select>
 
   <select id="svgGadm2" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_2 IS NOT NULL AND gid_3 IS NULL
+    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_2 IS NOT NULL AND gid_3 IS NULL
   </select>
 
   <select id="svgGadm1" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_1 IS NOT NULL AND gid_2 IS NULL
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_1 IS NOT NULL AND gid_2 IS NULL
   </select>
 
   <select id="svgGadm0" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_0) AS id, ST_AsSVG(wkb_geometry) AS shape FROM gadm WHERE gid_0 IS NOT NULL AND gid_1 IS NULL
+    SELECT COALESCE(gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm WHERE gid_0 IS NOT NULL AND gid_1 IS NULL
   </select>
 
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -147,12 +147,12 @@ function import_gadm() {
 	echo "DROP TABLE IF EXISTS gadm;" | exec_psql
 
 	echo "Importing GADM to PostGIS"
-	ogr2ogr -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm/gadm36.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm/gadm36.gpkg
 
 	rm gadm36_gpkg.zip gadm/ -Rf
 
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE gadm SET centroid_geom = ST_Centroid(wkb_geometry);" | exec_psql
+	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "GADM import complete"
 	echo
@@ -174,7 +174,7 @@ function import_gadm_levels() {
 	for i in 0 1 2 3 4 5; do echo "DROP TABLE IF EXISTS level$i;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
-	ogr2ogr -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm_levels/gadm36_levels.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm_levels/gadm36_levels.gpkg
 
 	rm gadm36_levels_gpkg.zip gadm_levels/ -Rf
 

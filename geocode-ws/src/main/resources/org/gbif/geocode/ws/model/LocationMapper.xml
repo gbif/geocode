@@ -40,8 +40,8 @@
       COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
       iso_map.iso2 AS isoCountryCode2Digit
     FROM gadm LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
-    WHERE ST_DWithin(gadm.wkb_geometry, ST_GeomFromText(#{point}, 4326), #{distance})
-    ORDER BY ST_Distance(gadm.wkb_geometry, ST_Geomfromtext(#{point},4326)) ASC
+    WHERE ST_DWithin(gadm.geom, ST_GeomFromText(#{point}, 4326), #{distance})
+    ORDER BY ST_Distance(gadm.geom, ST_Geomfromtext(#{point},4326)) ASC
   </select>
 
   <!-- Searches the public.iho table -->
