@@ -27,15 +27,15 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (SELECT
       'GADM' as TYPE,
-      COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+      COALESCE(gid_3, gid_2, gid_1, gid_0) AS id,
       'http://gadm.org/' as SOURCE,
-      COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
+      COALESCE(name_3, name_2, name_1, name_0) AS title,
       iso_map.iso2 AS isoCountryCode2Digit,
-      ST_Distance(gadm.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326))
-    FROM gadm LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
-    WHERE ST_DWithin(gadm.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+      ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326))
+    FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
+    WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
       AND 'GADM' = ANY(q_layers)
-    ORDER BY ST_Distance(gadm.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) ASC)
+    ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) ASC)
   UNION ALL
     (SELECT
       'IHO' as TYPE,
@@ -98,8 +98,8 @@ WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
 SELECT *
-FROM gadm LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
-WHERE ST_DWithin(gadm.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
-ORDER BY ST_Distance(gadm.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
+FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
+WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
+ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
 SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political']);

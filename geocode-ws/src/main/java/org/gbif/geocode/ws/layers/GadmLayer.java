@@ -10,7 +10,7 @@ public class GadmLayer extends AbstractBitmapCachedLayer {
   public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
 
   public GadmLayer() {
-    super(GadmLayer.class.getResourceAsStream("gadm.png"));
+    super(GadmLayer.class.getResourceAsStream("gadm3.png"));
   }
 
   @Override

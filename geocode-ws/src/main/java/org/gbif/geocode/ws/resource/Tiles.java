@@ -31,8 +31,8 @@ public class Tiles {
   private final SqlSessionFactory sqlSessionFactory;
 
   private static final List<String> layers = Arrays.asList(
-    "political", "eez", "gadm", "geolocate_centroids",
-    "gadm5", "gadm4", "gadm3", "gadm2", "gadm1", "gadm0",
+    "political", "eez", "geolocate_centroids",
+    "gadm5", "gadm4", "gadm3", "gadm2", "gadm1",
     "iho", "seavox", "wgsrpd");
 
   @Inject
@@ -78,10 +78,6 @@ public class Tiles {
           tile = tileMapper.tileEez(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
 
-        case "gadm":
-          tile = tileMapper.tileGadm(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
-          break;
-
         case "gadm5":
           tile = tileMapper.tileGadm5(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
@@ -100,10 +96,6 @@ public class Tiles {
 
         case "gadm1":
           tile = tileMapper.tileGadm1(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
-          break;
-
-        case "gadm0":
-          tile = tileMapper.tileGadm0(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
 
         case "iho":

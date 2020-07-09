@@ -267,21 +267,6 @@ layers['eez'] = new ol.layer.VectorTile({
 	visible: false
 });
 
-layers['gadm'] = new ol.layer.VectorTile({
-	title: 'GADM',
-	renderMode: 'image',
-	source: new ol.source.VectorTile({
-		projection: 'EPSG:4326',
-		format: new ol.format.MVT(),
-		tileGrid: tileGrid,
-		tilePixelRatio: 8,
-		url: './tile/gadm/{z}/{x}/{y}.mvt',
-		wrapX: false,
-	}),
-	style: countryStyle(),
-	visible: false
-});
-
 layers['gadm5'] = new ol.layer.VectorTile({
 	title: 'GADM5',
 	renderMode: 'image',
@@ -351,21 +336,6 @@ layers['gadm1'] = new ol.layer.VectorTile({
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
 		url: './tile/gadm1/{z}/{x}/{y}.mvt',
-		wrapX: false,
-	}),
-	style: countryStyle(),
-	visible: false
-});
-
-layers['gadm0'] = new ol.layer.VectorTile({
-	title: 'GADM0',
-	renderMode: 'image',
-	source: new ol.source.VectorTile({
-		projection: 'EPSG:4326',
-		format: new ol.format.MVT(),
-		tileGrid: tileGrid,
-		tilePixelRatio: 8,
-		url: './tile/gadm0/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -456,13 +426,11 @@ var map = new ol.Map({
 			layers: [
 				layers['political'],
 				layers['eez'],
-				layers['gadm'],
 				layers['gadm5'],
 				layers['gadm4'],
 				layers['gadm3'],
 				layers['gadm2'],
 				layers['gadm1'],
-				layers['gadm0'],
 				layers['iho'],
 				layers['seavox'],
 				layers['wgsrpd'],

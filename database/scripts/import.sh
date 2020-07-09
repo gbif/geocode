@@ -4,6 +4,7 @@ set -o pipefail
 set -o nounset
 
 readonly PGCONN="dbname=$POSTGRES_DB user=$POSTGRES_USER host=$POSTGRES_HOST password=$POSTGRES_PASSWORD port=$POSTGRES_PORT"
+readonly START_DIR=$PWD
 readonly SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 
 function exec_psql() {
@@ -144,7 +145,7 @@ function import_gadm() {
 	unzip -oj gadm36_gpkg.zip -d gadm/
 
 	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS gadm;" | exec_psql
+	for i in 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
 	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm/gadm36.gpkg
@@ -154,36 +155,79 @@ function import_gadm() {
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
+	echo "Creating gadm4 table"
+	echo "
+		CREATE TABLE gadm4 AS SELECT
+			MIN(fid) AS fid,MIN(uid) AS uid,
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
+			gid_4,id_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4,validto_4,remarks_4,
+			ST_UNION(geom) AS geom
+		FROM gadm
+		GROUP BY
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
+			gid_4,id_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4,validto_4,remarks_4;" | exec_psql
+	echo "CREATE INDEX gadm4_geom_geom_idx ON gadm4 USING GIST (geom);" | exec_psql
+	echo "SELECT AddGeometryColumn('gadm4', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm4 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "Creating gadm3 table"
+	echo "
+		CREATE TABLE gadm3 AS SELECT
+			MIN(fid) AS fid,MIN(uid) AS uid,
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
+			ST_UNION(geom) AS geom
+		FROM gadm4
+		GROUP BY
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3;" | exec_psql
+	echo "CREATE INDEX gadm3_geom_geom_idx ON gadm3 USING GIST (geom);" | exec_psql
+	echo "SELECT AddGeometryColumn('gadm3', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm3 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "Creating gadm2 table"
+	echo "
+		CREATE TABLE gadm2 AS SELECT
+			MIN(fid) AS fid,MIN(uid) AS uid,
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			ST_UNION(geom) AS geom
+		FROM gadm3
+		GROUP BY
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2;" | exec_psql
+	echo "CREATE INDEX gadm2_geom_geom_idx ON gadm2 USING GIST (geom);" | exec_psql
+	echo "SELECT AddGeometryColumn('gadm2', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm2 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "Creating gadm1 table"
+	echo "
+		CREATE TABLE gadm1 AS SELECT
+			MIN(fid) AS fid,MIN(uid) AS uid,
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			ST_UNION(geom) AS geom
+		FROM gadm2
+		GROUP BY
+			gid_0,id_0,name_0,
+			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1;" | exec_psql
+	echo "CREATE INDEX gadm1_geom_geom_idx ON gadm1 USING GIST (geom);" | exec_psql
+	echo "SELECT AddGeometryColumn('gadm1', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm1 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
 	echo "GADM import complete"
-	echo
-}
-
-function import_gadm_levels() {
-	echo "Downloading GADM levels dataset"
-
-	# GADM, version 3.6: https://gadm.org/download_world.html
-
-	mkdir -p /var/tmp/import
-	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/gadm36_levels_gpkg.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_levels_gpkg.zip
-	mkdir -p gadm_levels
-	unzip -oj gadm36_levels_gpkg.zip -d gadm_levels/
-
-	echo "Dropping old tables"
-	for i in 0 1 2 3 4 5; do echo "DROP TABLE IF EXISTS level$i;" | exec_psql; done
-
-	echo "Importing GADM to PostGIS"
-	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm_levels/gadm36_levels.gpkg
-
-	rm gadm36_levels_gpkg.zip gadm_levels/ -Rf
-
-	for i in 0 1 2 3 4 5; do
-		echo "SELECT AddGeometryColumn('level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-		echo "UPDATE level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
-	done
-
-	echo "GADM levels import complete"
 	echo
 }
 
@@ -368,6 +412,7 @@ EOF
 }
 
 function create_combined_function() {
+	cd $START_DIR
 	exec_psql_file $SCRIPT_DIR/all_layer_function.sql
 }
 
@@ -382,8 +427,6 @@ import_marine_regions
 align_marine_regions
 
 import_gadm
-
-import_gadm_levels
 
 import_iho
 
