@@ -69,6 +69,8 @@ There is a PNG image used to speed up queries — after an initial query, roughl
 
 See [Map Image Lookup](./MapImageLookup.adoc) for how the image is created.
 
+The layers GADM0, GADM1 and GADM2 are queried at the same time as GADM3.  Since GBIF usage is for GADM3, efficient caching of the lower layers isn't implemented
+
 ## How to run this service
 
 This service is based on the [gbif-microservice](https://github.com/gbif/gbif-microservice) project which means that the

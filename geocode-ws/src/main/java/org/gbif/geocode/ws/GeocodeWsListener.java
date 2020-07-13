@@ -8,7 +8,10 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.ws.layers.GadmLayer;
+import org.gbif.geocode.ws.layers.Gadm0Layer;
+import org.gbif.geocode.ws.layers.Gadm1Layer;
+import org.gbif.geocode.ws.layers.Gadm2Layer;
+import org.gbif.geocode.ws.layers.Gadm3Layer;
 import org.gbif.geocode.ws.layers.GeolocateCentroidsLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
@@ -83,7 +86,10 @@ public class GeocodeWsListener extends GbifServletListener {
     protected List<AbstractBitmapCachedLayer> provideLayers(
       PoliticalLayer politicalLayer,
       EezLayer eezLayer,
-      GadmLayer gadmLayer,
+      Gadm0Layer gadm0Layer,
+      Gadm1Layer gadm1Layer,
+      Gadm2Layer gadm2Layer,
+      Gadm3Layer gadm3Layer,
       IhoLayer ihoLayer,
       SeaVoXLayer seaVoxLayer,
       WgsrpdLayer wgsrpdLayer,
@@ -92,7 +98,10 @@ public class GeocodeWsListener extends GbifServletListener {
       return ImmutableList.of(
         politicalLayer,
         eezLayer,
-        gadmLayer,
+        gadm0Layer,
+        gadm1Layer,
+        gadm2Layer,
+        gadm3Layer,
         ihoLayer,
         seaVoxLayer,
         wgsrpdLayer,

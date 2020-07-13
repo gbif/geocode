@@ -113,6 +113,7 @@ public class BitmapGenerator {
         .put("gadm3", tileMapper::svgGadm3)
         .put("gadm2", tileMapper::svgGadm2)
         .put("gadm1", tileMapper::svgGadm1)
+        .put("gadm0", tileMapper::svgGadm1)
         .put("iho", tileMapper::svgIho)
         .put("seavox", tileMapper::svgSeaVoX)
         .put("wgsrpd", tileMapper::svgWgsrpd)
