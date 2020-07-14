@@ -47,7 +47,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         isoCountryCode2Digit,
         MIN(distance) AS distance
       FROM gadm
-      WHERE 'GADM0' = ANY(q_layers)
+      WHERE 'GADM0' = ANY(q_layers) AND gid_0 IS NOT NULL
       GROUP BY gid_0, name_0, isoCountryCode2Digit
       UNION ALL
       SELECT
@@ -58,7 +58,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         isoCountryCode2Digit,
         MIN(distance) AS distance
       FROM gadm
-      WHERE 'GADM1' = ANY(q_layers)
+      WHERE 'GADM1' = ANY(q_layers) AND gid_1 IS NOT NULL
       GROUP BY gid_1, name_1, isoCountryCode2Digit
       UNION ALL
       SELECT
@@ -69,7 +69,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         isoCountryCode2Digit,
         MIN(distance) AS distance
       FROM gadm
-      WHERE 'GADM2' = ANY(q_layers)
+      WHERE 'GADM2' = ANY(q_layers) AND gid_2 IS NOT NULL
       GROUP BY gid_2, name_2, isoCountryCode2Digit
       UNION ALL
       SELECT
@@ -80,7 +80,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         isoCountryCode2Digit,
         MIN(distance) AS distance
       FROM gadm
-      WHERE 'GADM3' = ANY(q_layers)
+      WHERE 'GADM3' = ANY(q_layers) AND gid_3 IS NOT NULL
       GROUP BY gid_3, name_3, isoCountryCode2Digit
       ORDER BY distance
     )
@@ -158,4 +158,4 @@ FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
 WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM2']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM2', 'GADM3']);
