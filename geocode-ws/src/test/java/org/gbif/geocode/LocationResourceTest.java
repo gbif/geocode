@@ -43,8 +43,8 @@ public class LocationResourceTest {
     GeocodeService geocoder = mock(GeocodeService.class);
     GeocodeService geocodeService = new GeocodeResource(geocoder, statistics);
 
-    Location locationTest = new Location("test", "political", "source", "Germany", "DE");
-    Location locationTest2 = new Location("test", "political", "source", "Germany", "DE");
+    Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d);
+    Location locationTest2 = new Location("test", "political", "source", "Germany", "DE", 0d);
     when(geocoder.get(10.0d, 53.0d, null, null)).thenReturn(Arrays.asList(locationTest));
     Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null);
     verify(statistics).goodRequest();

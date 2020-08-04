@@ -31,8 +31,8 @@ public class BitmapFirstGeocoderTest {
 
     GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
 
-    Location locationTest = new Location("test", "political", "source", "Greenland", "GD");
-    Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD");
+    Location locationTest = new Location("test", "political", "source", "Greenland", "GD", 0d);
+    Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD", 0d);
 
     when(dbGeocoder.get(75.0, -40.0, null, null)).thenReturn(Arrays.asList(locationTest));
 
@@ -58,8 +58,8 @@ public class BitmapFirstGeocoderTest {
     GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
 
     // All of Sri Lanka is covered with black borders in the bitmap image.
-    Location locationTest = new Location("test", "political", "source", "Denmark", "DK");
-    Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK");
+    Location locationTest = new Location("test", "political", "source", "Denmark", "DK", 0d);
+    Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK", 0d);
 
     when(dbGeocoder.get(55.102d, 14.685d, null, null)).thenReturn(Arrays.asList(locationTest));
 
@@ -84,8 +84,8 @@ public class BitmapFirstGeocoderTest {
     GeocodeBitmapCache geocoder = new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
 
     // In the Pacific within French Polynesia's EEZ.
-    Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF");
-    Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF");
+    Location locationTest = new Location("test", "political", "source", "French Polynesia", "PF", 0d);
+    Location locationTest2 = new Location("test", "political", "source", "French Polynesia", "PF", 0d);
 
     when(dbGeocoder.get(-21.0d, -147.0d, null, null)).thenReturn(Arrays.asList(locationTest));
 
