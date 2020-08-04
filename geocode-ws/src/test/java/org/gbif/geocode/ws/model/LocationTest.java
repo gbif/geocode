@@ -27,6 +27,7 @@ public class LocationTest {
     assertThat(locationOne, not(equalTo(locationTwo)));
 
     locationTwo.setIsoCountryCode2Digit("iso");
+    locationTwo.setDistance(0d);
     assertThat(locationOne, equalTo(locationTwo));
     assertThat(locationOne.hashCode(), equalTo(locationTwo.hashCode()));
   }
