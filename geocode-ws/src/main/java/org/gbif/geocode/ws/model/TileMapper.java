@@ -19,6 +19,7 @@ public interface TileMapper {
   List<SvgShape> svgGadm3();
   List<SvgShape> svgGadm2();
   List<SvgShape> svgGadm1();
+  List<SvgShape> svgGadm0();
   List<SvgShape> svgIho();
   List<SvgShape> svgSeaVoX();
   List<SvgShape> svgWgsrpd();

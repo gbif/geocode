@@ -51,6 +51,7 @@
                 <argument>-Xmx40G</argument>
                 <argument>-classpath</argument>
                 <classpath />
+                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>
                 <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
                 <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>
               </arguments>

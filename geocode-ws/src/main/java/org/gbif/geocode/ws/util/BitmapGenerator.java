@@ -94,7 +94,7 @@ public class BitmapGenerator {
     BitmapGenerator bitmapGenerator = new BitmapGenerator(injector.getInstance(SqlSessionFactory.class));
     bitmapGenerator.generateAllBitmaps(targetDirectory.resolve("layers"));
 
-    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm3", "iho", "seavox", "wgsrpd", "geolocate_centroids");
+    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm0", "gadm1", "gadm2", "gadm3", "iho", "seavox", "wgsrpd", "geolocate_centroids");
   }
 
   /**
@@ -113,7 +113,7 @@ public class BitmapGenerator {
         .put("gadm3", tileMapper::svgGadm3)
         .put("gadm2", tileMapper::svgGadm2)
         .put("gadm1", tileMapper::svgGadm1)
-        .put("gadm0", tileMapper::svgGadm1)
+        .put("gadm0", tileMapper::svgGadm0)
         .put("iho", tileMapper::svgIho)
         .put("seavox", tileMapper::svgSeaVoX)
         .put("wgsrpd", tileMapper::svgWgsrpd)
@@ -206,7 +206,7 @@ public class BitmapGenerator {
 
       for (int y = 0; y < height; y++) {
         double latitude = (1800d-y)/1800d*90d;
-        int spread = (int) Math.round(Math.ceil(kmToPx(latitude, 5)));
+        int spread = (int) Math.round(Math.ceil(kmToPx(latitude, 10)));
 
         for (int x = 0; x < width; x++) {
           if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
