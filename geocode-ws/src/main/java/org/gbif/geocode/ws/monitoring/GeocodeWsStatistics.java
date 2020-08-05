@@ -5,15 +5,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-/**
- * Exposing some statistics for use in JMX.
- */
-@Singleton
+/** Exposing some statistics for use in JMX. */
+@Component
 public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(GeocodeWsStatistics.class);
@@ -28,7 +25,6 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
   private final AtomicLong noHits = new AtomicLong(0);
   private final AtomicLong totalResults = new AtomicLong(0);
 
-  @Inject
   public void register(MBeanServer server) {
     try {
       server.registerMBean(this, new ObjectName("Geocode WS:type=Statistics"));
@@ -86,7 +82,6 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
     eezHits.incrementAndGet();
   }
 
-
   @Override
   public long getTotalEezHits() {
     return eezHits.get();
@@ -132,5 +127,4 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
     totalResults.set(0);
     within5KmHits.set(0);
   }
-
 }

@@ -1,32 +1,61 @@
 package org.gbif.geocode.api.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * Represents a location.
- *
- * @author tim
+ * Represents a location feature.
  */
 public class Location implements Serializable {
 
   private static final long serialVersionUID = -2085795867974984269L;
 
+  /**
+   * Identifier for the location feature, preferably globally unique.
+   */
   private String id;
+
+  /**
+   * Type; GBIF-assigned identifier for the source.
+   */
   private String type;
+
+  /**
+   * Source; URL or other reference to the source for the location feature.
+   */
   private String source;
+
+  /**
+   * Title of the location feature, such as a country name, sea name or administrative area name.
+   */
   private String title;
+
+  /**
+   * ISO 3166 Alpha 2 country code, if applicable.
+   */
   private String isoCountryCode2Digit;
+
+  /**
+   * Distance from the location, or 0 if the query was within the boundary of the location.
+   * <p>
+   * This is approximate, it is not calculated with full geospatial accuracy, but can be compared
+   * between locations in the same response.
+   */
+  private Double distance;
 
   public Location() {
     // For mybatis & jackson
   }
 
-  public Location(String id, String type, String source, String title, String isoCountryCode2Digit) {
+  public Location(
+    String id, String type, String source, String title, String isoCountryCode2Digit, Double distance
+  ) {
     this.id = id;
     this.type = type;
     this.source = source;
     this.title = title;
     this.isoCountryCode2Digit = isoCountryCode2Digit;
+    this.distance = distance;
   }
 
   public String getIsoCountryCode2Digit() {
@@ -69,38 +98,41 @@ public class Location implements Serializable {
     this.source = source;
   }
 
+  public Double getDistance() {
+    return distance;
+  }
+
+  public void setDistance(Double distance) {
+    this.distance = distance;
+  }
+
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-
-    if (!(obj instanceof Location)) {
-      return false;
-    }
-    Location other = (Location) obj;
-
-    return (id == null ? other.id == null : id.equals(other.id))
-           && (isoCountryCode2Digit == null ? other.isoCountryCode2Digit == null
-      : isoCountryCode2Digit.equals(other.isoCountryCode2Digit))
-           && (source == null ? other.source == null : source.equals(other.source))
-           && (title == null ? other.title == null : title.equals(other.title)) && (type == null ? other.type == null
-      : type.equals(other.type));
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Location location = (Location) o;
+    return Objects.equals(id, location.id) &&
+      Objects.equals(type, location.type) &&
+      Objects.equals(source, location.source) &&
+      Objects.equals(title, location.title) &&
+      Objects.equals(isoCountryCode2Digit, location.isoCountryCode2Digit) &&
+      Objects.equals(distance, location.distance);
   }
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + type.hashCode();
-    result = 31 * result + source.hashCode();
-    result = 31 * result + title.hashCode();
-    result = 31 * result + (isoCountryCode2Digit != null ? isoCountryCode2Digit.hashCode() : 0);
-    return result;
+    return Objects.hash(id, type, source, title, isoCountryCode2Digit, distance);
   }
 
   @Override
   public String toString() {
-    return "Location{" + "id='" + id + '\'' + ", type='" + type + '\'' + ", source='" + source + '\'' + ", title='"
-           + title + '\'' + ", isoCountryCode2Digit='" + isoCountryCode2Digit + '\'' + '}';
+    return "Location{" +
+      "id='" + id + '\'' +
+      ", type='" + type + '\'' +
+      ", source='" + source + '\'' +
+      ", title='" + title + '\'' +
+      ", isoCountryCode2Digit='" + isoCountryCode2Digit + '\'' +
+      ", distance=" + distance +
+      '}';
   }
 }

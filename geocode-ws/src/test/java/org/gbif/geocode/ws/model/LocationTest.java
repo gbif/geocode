@@ -12,7 +12,7 @@ public class LocationTest {
 
   @Test
   public void testEquals() {
-    Location locationOne = new Location("id", "type", "source", "title", "iso");
+    Location locationOne = new Location("id", "type", "source", "title", "iso", 0d);
     Location locationTwo = new Location();
 
     assertThat(locationOne, not(equalTo(locationTwo)));
@@ -27,8 +27,8 @@ public class LocationTest {
     assertThat(locationOne, not(equalTo(locationTwo)));
 
     locationTwo.setIsoCountryCode2Digit("iso");
+    locationTwo.setDistance(0d);
     assertThat(locationOne, equalTo(locationTwo));
     assertThat(locationOne.hashCode(), equalTo(locationTwo.hashCode()));
   }
-
 }

@@ -1,24 +1,19 @@
 package org.gbif.geocode.ws.resource;
 
-import com.sun.jersey.api.Responses;
+import org.gbif.ws.WebApplicationException;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class VeryUncertainException extends WebApplicationException {
 
-  /**
-   * Create a HTTP 400 (Bad Request) exception with a JSON body.
-   */
+  /** Create a HTTP 400 (Bad Request) exception with a JSON body. */
   public VeryUncertainException() {
-    super(Response.status(Responses.CLIENT_ERROR).entity("[]").type(MediaType.APPLICATION_JSON).build());
+    super("[]", HttpStatus.BAD_REQUEST, MediaType.APPLICATION_JSON);
   }
 
-  /**
-   * Create a HTTP 400 (Bad Request) exception with a JSON body.
-   */
+  /** Create a HTTP 400 (Bad Request) exception with a JSON body. */
   public VeryUncertainException(String message) {
-    super(Response.status(Responses.CLIENT_ERROR).entity(message).type(MediaType.APPLICATION_JSON).build());
+    super(message, HttpStatus.BAD_REQUEST, MediaType.APPLICATION_JSON);
   }
 }

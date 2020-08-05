@@ -121,6 +121,7 @@ public abstract class AbstractBitmapCachedLayer {
    * Only used for the log message.
    */
   private String joinLocations(Collection<Location> loc) {
-    return loc.stream().map(l -> l.getId()).collect(Collectors.joining(", "));
+    return loc.stream().map(Location::getId).collect(Collectors.joining(", ")) + " " +
+      loc.stream().map(l -> l.getDistance().toString()).collect(Collectors.joining(", "));
   }
 }

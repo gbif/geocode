@@ -33,31 +33,32 @@
     </resources>
 
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>bitmaps</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <!-- Around 36GB is required to generate the GADM map. -->
-                <argument>-Xmx40G</argument>
-                <argument>-classpath</argument>
-                <classpath />
-                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
-                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.codehaus.mojo</groupId>-->
+<!--        <artifactId>exec-maven-plugin</artifactId>-->
+<!--        <version>${exec-maven-plugin.version}</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>bitmaps</id>-->
+<!--            <phase>prepare-package</phase>-->
+<!--            <goals>-->
+<!--              <goal>exec</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <executable>java</executable>-->
+<!--              <arguments>-->
+<!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
+<!--                <argument>-Xmx40G</argument>-->
+<!--                <argument>-classpath</argument>-->
+<!--                <classpath />-->
+<!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
+<!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
+<!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
+<!--              </arguments>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -137,15 +138,51 @@
     <!-- gbif-microservice: embedded jetty -->
     <dependency>
       <groupId>org.gbif</groupId>
-      <artifactId>gbif-microservice</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
       <artifactId>gbif-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-ws</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-openfeign-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-hystrix</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-jackson</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.openfeign</groupId>
+          <artifactId>feign-httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-security</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Spring dependencies -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
     </dependency>
 
     <dependency>
@@ -162,43 +199,19 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-    </dependency>
+
     <!--  Needed for mybatis-guice -->
     <dependency>
-      <groupId>com.google.inject.extensions</groupId>
-      <artifactId>guice-multibindings</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject.extensions</groupId>
-      <artifactId>guice-servlet</artifactId>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-guice</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -235,14 +248,6 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis-guice</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
       <scope>runtime</scope>
@@ -250,11 +255,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
@@ -269,8 +269,7 @@
     <profile>
       <id>local</id>
       <properties>
-        <geocode-ws.db.host>127.0.0.1:15432</geocode-ws.db.host>
-        <geocode-ws.db.name>eez</geocode-ws.db.name>
+        <geocode-ws.db.url>jdbc:postgresql://127.0.0.1:15432/eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
       </properties>
@@ -279,8 +278,7 @@
     <profile>
       <id>dev</id>
       <properties>
-        <geocode-ws.db.host>pg1.gbif-dev.org</geocode-ws.db.host>
-        <geocode-ws.db.name>dev_eez</geocode-ws.db.name>
+        <geocode-ws.db.url>jdbc:postgresql://pg1.gbif-dev.org/dev_eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
       </properties>

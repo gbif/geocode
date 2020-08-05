@@ -1,0 +1,12 @@
+spring:
+  datasource: # TODO: take them from the profile
+    url: jdbc:postgresql://pg1.gbif-dev.org/dev_eez
+    username: eez
+    password: eez
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maximumPoolSize: 12
+      minimumIdle: 2
+  liquibase:
+    enabled: false

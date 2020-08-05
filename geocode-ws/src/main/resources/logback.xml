@@ -17,7 +17,7 @@
   </appender>
 
   <logger name="org.gbif.geocode" level="DEBUG"/>
-  <logger name="org.gbif.geocode.ws.model.TileMapper" level="INFO"/>
+  <logger name="org.gbif.geocode.ws.persistence.mapper.TileMapper" level="INFO"/>
 
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>

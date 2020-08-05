@@ -226,7 +226,7 @@ layers['baselayer-labels'] = new ol.layer.Tile({
 });
 
 layers['bitmapCache'] = new ol.layer.Tile({
-	title: 'Old bitmap cache',
+	title: 'Bitmap cache',
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGridBitmapCache,
@@ -421,6 +421,7 @@ var map = new ol.Map({
 	layers: [
 		layers['baselayer'],
 		layers['baselayer-labels'],
+		layers['bitmapCache'],
 		new ol.layer.Group({
 			title: 'Layer',
 			layers: [
@@ -437,7 +438,6 @@ var map = new ol.Map({
 				layers['geolocate_centroids'],
 			]
 		}),
-		layers['bitmapCache'],
 		vector
 	],
 	target: 'map',
