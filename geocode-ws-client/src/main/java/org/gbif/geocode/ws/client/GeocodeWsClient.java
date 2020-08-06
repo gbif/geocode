@@ -1,39 +1,59 @@
 package org.gbif.geocode.ws.client;
 
-// @Singleton
-// public class GeocodeWsClient extends BaseWsClient implements GeocodeService {
-//
-//  private static final String GEOCODE_PATH = "geocode";
-//
-//  @Inject
-//  public GeocodeWsClient(@GeocodeWs WebResource resource) {
-//    super(resource.path(GEOCODE_PATH));
-//  }
-//
-//  @Override
-//  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees,
-// Double uncertaintyMeters) {
-//    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters,
-// Collections.EMPTY_LIST);
-//  }
-//
-//  @Override
-//  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees,
-// Double uncertaintyMeters, List<String> layers) {
-//    MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-//    queryParams.add("lat", latitude.toString());
-//    queryParams.add("lng", longitude.toString());
-//    if (uncertaintyDegrees != null) queryParams.add("uncertaintyDegrees",
-// uncertaintyDegrees.toString());
-//    if (uncertaintyMeters != null) queryParams.add("uncertaintyMeters",
-// uncertaintyMeters.toString());
-//    layers.stream().forEach(l -> queryParams.add("layer", l));
-//
-//    return Arrays.asList(resource.path("reverse").queryParams(queryParams).get(Location[].class));
-//  }
-//
-//  @Override
-//  public byte[] bitmap() {
-//    return resource.path("bitmap").get(byte[].class);
-//  }
-// }
+import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.api.service.GeocodeService;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.google.common.io.ByteStreams;
+
+import feign.Response;
+
+@RequestMapping("geocode")
+public interface GeocodeWsClient extends GeocodeService {
+
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "reverse",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Override
+  Collection<Location> get(
+      @RequestParam("lat") Double latitude,
+      @RequestParam("lng") Double longitude,
+      @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
+          Double uncertaintyDegrees,
+      @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
+          Double uncertaintyMeters,
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers);
+
+  @Override
+  default Collection<Location> get(
+      Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
+  }
+
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "bitmap",
+      produces = MediaType.IMAGE_PNG_VALUE)
+  Response getBitmap();
+
+  @Override
+  default byte[] bitmap() {
+    try {
+      return ByteStreams.toByteArray(getBitmap().body().asInputStream());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+}

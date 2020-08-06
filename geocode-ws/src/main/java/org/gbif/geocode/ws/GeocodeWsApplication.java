@@ -1,5 +1,10 @@
 package org.gbif.geocode.ws;
 
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.Gadm0Layer;
@@ -12,27 +17,25 @@ import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.management.MBeanServer;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+import javax.management.MBeanServer;
+
 // TODO: check there's no unneeded dependencies like ES or rabbit
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, FeignAutoConfiguration.class})
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
 @ServletComponentScan
 @ComponentScan(
     basePackages = {
+      "org.gbif.geocode.ws.advice",
       "org.gbif.geocode.ws.layers",
       "org.gbif.geocode.ws.monitoring",
       "org.gbif.geocode.ws.persistence",

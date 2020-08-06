@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -33,32 +34,32 @@
     </resources>
 
     <plugins>
-<!--      <plugin>-->
-<!--        <groupId>org.codehaus.mojo</groupId>-->
-<!--        <artifactId>exec-maven-plugin</artifactId>-->
-<!--        <version>${exec-maven-plugin.version}</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>bitmaps</id>-->
-<!--            <phase>prepare-package</phase>-->
-<!--            <goals>-->
-<!--              <goal>exec</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <executable>java</executable>-->
-<!--              <arguments>-->
-<!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
-<!--                <argument>-Xmx40G</argument>-->
-<!--                <argument>-classpath</argument>-->
-<!--                <classpath />-->
-<!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
-<!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
-<!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
-<!--              </arguments>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.codehaus.mojo</groupId>-->
+      <!--        <artifactId>exec-maven-plugin</artifactId>-->
+      <!--        <version>${exec-maven-plugin.version}</version>-->
+      <!--        <executions>-->
+      <!--          <execution>-->
+      <!--            <id>bitmaps</id>-->
+      <!--            <phase>prepare-package</phase>-->
+      <!--            <goals>-->
+      <!--              <goal>exec</goal>-->
+      <!--            </goals>-->
+      <!--            <configuration>-->
+      <!--              <executable>java</executable>-->
+      <!--              <arguments>-->
+      <!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
+      <!--                <argument>-Xmx40G</argument>-->
+      <!--                <argument>-classpath</argument>-->
+      <!--                <classpath />-->
+      <!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
+      <!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
+      <!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
+      <!--              </arguments>-->
+      <!--            </configuration>-->
+      <!--          </execution>-->
+      <!--        </executions>-->
+      <!--      </plugin>-->
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
@@ -83,7 +84,7 @@
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.gbif.ws.app.Application</mainClass>
                   <manifestEntries>
@@ -143,36 +144,36 @@
     <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-ws</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework.cloud</groupId>
-          <artifactId>spring-cloud-openfeign-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-slf4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-hystrix</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-jackson</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-httpclient</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-security</artifactId>
-        </exclusion>
-      </exclusions>
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.springframework.cloud</groupId>-->
+<!--          <artifactId>spring-cloud-openfeign-core</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>io.github.openfeign</groupId>-->
+<!--          <artifactId>feign-core</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>io.github.openfeign</groupId>-->
+<!--          <artifactId>feign-slf4j</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>io.github.openfeign</groupId>-->
+<!--          <artifactId>feign-hystrix</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>io.github.openfeign</groupId>-->
+<!--          <artifactId>feign-jackson</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>io.github.openfeign</groupId>-->
+<!--          <artifactId>feign-httpclient</artifactId>-->
+<!--        </exclusion>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.springframework.boot</groupId>-->
+<!--          <artifactId>spring-boot-starter-security</artifactId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
     </dependency>
 
     <!-- Spring dependencies -->
@@ -219,23 +220,8 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.gbif</groupId>
@@ -261,6 +247,33 @@
       <artifactId>batik-all</artifactId>
       <version>${batik.version}</version>
       <type>pom</type>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>org.gbif.geocode</groupId>
+      <artifactId>geocode-ws-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

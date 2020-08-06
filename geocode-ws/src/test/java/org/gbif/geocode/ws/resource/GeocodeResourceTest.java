@@ -1,40 +1,41 @@
-package org.gbif.geocode;
+package org.gbif.geocode.ws.resource;
 
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.GeocodeResource;
-import org.gbif.geocode.ws.resource.OffWorldException;
+import org.gbif.geocode.ws.resource.exception.OffWorldException;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LocationResourceTest {
+public class GeocodeResourceTest {
 
-  @Test(expected = OffWorldException.class)
+  @Test
   public void testMissingParameters() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    geocodeService.get(null, null, null, null);
+    assertThrows(OffWorldException.class, () -> geocodeService.get(null, null, null, null));
   }
 
-  @Test(expected = OffWorldException.class)
+  @Test
   public void testMissingParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    geocodeService.get(10.0d, null, null, null);
+    assertThrows(OffWorldException.class, () -> geocodeService.get(10.0d, null, null, null));
   }
 
-  @Test(expected = OffWorldException.class)
+  @Test
   public void testOffworldParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    geocodeService.get(95.0d, 0.0d, null, null);
+    assertThrows(OffWorldException.class, () -> geocodeService.get(95.0d, 0.0d, null, null));
   }
 
   @Test

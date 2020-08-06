@@ -4,6 +4,8 @@ import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
+import org.gbif.geocode.ws.resource.exception.OffWorldException;
+import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
 import java.io.IOException;
 import java.util.Collection;

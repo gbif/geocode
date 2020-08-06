@@ -6,6 +6,7 @@ import org.gbif.ws.WebApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,15 +24,16 @@ public class BadRequestCountingExceptionMapper {
   }
 
   @ExceptionHandler(WebApplicationException.class)
-  public void handleWebApplicationException(WebApplicationException exception) {
+  public ResponseEntity handleWebApplicationException(WebApplicationException ex) {
     statistics.badRequest();
-    if (exception.getCause() instanceof NumberFormatException) {
-      NumberFormatException nfe = (NumberFormatException) exception.getCause();
+    if (ex.getCause() instanceof NumberFormatException) {
+      NumberFormatException nfe = (NumberFormatException) ex.getCause();
       LOG.warn("Bad request: {}", nfe.getMessage());
     } else {
-      LOG.warn("Bad request caught", exception);
+      LOG.warn("Bad request caught", ex);
     }
-    // we rethrow it to be handled by our common exception handler
-    throw exception;
+    return ResponseEntity.status(ex.getStatus())
+        .contentType(ex.getContentType())
+        .body(ex.getMessage());
   }
 }

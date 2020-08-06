@@ -2,6 +2,7 @@ package org.gbif.geocode.ws.resource;
 
 import org.gbif.geocode.ws.model.Tile;
 import org.gbif.geocode.ws.persistence.mapper.TileMapper;
+import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.maps.common.projection.Double2D;
 
 import java.util.Arrays;
