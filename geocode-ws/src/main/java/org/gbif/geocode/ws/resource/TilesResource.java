@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -51,10 +51,10 @@ public class TilesResource {
   /** Fetch a single tile for a layer. */
   @GetMapping(value = "{layer}/{z}/{x}/{y}.mvt", produces = "application/x-protobuf")
   public byte[] get(
-      @RequestParam("layer") String layer,
-      @RequestParam("z") int z,
-      @RequestParam("x") long x,
-      @RequestParam("y") long y) {
+      @PathVariable("layer") String layer,
+      @PathVariable("z") int z,
+      @PathVariable("x") long x,
+      @PathVariable("y") long y) {
     checkParameters(layer, z, x, y);
 
     Tile tile = tileMapper.fromCache(layer, z, x, y);
