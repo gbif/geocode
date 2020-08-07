@@ -16,6 +16,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -63,11 +64,10 @@ public class GeocodeResourceIT {
     assertEquals(testLocation, result.iterator().next());
   }
 
-  //  @Test
-  //  public void bitmapTest() {
-  //    byte[] result = geocodeClient.bitmap();
-  //    assertNotNull(result);
-  //  }
+  @Test
+  public void bitmapTest() {
+    assertNotNull(geocodeClient.bitmap());
+  }
 
   @Test
   public void offWorldParametersTest() {

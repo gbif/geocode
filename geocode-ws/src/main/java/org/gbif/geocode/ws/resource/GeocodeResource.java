@@ -14,6 +14,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,13 +37,15 @@ public class GeocodeResource implements GeocodeService {
   private final GeocodeWsStatistics statistics;
 
   private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
-  private final String eTag = '"' + getClass().getPackage().getImplementationVersion() + '"';
+  private final String eTag;
 
-  public GeocodeResource(GeocodeService geocoder, GeocodeWsStatistics statistics) {
+  public GeocodeResource(
+      GeocodeService geocoder, GeocodeWsStatistics statistics, BuildProperties buildProperties) {
     this.statistics = statistics;
     this.geocoder =
         new GeocodeBitmapCache(
             geocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+    this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
   }
 
   @Override
@@ -79,14 +84,13 @@ public class GeocodeResource implements GeocodeService {
    * Disable client-side caching until I work out a reasonable way to do it.
    */
   @GetMapping(value = "bitmap", produces = MediaType.IMAGE_PNG_VALUE)
-  public ResponseEntity bitmap(WebRequest request) {
+  public ResponseEntity<Resource> bitmap(WebRequest request) throws IOException {
     if (request.checkNotModified(eTag)) {
       // spring already set the response accordingly
       return null;
     }
-    return ResponseEntity.ok()
-        .eTag(eTag)
-        .body(this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+
+    return ResponseEntity.ok().eTag(eTag).body(new ByteArrayResource(bitmap()));
   }
 
   /*
