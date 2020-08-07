@@ -29,6 +29,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -100,6 +101,7 @@ public class BitmapGenerator implements CommandLineRunner {
   /** Generate bitmaps for all known layers. */
   public static void main(String... args) throws Exception {
     SpringApplication app = new SpringApplication(BitmapGenerator.class);
+    app.setBannerMode(Mode.OFF);
     app.run(args);
   }
 

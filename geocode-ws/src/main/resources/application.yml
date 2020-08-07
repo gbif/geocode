@@ -1,8 +1,8 @@
 spring:
   datasource: # TODO: take them from the profile
-    url: jdbc:postgresql://pg1.gbif-dev.org/dev_eez
-    username: eez
-    password: eez
+    url: @geocode-ws.db.url@
+    username: @geocode-ws.db.username@
+    password: @geocode-ws.db.password@
     hikari:
       connectionTimeout: 30000
       idleTimeout: 600000
