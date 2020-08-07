@@ -32,7 +32,7 @@ import javax.management.MBeanServer;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, FeignAutoConfiguration.class})
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
-@ServletComponentScan
+@ServletComponentScan("org.gbif.geocode.ws.monitoring")
 @ComponentScan(
     basePackages = {
       "org.gbif.geocode.ws.advice",

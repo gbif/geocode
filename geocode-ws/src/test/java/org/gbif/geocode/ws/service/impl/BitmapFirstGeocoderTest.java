@@ -3,7 +3,6 @@ package org.gbif.geocode.ws.service.impl;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.layers.EezLayer;
-import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +29,9 @@ public class BitmapFirstGeocoderTest {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
+        new GeocodeBitmapCache(
+            dbGeocoder,
+            this.getClass().getResourceAsStream("/org/gbif/geocode/ws/resource/cache-bitmap.png"));
 
     Location locationTest = new Location("test", "political", "source", "Greenland", "GD", 0d);
     Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD", 0d);
@@ -55,7 +56,9 @@ public class BitmapFirstGeocoderTest {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, this.getClass().getResourceAsStream("cache-bitmap.png"));
+        new GeocodeBitmapCache(
+            dbGeocoder,
+            this.getClass().getResourceAsStream("/org/gbif/geocode/ws/resource/cache-bitmap.png"));
 
     // All of Sri Lanka is covered with black borders in the bitmap image.
     Location locationTest = new Location("test", "political", "source", "Denmark", "DK", 0d);

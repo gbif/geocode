@@ -16,6 +16,8 @@
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
 
   <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+    <start-class>org.gbif.geocode.ws.GeocodeWsApplication</start-class>
     <batik.version>1.13</batik.version>
     <exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
   </properties>
@@ -25,11 +27,6 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/public</directory>
-        <filtering>true</filtering>
-        <targetPath>webapp</targetPath>
       </resource>
     </resources>
 
@@ -60,70 +57,51 @@
       <!--          </execution>-->
       <!--        </executions>-->
       <!--      </plugin>-->
+
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty-maven-plugin.version}</version>
-        <configuration>
-          <webAppConfig>
-            <contextPath>/</contextPath>
-          </webAppConfig>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>repackage</id>
             <goals>
-              <goal>shade</goal>
+              <goal>repackage</goal>
             </goals>
             <configuration>
-              <createDependencyReducedPom>true</createDependencyReducedPom>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.gbif.ws.app.Application</mainClass>
-                  <manifestEntries>
-                    <Class-Path>conf/</Class-Path>
-                  </manifestEntries>
-                </transformer>
-              </transformers>
-              <artifactSet>
-                <excludes>
-                  <exclude>org.apache.xmlgraphics:*</exclude>
-                </excludes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>org.jruby:jruby-complete</artifact>
-                  <excludes>
-                    <exclude>org/joda/**</exclude>
-                  </excludes>
-                </filter>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>META-INF/*.SF</exclude>
-                    <exclude>META-INF/*.DSA</exclude>
-                    <exclude>META-INF/*.RSA</exclude>
-                    <exclude>logback.xml</exclude>
-                  </excludes>
-                </filter>
-                <filter>
-                  <!--Exclude configuration file that are not required in the output jar file -->
-                  <artifact>org.gbif.geocode:geocode-ws</artifact>
-                  <excludes>
-                    <exclude>mybatis.properties</exclude>
-                  </excludes>
-                </filter>
-              </filters>
+              <attach>true</attach>
+              <classifier>exec</classifier>
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <mainClass>${start-class}</mainClass>
+          <addResources>false</addResources>
+          <layout>ZIP</layout>
+          <excludeGroupIds>org.apache.xmlgraphics</excludeGroupIds>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <configuration>
+          <excludes>
+            <!-- This is where the exclusion occurs -->
+            <exclude>META-INF/*.SF</exclude>
+            <exclude>META-INF/*.DSA</exclude>
+            <exclude>META-INF/*.RSA</exclude>
+            <exclude>**/application.yml</exclude>
+            <exclude>**/bootstrap.yml</exclude>
+            <exclude>**/logback.xml</exclude>
+          </excludes>
+          <archive>
+            <manifest>
+              <mainClass>${start-class}</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -144,36 +122,6 @@
     <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-ws</artifactId>
-<!--      <exclusions>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.springframework.cloud</groupId>-->
-<!--          <artifactId>spring-cloud-openfeign-core</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>io.github.openfeign</groupId>-->
-<!--          <artifactId>feign-core</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>io.github.openfeign</groupId>-->
-<!--          <artifactId>feign-slf4j</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>io.github.openfeign</groupId>-->
-<!--          <artifactId>feign-hystrix</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>io.github.openfeign</groupId>-->
-<!--          <artifactId>feign-jackson</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>io.github.openfeign</groupId>-->
-<!--          <artifactId>feign-httpclient</artifactId>-->
-<!--        </exclusion>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.springframework.boot</groupId>-->
-<!--          <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </exclusion>-->
-<!--      </exclusions>-->
     </dependency>
 
     <!-- Spring dependencies -->
@@ -201,7 +149,7 @@
       <artifactId>jsr305</artifactId>
     </dependency>
 
-    <!--  Needed for mybatis-guice -->
+    <!--  DB -->
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
