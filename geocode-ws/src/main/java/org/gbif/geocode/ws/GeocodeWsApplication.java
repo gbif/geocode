@@ -28,8 +28,6 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-// TODO: check there's no unneeded dependencies like ES or rabbit
-
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, FeignAutoConfiguration.class})
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
 @ServletComponentScan("org.gbif.geocode.ws.monitoring")
@@ -75,7 +73,6 @@ public class GeocodeWsApplication {
     return Collections.unmodifiableList(layers);
   }
 
-  // TODO: check if Springs provides support for this
   @Bean
   public MBeanServer mBeanServer() {
     return ManagementFactory.getPlatformMBeanServer();

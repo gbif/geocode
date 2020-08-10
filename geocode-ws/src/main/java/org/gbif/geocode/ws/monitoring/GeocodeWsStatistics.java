@@ -25,7 +25,7 @@ public class GeocodeWsStatistics implements GeocodeWsStatisticsMBean {
   private final AtomicLong noHits = new AtomicLong(0);
   private final AtomicLong totalResults = new AtomicLong(0);
 
-  public void register(MBeanServer server) {
+  public GeocodeWsStatistics(MBeanServer server) {
     try {
       server.registerMBean(this, new ObjectName("Geocode WS:type=Statistics"));
     } catch (Exception e) {
