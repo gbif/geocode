@@ -39,7 +39,7 @@ public interface GeocodeWsClient extends GeocodeService {
   @Override
   default Collection<Location> get(
       Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, null);
   }
 
   @RequestMapping(

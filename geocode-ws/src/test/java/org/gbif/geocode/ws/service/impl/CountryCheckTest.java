@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 public class CountryCheckTest {
   private static final Logger LOG = LoggerFactory.getLogger(CountryCheckTest.class);
 
-  private static final String api = "http://localhost:8080/geocode/reverse";
+  private static final String api = "http://localhost:8080";
   private static final GeocodeService geocodeClient =
       new ClientBuilder().withUrl(api).build(GeocodeWsClient.class);
 

@@ -31,32 +31,32 @@
     </resources>
 
     <plugins>
-      <!--      <plugin>-->
-      <!--        <groupId>org.codehaus.mojo</groupId>-->
-      <!--        <artifactId>exec-maven-plugin</artifactId>-->
-      <!--        <version>${exec-maven-plugin.version}</version>-->
-      <!--        <executions>-->
-      <!--          <execution>-->
-      <!--            <id>bitmaps</id>-->
-      <!--            <phase>prepare-package</phase>-->
-      <!--            <goals>-->
-      <!--              <goal>exec</goal>-->
-      <!--            </goals>-->
-      <!--            <configuration>-->
-      <!--              <executable>java</executable>-->
-      <!--              <arguments>-->
-      <!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
-      <!--                <argument>-Xmx40G</argument>-->
-      <!--                <argument>-classpath</argument>-->
-      <!--                <classpath />-->
-      <!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
-      <!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
-      <!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
-      <!--              </arguments>-->
-      <!--            </configuration>-->
-      <!--          </execution>-->
-      <!--        </executions>-->
-      <!--      </plugin>-->
+<!--      <plugin>-->
+<!--        <groupId>org.codehaus.mojo</groupId>-->
+<!--        <artifactId>exec-maven-plugin</artifactId>-->
+<!--        <version>${exec-maven-plugin.version}</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>bitmaps</id>-->
+<!--            <phase>prepare-package</phase>-->
+<!--            <goals>-->
+<!--              <goal>exec</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <executable>java</executable>-->
+<!--              <arguments>-->
+<!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
+<!--                <argument>-Xmx40G</argument>-->
+<!--                <argument>-classpath</argument>-->
+<!--                <classpath/>-->
+<!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
+<!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
+<!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
+<!--              </arguments>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
 
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -120,16 +120,6 @@
   </repositories>
 
   <dependencies>
-    <!-- gbif-microservice: embedded jetty -->
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common-ws</artifactId>
-    </dependency>
-
     <!-- Spring dependencies -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -155,23 +145,14 @@
       <artifactId>jsr305</artifactId>
     </dependency>
 
-    <!--  DB -->
+    <!-- GBIF -->
     <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis</artifactId>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <scope>compile</scope>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-ws</artifactId>
     </dependency>
     <dependency>
       <groupId>org.gbif.geocode</groupId>
@@ -187,6 +168,22 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!--  DB -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+    </dependency>
+
+    <!-- Third party -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>

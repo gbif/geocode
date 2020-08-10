@@ -52,7 +52,7 @@ public class MyBatisGeocoder implements GeocodeService {
   @Override
   public Collection<Location> get(
       Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(lat, lng, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
+    return get(lat, lng, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
   }
 
   /** Simple get candidates by point. */
@@ -101,7 +101,6 @@ public class MyBatisGeocoder implements GeocodeService {
 
     if (!toQuery.isEmpty()) {
       // Retrieve anything the bitmaps couldn't help with, or didn't yet have
-      // TODO: remove stopwatch
       Stopwatch sw = Stopwatch.createStarted();
       List<Location> queriedLocations =
           locationMapper.queryLayers(lng, lat, uncertaintyDegrees, toQuery);

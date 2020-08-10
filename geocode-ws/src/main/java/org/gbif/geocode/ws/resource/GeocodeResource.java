@@ -77,7 +77,7 @@ public class GeocodeResource implements GeocodeService {
   @Override
   public Collection<Location> get(
       Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
   }
 
   /*

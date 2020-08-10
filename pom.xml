@@ -57,11 +57,6 @@
   <properties>
     <jdkLevel>1.8</jdkLevel>
     <main.basedir>${project.basedir}</main.basedir>
-    <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
-
-    <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
-    <gbif-common.version>0.47</gbif-common.version>
-    <gbif-common-ws.version>1.6-SNAPSHOT</gbif-common-ws.version>
 
     <!-- Spring -->
     <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
@@ -69,17 +64,16 @@
     <spring-cloud-openfeign.version>2.2.1.RELEASE</spring-cloud-openfeign.version>
     <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
     <mybatis-spring-boot-starter-test.version>2.0.0</mybatis-spring-boot-starter-test.version>
-    <feign.version>10.4.0</feign.version>
 
-    <mybatis.version>3.5.0</mybatis.version>
+    <!-- GBIF-->
+    <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
+    <gbif-common.version>0.47</gbif-common.version>
+    <gbif-common-ws.version>1.6-SNAPSHOT</gbif-common-ws.version>
 
+    <!-- DB -->
     <hikaricp.version>3.2.0</hikaricp.version>
-    <logback.version>1.2.3</logback.version>
-    <logstash-encoder.version>4.11</logstash-encoder.version>
-
+    <mybatis.version>3.5.0</mybatis.version>
     <postgres.version>9.4-1205-jdbc41</postgres.version>
-    <servlet-api.version>3.1.0</servlet-api.version>
-    <slf4j.version>1.7.21</slf4j.version>
 
     <!-- test -->
     <junit-jupiter.version>5.5.2</junit-jupiter.version>
@@ -88,17 +82,16 @@
 
     <!-- Third party dependencies -->
     <feign.version>10.4.0</feign.version>
-
-    <!-- utils -->
+    <logback.version>1.2.3</logback.version>
+    <logstash-encoder.version>4.11</logstash-encoder.version>
+    <slf4j.version>1.7.21</slf4j.version>
     <stopwatch.version>0.3</stopwatch.version>
     <findbugs-jsr305.version>3.0.1</findbugs-jsr305.version>
+    <guava.version>18.0</guava.version>
 
     <!-- Plugin versions -->
     <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
     <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
-
-    <mybatis.version>3.4.1</mybatis.version>
-    <guava.version>18.0</guava.version>
   </properties>
 
   <dependencyManagement>
@@ -154,63 +147,6 @@
         <version>${spring-cloud-openfeign.version}</version>
       </dependency>
 
-      <!-- test -->
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit-jupiter.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
-        <version>${mockito-junit-jupiter.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-core</artifactId>
-        <version>${hamcrest-core.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <!-- logging -->
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jul-to-slf4j</artifactId>
-        <version>${slf4j.version}</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.logstash.logback</groupId>
-        <artifactId>logstash-logback-encoder</artifactId>
-        <version>${logstash-encoder.version}</version>
-        <scope>runtime</scope>
-      </dependency>
-
-      <!-- db -->
-      <dependency>
-        <groupId>com.zaxxer</groupId>
-        <artifactId>HikariCP</artifactId>
-        <version>${hikaricp.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mybatis</groupId>
-        <artifactId>mybatis</artifactId>
-        <version>${mybatis.version}</version>
-      </dependency>
-
       <!-- GBIF -->
       <dependency>
         <groupId>org.gbif.geocode</groupId>
@@ -263,6 +199,63 @@
         <version>${gbif-common-ws.version}</version>
       </dependency>
 
+      <!-- DB -->
+      <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP</artifactId>
+        <version>${hikaricp.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>${mybatis.version}</version>
+      </dependency>
+
+      <!-- test -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito-junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>${hamcrest-core.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Third party dependencies -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.logstash.logback</groupId>
+        <artifactId>logstash-logback-encoder</artifactId>
+        <version>${logstash-encoder.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+
       <!-- Third party dependencies -->
       <dependency>
         <groupId>io.github.openfeign</groupId>
@@ -274,8 +267,6 @@
         <artifactId>feign-httpclient</artifactId>
         <version>${feign.version}</version>
       </dependency>
-
-      <!-- Utils -->
       <dependency>
         <groupId>com.commsen.stopwatch.api</groupId>
         <artifactId>stopwatch</artifactId>
@@ -286,17 +277,10 @@
         <artifactId>jsr305</artifactId>
         <version>${findbugs-jsr305.version}</version>
       </dependency>
-
-      <!-- google -->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.code.findbugs</groupId>
-        <artifactId>jsr305</artifactId>
-        <version>${jsr305.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
