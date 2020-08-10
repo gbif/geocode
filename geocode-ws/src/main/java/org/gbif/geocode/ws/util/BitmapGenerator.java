@@ -206,13 +206,16 @@ public class BitmapGenerator {
 
       for (int y = 0; y < height; y++) {
         double latitude = (1800d-y)/1800d*90d;
-        int spread = (int) Math.round(Math.ceil(kmToPx(latitude, 10)));
+        int xSpread = (int) Math.round(Math.ceil(kmToPx(latitude, 5)));
 
         for (int x = 0; x < width; x++) {
-          if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
-            // Spread left and right.
-            for (int xs = Math.max(0, x-spread); xs <= x+spread && xs < width; xs++) {
-              filled.setRGB(xs, y, 0xFF000000);
+          int ySpread = (int) Math.round(Math.ceil(kmToPx(5)));
+          for (int ys = Math.max(0, y - ySpread); ys <= y + ySpread && ys < height; ys++) {
+            if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
+              // Spread up, down, left and right.
+              for (int xs = Math.max(0, x - xSpread); xs <= x + xSpread && xs < width; xs++) {
+                filled.setRGB(xs, ys, 0xFF000000);
+              }
             }
           }
         }
@@ -241,6 +244,10 @@ public class BitmapGenerator {
         if (0xFFFFFF % inc == 3) break;
       }
       System.out.println("Colour increment is "+inc);
+    }
+
+    if (key.matches("^W+$")) {
+      return 0xFFFFFF;
     }
 
     if (key.equals("BLACK")) {
@@ -290,7 +297,11 @@ public class BitmapGenerator {
             key = "BLACK";
             break;
           }
-          key += (colour);
+          if (colour == 0xFFFFFF) {
+            key += "W";
+          } else {
+            key += (colour);
+          }
         }
         combined.setRGB(x, y, getColour(key));
       }
@@ -315,6 +326,10 @@ public class BitmapGenerator {
    */
   private double kmToPx(double latitude, double n_km) {
     return n_km / (lengthParallelKm(latitude) / 7200d);
+  }
+
+  private double kmToPx(double n_km) {
+    return n_km / (lengthParallelKm(0) / 7200d);
   }
 
   /**
