@@ -28,8 +28,8 @@ public class CleanupListener implements ServletContextListener {
       LOG.info("Statistics MBean unregistered");
     } catch (InstanceNotFoundException
         | MBeanRegistrationException
-        | MalformedObjectNameException ignored) {
-      LOG.info("Error unregistering MBeanServer", ignored);
+        | MalformedObjectNameException ex) {
+      LOG.info("Error unregistering MBeanServer", ex);
     }
   }
 }
