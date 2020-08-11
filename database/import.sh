@@ -3,17 +3,29 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-readonly PGCONN="dbname=$POSTGRES_DB user=$POSTGRES_USER host=$POSTGRES_HOST password=$POSTGRES_PASSWORD port=$POSTGRES_PORT"
 readonly START_DIR=$PWD
 readonly SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 
+if [[ -n ${POSTGRES_HOST:-} ]]; then
+	readonly PGCONN="PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB"
+else
+	readonly PGCONN="PG:user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB"
+fi
+
 function exec_psql() {
-	echo psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
-	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	if [[ -n ${POSTGRES_HOST:-} ]]; then
+		PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	else
+		PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --dbname="$POSTGRES_DB" --username="$POSTGRES_USER"
+	fi
 }
 
 function exec_psql_file() {
-	PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+	if [[ -n ${POSTGRES_HOST:-} ]]; then
+		PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+	else
+		PGPASSWORD=$POSTGRES_PASSWORD psql -v ON_ERROR_STOP=1 --dbname="$POSTGRES_DB" --username="$POSTGRES_USER" -f $1
+	fi
 }
 
 function wrap_drop_geometry_commands() {
@@ -121,7 +133,6 @@ function import_marine_regions() {
 	rm World_EEZ_v10_20180221.zip eez/ -Rf
 
 	echo "Simplifying Marine Regions EEZs"
-	#echo "UPDATE eez SET geom = ST_Multi(ST_SimplifyPreserveTopology(geom, 0.0025));" | exec_psql
 
 	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -148,7 +159,7 @@ function import_gadm() {
 	for i in 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
-	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB" gadm/gadm36.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" gadm/gadm36.gpkg
 
 	rm gadm36_gpkg.zip gadm/ -Rf
 
@@ -356,7 +367,7 @@ function align_natural_earth() {
 	echo "UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';" | exec_psql
 
 	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
-	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, STRING_AGG(name) FROM political WHERE iso_a3 != '-99' GROUP BY iso_a2, iso_a3);" | exec_psql
+	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, STRING_AGG(name, ',') FROM political WHERE iso_a3 != '-99' GROUP BY iso_a2, iso_a3);" | exec_psql
 }
 
 function align_marine_regions() {
@@ -416,22 +427,21 @@ function create_combined_function() {
 	exec_psql_file $SCRIPT_DIR/all_layer_function.sql
 }
 
-create_cache
 
-import_geolocate_centroids
-
-import_natural_earth
-align_natural_earth
-
-import_marine_regions
-align_marine_regions
-
-import_gadm
-
-import_iho
-
-import_seavox
-
-import_wgsrpd
-
-create_combined_function
+if [[ -e complete ]]; then
+	echo "Data already imported"
+else
+	echo "Importing data"
+  create_cache
+  import_geolocate_centroids
+  import_natural_earth
+  align_natural_earth
+  import_marine_regions
+  align_marine_regions
+  import_gadm
+  import_iho
+  import_seavox
+  import_wgsrpd
+  create_combined_function
+	touch complete
+fi
