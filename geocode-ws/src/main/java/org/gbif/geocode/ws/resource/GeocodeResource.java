@@ -19,6 +19,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,13 @@ import com.google.common.io.ByteStreams;
 /** Provides the web service interface to query our Geocoder. */
 @RestController
 @RequestMapping("geocode")
+@CrossOrigin(
+    allowedHeaders = {"authorization", "content-type"},
+    exposedHeaders = {
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Methods",
+      "Access-Control-Allow-Headers"
+    })
 public class GeocodeResource implements GeocodeService {
 
   private final GeocodeService geocoder;

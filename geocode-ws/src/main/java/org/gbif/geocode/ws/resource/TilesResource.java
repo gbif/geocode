@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,13 @@ import com.google.common.base.Stopwatch;
  */
 @RestController
 @RequestMapping("tile")
+@CrossOrigin(
+  allowedHeaders = {"authorization", "content-type"},
+  exposedHeaders = {
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Methods",
+    "Access-Control-Allow-Headers"
+  })
 public class TilesResource {
   public static final Logger LOG = LoggerFactory.getLogger(TilesResource.class);
 
