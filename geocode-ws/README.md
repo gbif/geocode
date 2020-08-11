@@ -2,16 +2,12 @@
 
 RESTful service that provides the reverse geocode functionality. The REST resource should be accessible at this URL: `http://{server}:{httpPort}/reverse`.
 
-## How to build this project
+## How to build and run this project
 
-No credentials are hardcoded. You can provide credentials in one of multiple ways:
+The database url and credentials are required to start the application. You can provide them in different ways.
 
- - Change the src/resources/geocode.properties file
-
- - Provide the connection details on the command line while running Maven:
-    ```-Dgeocode-ws.url=<url> -Dgeocode-ws.username=<user> -Dgeocode-ws.password=<password>```
-
- - Provide the connection details in a profile in your settings.xml file:
+### Using maven
+You can put the DB credentials in a maven profile:
 
 ```xml
 <profile>
@@ -24,23 +20,25 @@ No credentials are hardcoded. You can provide credentials in one of multiple way
 </profile>
 ```
 
-Then start Maven with this profile: `-Pgeocode-ws`
+Then start the application with maven and your profile: ` mvn -Pgeocode-ws spring-boot:run`
 
-### Building
+### Using a java command
 
-To build the WebService just execute Maven this way:
+You can create an [application.yml](src/resources/application.yml) and a [bootstrap.yml](src/resources/bootstrap.yml) files
+and pass them to the application:
 
-```mvn clean package```
+`java -jar geocode-ws-{your-version}-exec.jar.jar --spring.config.location=your_path/application.yml --spring.cloud.bootstrap.location=your_path/bootstrap.yml`
 
-And make sure to provide database credentials in one of the ways mentioned above.
+If you want to run the application with a java command this is the only way to pass the properties since the [application.yml](src/resources/application.yml) and a [bootstrap.yml](src/resources/bootstrap.yml)
+files provided in the project are not included in the packaged jar.
+
+### Using your IDE
+For development, it might be easier to run the [GeocodeWsApplication](src/main/java/org/gbif/geocode/ws/GeocodeWsApplication.java) class
+from your IDE and choose the right maven profile or override the properties in the [application.yml](src/resources/application.yml) file provided in the project.
 
 ## Testing
 
-To run the WebService in a local Jetty instance run
-
-```mvn jetty:run```
-
-And make sure to provide database credentials in one of the ways mentioned above.
+First, run the project in one of the ways mentioned above.
 
 Then go to: http://localhost:8080/geocode/reverse?lat=55.68&lng=12.00
 
@@ -71,9 +69,3 @@ See [Map Image Lookup](./MapImageLookup.adoc) for how the image is created.
 
 The layers GADM0, GADM1 and GADM2 are queried at the same time as GADM3.  Since GBIF usage is for GADM3, efficient caching of the lower layers isn't implemented
 
-## How to run this service
-
-This service is based on the [gbif-microservice](https://github.com/gbif/gbif-microservice) project which means that the
-jar file can be executed using the parameters described in the [gbif-microservice](https://github.com/gbif/gbif-microservice)
-project; additionally, this service requires a logback.xml file in the `conf` directory located at same level where the
-jar file (such directory is added to the application classpath).
