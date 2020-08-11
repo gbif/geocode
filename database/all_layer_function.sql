@@ -16,7 +16,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
     )
   UNION ALL
     (
-      SELECT
+      SELECT DISTINCT
         'EEZ' AS TYPE,
         'http://marineregions.org/mrgid/' || eez.mrgid AS id,
         'http://vliz.be/vmdcdata/marbound/' AS SOURCE,

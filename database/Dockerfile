@@ -1,16 +1,16 @@
 # gbif/geocode-ws
 #
 # Image contains PostgreSQL, PostGIS, and the GBIF reverse geocoding borders
-# from Natural Earth (Public Domain) and Marine Regions (CC-BY).
+# from Natural Earth (Public Domain), Marine Regions (CC-BY), GADM, SeaVox, IHO, WGSRPD.
 
-FROM openmaptiles/postgis:2.9
+FROM postgis/postgis:12-master
 
 ARG version
 
 RUN apt-get -qq -y update \
     && apt-get -qq -y --no-install-recommends install \
         curl \
-        openjdk-8-jdk-headless \
+        openjdk-11-jdk-headless \
         supervisor \
         unzip \
     && rm -rf /var/lib/apt/lists/*
@@ -20,9 +20,13 @@ ENV PGDATA=/data
 
 ENV POSTGRES_DB=eez
 ENV POSTGRES_USER=eez
+ENV POSTGRES_HOST_AUTH_METHOD=trust
+
+# Scripts to load the database
+COPY all_layer_function.sql geolocate_centroids.sql /docker-entrypoint-initdb.d/
 
 # The PostgreSQL Docker startup will load these.
-COPY docker_import.sh /docker-entrypoint-initdb.d/90_import_boundary_data.sh
+COPY import.sh /docker-entrypoint-initdb.d/90_import_boundary_data.sh
 # This shuts down PostgreSQL and exits with an error, which is a small hack to end the following RUN.
 COPY docker_exit.sh /docker-entrypoint-initdb.d/91_exit.sh
 
@@ -42,9 +46,7 @@ COPY docker_application.properties /usr/src/app/application.properties
 COPY docker_logback.xml /usr/src/app/conf/logback.xml
 COPY docker_supervisord.conf /etc/supervisord.conf
 
-RUN echo x ${version}
-RUN echo y "${version}"
-RUN echo z $version
+RUN echo Installing Geocode-WS version ${version}
 
 RUN curl --fail --progress-bar --output /usr/src/app/geocode-ws.jar https://repository.gbif.org/repository/releases/org/gbif/geocode/geocode-ws/${version}/geocode-ws-"${version}".jar
 

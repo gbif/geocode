@@ -232,14 +232,17 @@ public class BitmapGenerator implements CommandLineRunner {
       int width = filled.getWidth();
 
       for (int y = 0; y < height; y++) {
-        double latitude = (1800d - y) / 1800d * 90d;
-        int spread = (int) Math.round(Math.ceil(kmToPx(latitude, 10)));
+        double latitude = (1800d-y)/1800d*90d;
+        int xSpread = (int) Math.round(Math.ceil(kmToPx(latitude, 5)));
 
         for (int x = 0; x < width; x++) {
-          if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
-            // Spread left and right.
-            for (int xs = Math.max(0, x - spread); xs <= x + spread && xs < width; xs++) {
-              filled.setRGB(xs, y, 0xFF000000);
+          int ySpread = (int) Math.round(Math.ceil(kmToPx(5)));
+          for (int ys = Math.max(0, y - ySpread); ys <= y + ySpread && ys < height; ys++) {
+            if ((hollow.getRGB(x, y) | 0xFF000000) < 0xFFFFFFFF) {
+              // Spread up, down, left and right.
+              for (int xs = Math.max(0, x - xSpread); xs <= x + xSpread && xs < width; xs++) {
+                filled.setRGB(xs, ys, 0xFF000000);
+              }
             }
           }
         }
@@ -252,24 +255,27 @@ public class BitmapGenerator implements CommandLineRunner {
         "Layer " + layerName + " completed in " + sw.elapsed(TimeUnit.SECONDS) + "s");
   }
 
-  /** Map string keys to equally-stepped positions in the colourspace (dumb implementation). */
+  /**
+   * Map string keys to equally-stepped positions in the colourspace (dumb implementation).
+   */
   Map<String, Integer> colourKey = new HashMap<>();
-
   Set<Integer> usedColours = new HashSet<>();
   int lastColour = 0;
   int inc = 0;
-
   private synchronized int getColour(String key) {
     if (inc == 0) {
       usedColours.add(0x000000);
       usedColours.add(0xFFFFFF);
       // Parameter will need changing if the number of polygons increases significantly.
-      // (The idea is to go through the FFFFFF colours ~three times, so nearby polygons aren't such
-      // close colours.)
+      // (The idea is to go through the FFFFFF colours ~three times, so nearby polygons aren't such close colours.)
       for (inc = 2400; inc < 20000; inc++) {
         if (0xFFFFFF % inc == 3) break;
       }
-      System.out.println("Colour increment is " + inc);
+      System.out.println("Colour increment is "+inc);
+    }
+
+    if (key.matches("^W+$")) {
+      return 0xFFFFFF;
     }
 
     if (key.equals("BLACK")) {
@@ -278,7 +284,7 @@ public class BitmapGenerator implements CommandLineRunner {
 
     if (!colourKey.containsKey(key)) {
       lastColour = (lastColour + inc) % 0xFFFFFF;
-      System.out.println("Colour " + key + " is now " + String.format("#%06x", lastColour));
+      System.out.println("Colour "+key+" is now "+String.format("#%06x", lastColour));
       assert !usedColours.contains(lastColour);
       colourKey.put(key, lastColour);
       usedColours.add(lastColour);
@@ -286,12 +292,13 @@ public class BitmapGenerator implements CommandLineRunner {
     return colourKey.get(key);
   }
 
-  /** Combines the bitmaps for every layer into a single bitmap, for use as a client cache. */
+  /**
+   * Combines the bitmaps for every layer into a single bitmap, for use as a client cache.
+   */
   public void combineAllBitmaps(Path targetDirectory, String... layerNames) throws Exception {
     Path pngFile = targetDirectory.resolve("resource/cache-bitmap.png");
     if (pngFile.toFile().exists()) {
-      System.err.println(
-          "Won't overwrite " + pngFile + ", remove it first if you want to regenerate it (slow).");
+      System.err.println("Won't overwrite "+pngFile+", remove it first if you want to regenerate it (slow).");
       return;
     }
 
@@ -304,10 +311,7 @@ public class BitmapGenerator implements CommandLineRunner {
 
     BufferedImage[] images = new BufferedImage[layerNames.length];
     for (int i = 0; i < layerNames.length; i++) {
-      images[i] =
-          ImageIO.read(
-              new FileInputStream(
-                  targetDirectory.resolve("layers/" + layerNames[i] + ".png").toFile()));
+      images[i] = ImageIO.read(new FileInputStream(targetDirectory.resolve("layers/" + layerNames[i] + ".png").toFile()));
       assert (height == combined.getHeight());
       assert (width == combined.getWidth());
     }
@@ -321,7 +325,11 @@ public class BitmapGenerator implements CommandLineRunner {
             key = "BLACK";
             break;
           }
-          key += (colour);
+          if (colour == 0xFFFFFF) {
+            key += "W";
+          } else {
+            key += (colour);
+          }
         }
         combined.setRGB(x, y, getColour(key));
       }
@@ -329,12 +337,7 @@ public class BitmapGenerator implements CommandLineRunner {
 
     ImageIO.write(combined, "PNG", pngFile.toFile());
 
-    System.out.println(
-        "Combined bitmap with "
-            + usedColours.size()
-            + " colours completed in "
-            + sw.elapsed(TimeUnit.SECONDS)
-            + "s");
+    System.out.println("Combined bitmap with "+usedColours.size()+" colours completed in "+sw.elapsed(TimeUnit.SECONDS)+"s");
   }
 
   /**
@@ -349,5 +352,9 @@ public class BitmapGenerator implements CommandLineRunner {
   /** Length of N kilometres in pixels, on a 7200×3600 pixel map. */
   private double kmToPx(double latitude, double n_km) {
     return n_km / (lengthParallelKm(latitude) / 7200d);
+  }
+
+  private double kmToPx(double n_km) {
+    return n_km / (lengthParallelKm(0) / 7200d);
   }
 }
