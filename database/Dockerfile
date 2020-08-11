@@ -42,12 +42,13 @@ RUN /usr/local/bin/docker-entrypoint.sh postgres || \
 RUN mkdir -p /usr/src/app/conf
 WORKDIR /usr/src/app
 
-COPY docker_application.properties /usr/src/app/application.properties
+COPY docker_application.yml /usr/src/app/application.yml
+COPY docker_bootstrap.yml /usr/src/app/bootstrap.yml
 COPY docker_logback.xml /usr/src/app/conf/logback.xml
 COPY docker_supervisord.conf /etc/supervisord.conf
 
 RUN echo Installing Geocode-WS version ${version}
 
-RUN curl --fail --progress-bar --output /usr/src/app/geocode-ws.jar https://repository.gbif.org/repository/releases/org/gbif/geocode/geocode-ws/${version}/geocode-ws-"${version}".jar
+RUN curl --fail --progress-bar --output /usr/src/app/geocode-ws.jar https://repository.gbif.org/repository/releases/org/gbif/geocode/geocode-ws/${version}/geocode-ws-"${version}"-exec.jar
 
 CMD ["/usr/bin/supervisord"]

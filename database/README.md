@@ -8,7 +8,7 @@ export POSTGRES_PASSWORD=…
 export POSTGRES_HOST=…
 export POSTGRES_PORT=5432
 
-./scripts/import.sh
+./import.sh
 ```
 
 ## Docker build:

@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eez
+    username: eez
+    password: eez
+    hikari:
+      connectionTimeout: 300000
+      idleTimeout: 120000
+      maximumPoolSize: 20
+      minimumIdle: 0
+  liquibase:
+    enabled: false
