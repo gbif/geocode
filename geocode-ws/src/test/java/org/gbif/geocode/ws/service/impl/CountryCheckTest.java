@@ -627,7 +627,7 @@ public class CountryCheckTest {
     testCountry("Kabul", 34.51666667, 69.183333, AFGHANISTAN);
   }
 
-  class LatLng {
+  static class LatLng {
     double lat;
     double lng;
 

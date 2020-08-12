@@ -52,8 +52,6 @@
     <module>geocode-ws-client</module>
   </modules>
 
-  <!-- TODO: clean POM -->
-
   <properties>
     <jdkLevel>1.8</jdkLevel>
     <main.basedir>${project.basedir}</main.basedir>
@@ -67,7 +65,6 @@
 
     <!-- GBIF-->
     <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
-    <gbif-common.version>0.47</gbif-common.version>
     <gbif-common-ws.version>1.6-SNAPSHOT</gbif-common-ws.version>
 
     <!-- DB -->
@@ -85,7 +82,6 @@
     <logback.version>1.2.3</logback.version>
     <logstash-encoder.version>4.11</logstash-encoder.version>
     <slf4j.version>1.7.21</slf4j.version>
-    <stopwatch.version>0.3</stopwatch.version>
     <findbugs-jsr305.version>3.0.1</findbugs-jsr305.version>
     <guava.version>18.0</guava.version>
 
@@ -179,22 +175,6 @@
       </dependency>
       <dependency>
         <groupId>org.gbif</groupId>
-        <artifactId>gbif-microservice</artifactId>
-        <version>${gbif-microservice.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.gbif</groupId>
-        <artifactId>gbif-common</artifactId>
-        <version>${gbif-common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gbif</groupId>
         <artifactId>gbif-common-ws</artifactId>
         <version>${gbif-common-ws.version}</version>
       </dependency>
@@ -266,16 +246,6 @@
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-httpclient</artifactId>
         <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.commsen.stopwatch.api</groupId>
-        <artifactId>stopwatch</artifactId>
-        <version>${stopwatch.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.code.findbugs</groupId>
-        <artifactId>jsr305</artifactId>
-        <version>${findbugs-jsr305.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>

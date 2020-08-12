@@ -21,6 +21,7 @@ import javax.management.MBeanServer;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -28,7 +29,12 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class, FeignAutoConfiguration.class})
+@SpringBootApplication(
+    exclude = {
+      SecurityAutoConfiguration.class,
+      FeignAutoConfiguration.class,
+      ManagementWebSecurityAutoConfiguration.class
+    })
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
 @ServletComponentScan("org.gbif.geocode.ws.monitoring")
 @ComponentScan(
