@@ -143,16 +143,6 @@
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common-mybatis</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.gbif</groupId>
-          <artifactId>gbif-parsers</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <!--  DB -->
     <dependency>
