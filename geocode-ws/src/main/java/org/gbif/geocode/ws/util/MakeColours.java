@@ -1,6 +1,11 @@
 package org.gbif.geocode.ws.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -9,11 +14,28 @@ import java.util.Stack;
 public class MakeColours {
 
   public static Stack<String> makeColours(int minimum) {
-    int hues = (int)Math.ceil(minimum / 25d); // Number of sectors in which to divide the colour wheel
-    double[] saturations = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
-    double[] values = {2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+    System.out.println(minimum + " minimum colours");
+    final double[] saturations, values;
+    final int hues; // Number of sectors in which to divide the colour wheel
 
-    Stack<String> colours = new Stack<>();
+    if (minimum < 600) {
+      saturations = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+      values = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+      hues = (int)Math.ceil(1.1 * minimum / 25d);
+
+    } else {
+      saturations = new double[99];
+      values = new double[99];
+      // Zero saturation is greys, and zero value is black. These are reserved for other uses,
+      // so start at 1.
+      for (int d = 0; d < 99; d++) {
+        saturations[d] = (d+1)/100d;
+        values[d] = (d+1)/100d;
+      }
+      hues = Math.max(6, (int)Math.ceil(1.25 * minimum / (99d*99d)));
+    }
+
+    Set<String> colours = new HashSet<>();
 
     for (int hueSegment = 0; hueSegment < hues; hueSegment++) {
       double h = (hueSegment / ((double)hues)) * 360;
@@ -21,13 +43,24 @@ public class MakeColours {
       for (double s : saturations) {
         for (double v : values) {
           String hex = HSVtoRGB(h, s, v);
-          colours.add(hex);
+          if (hex != null) {
+            colours.add(hex);
+          }
         }
       }
     }
 
-    Collections.shuffle(colours);
-    return colours;
+    if (colours.size() < minimum) {
+      throw new RuntimeException("Not enough colours were generated, needed "+minimum+" but "+
+        colours.size());
+    }
+
+    List<String> colourList = new ArrayList<>();
+    colourList.addAll(colours);
+    Collections.shuffle(colourList, new Random(2345)); // Avoid changes if this is rerun.
+    Stack<String> shuffledColours = new Stack<>();
+    shuffledColours.addAll(colourList);
+    return shuffledColours;
   }
 
   /**
@@ -60,7 +93,8 @@ public class MakeColours {
         return toRgbHex(p, q, v);
       case 4:
         return toRgbHex(t, p, v);
-      default: // case 5:
+      case 5:
+      default:
         return toRgbHex(v, p, q);
     }
   }
@@ -69,6 +103,11 @@ public class MakeColours {
     int rr = (int) (255 * r);
     int gg = (int) (255 * g);
     int bb = (int) (255 * b);
+
+    if (rr == gg && gg == bb) {
+      // Greys are reserved.
+      return null;
+    }
 
     return String.format("#%02x%02x%02x", rr, gg, bb);
   }
