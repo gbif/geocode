@@ -23,7 +23,7 @@ ENV POSTGRES_USER=eez
 ENV POSTGRES_HOST_AUTH_METHOD=trust
 
 # Scripts to load the database
-COPY all_layer_function.sql geolocate_centroids.sql /docker-entrypoint-initdb.d/
+COPY all_layer_function.sql coordinatecleaner_centroids.sql geolocate_centroids.sql /docker-entrypoint-initdb.d/
 
 # The PostgreSQL Docker startup will load these.
 COPY import.sh /docker-entrypoint-initdb.d/90_import_boundary_data.sh

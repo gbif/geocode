@@ -42,18 +42,20 @@ function hide_inserts() {
 	grep -v "INSERT 0 1"
 }
 
-function import_geolocate_centroids() {
-	echo "Importing Geolocate Centroids dataset"
-
-	# Generated (for the moment) with GeoLocateCentroids.java "test" in the geocode-ws module.
+function import_centroids() {
+	echo "Importing Centroids dataset"
 
 	echo "Dropping old tables"
+	# Generated (for the moment) with GeoLocateCentroids.java "test" in the geocode-ws module.
 	echo "DROP TABLE IF EXISTS geolocate_centroids;" | exec_psql
+	# Generated from the R script in the comment in this file.
+	echo "DROP TABLE IF EXISTS coordinatecleaner_centroids;" | exec_psql
 
-	echo "Importing Geolocate Centroids to PostGIS"
+	echo "Importing Centroids to PostGIS"
 	exec_psql_file $SCRIPT_DIR/geolocate_centroids.sql
+	exec_psql_file $SCRIPT_DIR/coordinatecleaner_centroids.sql
 
-	echo "Geolocate Centroids import complete"
+	echo "Centroids import complete"
 	echo
 }
 
@@ -435,7 +437,7 @@ if [[ -e complete ]]; then
 else
 	echo "Importing data"
   create_cache
-  import_geolocate_centroids
+  import_centroids
   import_natural_earth
   align_natural_earth
   import_marine_regions
