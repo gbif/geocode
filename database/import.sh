@@ -409,6 +409,8 @@ function align_marine_regions() {
 function create_cache() {
 
 	exec_psql <<EOF
+	ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO PUBLIC;
+
 	CREATE TABLE IF NOT EXISTS tile_cache (
 	    layer      varchar(128)  NOT NULL,
 	    z          int           NOT NULL,
