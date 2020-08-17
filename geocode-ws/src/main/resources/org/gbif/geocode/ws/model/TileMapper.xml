@@ -357,11 +357,11 @@
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso2 AS id, ST_AsSVG(geom) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid != 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM eez WHERE mrgid != 8492
   UNION ALL
-    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
   UNION ALL
-    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
   </select>
 
   <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -114,7 +114,7 @@ function import_marine_regions() {
 	echo "Downloading Marine Regions dataset"
 
 	# EEZ (we're currently on version 10):
-	# Download the Low res version from here: http://vliz.be/vmdcdata/marbound/download.php
+	# Download the Low res version from here: http://www.marineregions.org/downloads.php
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
