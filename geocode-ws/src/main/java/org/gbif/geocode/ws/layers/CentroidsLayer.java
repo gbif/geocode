@@ -6,15 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class GeolocateCentroidsLayer extends AbstractBitmapCachedLayer {
+public class CentroidsLayer extends AbstractBitmapCachedLayer {
   public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
 
-  public GeolocateCentroidsLayer() {
-    super(GeolocateCentroidsLayer.class.getResourceAsStream("geolocate_centroids.png"));
+  public CentroidsLayer() {
+    super(CentroidsLayer.class.getResourceAsStream("centroids.png"));
   }
 
   @Override
   public String name() {
-    return "GeolocateCentroids";
+    return "Centroids";
   }
 }

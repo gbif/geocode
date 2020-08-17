@@ -94,7 +94,7 @@ public class BitmapGenerator {
     BitmapGenerator bitmapGenerator = new BitmapGenerator(injector.getInstance(SqlSessionFactory.class));
     bitmapGenerator.generateAllBitmaps(targetDirectory.resolve("layers"));
 
-    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm0", "gadm1", "gadm2", "gadm3", "iho", "seavox", "wgsrpd", "geolocate_centroids");
+    bitmapGenerator.combineAllBitmaps(targetDirectory, "political", "eez", "gadm0", "gadm1", "gadm2", "gadm3", "iho", "seavox", "wgsrpd", "centroids");
   }
 
   /**
@@ -117,7 +117,7 @@ public class BitmapGenerator {
         .put("iho", tileMapper::svgIho)
         .put("seavox", tileMapper::svgSeaVoX)
         .put("wgsrpd", tileMapper::svgWgsrpd)
-        .put("geolocate_centroids", tileMapper::svgGeolocateCentroids)
+        .put("centroids", tileMapper::svgCentroids)
         .build();
 
       for (Map.Entry<String, Supplier<List<SvgShape>>> x : svgSuppliers.entrySet()) {

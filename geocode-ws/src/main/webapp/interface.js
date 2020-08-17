@@ -387,15 +387,15 @@ layers['wgsrpd'] = new ol.layer.VectorTile({
 	visible: false
 });
 
-layers['geolocate_centroids'] = new ol.layer.VectorTile({
-	title: 'Geolocate centroids',
+layers['centroids'] = new ol.layer.VectorTile({
+	title: 'Centroids',
 	renderMode: 'image',
 	source: new ol.source.VectorTile({
 		projection: 'EPSG:4326',
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/geolocate_centroids/{z}/{x}/{y}.mvt',
+		url: './tile/centroids/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -435,7 +435,7 @@ var map = new ol.Map({
 				layers['iho'],
 				layers['seavox'],
 				layers['wgsrpd'],
-				layers['geolocate_centroids'],
+				layers['centroids'],
 			]
 		}),
 		vector

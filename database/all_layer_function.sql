@@ -1,3 +1,22 @@
+DROP VIEW IF EXISTS centroids;
+CREATE VIEW centroids AS (
+  SELECT
+    'GeolocateCentroid' AS type,
+    gid::text AS id,
+    'http://geo-locate.org/webservices/geolocatesvcv2/' AS source,
+    iso_a2 AS isoCountryCode2Digit,
+    geom AS geom
+  FROM geolocate_centroids
+) UNION ALL (
+  SELECT
+    'CoordinateCleanerCentroid' AS type,
+    gid::text AS id,
+    'https://github.com/ropensci/CoordinateCleaner' AS source,
+    iso_a2 AS isoCountryCode2Digit,
+    geom AS geom
+  FROM coordinatecleaner_centroids
+);
+
 DROP FUNCTION IF EXISTS query_layers(q_lng float, q_lat float, q_unc float, q_layers text[]);
 CREATE OR REPLACE FUNCTION query_layers(q_lng float, q_lat float, q_unc float, q_layers text[])
 RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit character, distance float) AS $$
@@ -129,15 +148,15 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (
       SELECT
-        'GeolocateCentroids' AS type,
-        gid::text AS id,
-        'http://geo-locate.org/webservices/geolocatesvcv2/' AS source,
-        NULL,
-        iso_a2 AS isoCountryCode2Digit,
+        type,
+        id,
+        source,
+        isoCountryCode2Digit AS title,
+        isoCountryCode2Digit,
         ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance
-      FROM geolocate_centroids
+      FROM centroids
       WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
-        AND 'GeolocateCentroids' = ANY(q_layers)
+        AND 'Centroids' = ANY(q_layers)
       ORDER BY distance, id
     )
 $$ LANGUAGE SQL IMMUTABLE;
@@ -158,4 +177,4 @@ FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
 WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM2', 'GADM3']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);

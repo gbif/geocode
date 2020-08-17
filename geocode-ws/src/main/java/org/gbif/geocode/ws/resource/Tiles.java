@@ -31,7 +31,7 @@ public class Tiles {
   private final SqlSessionFactory sqlSessionFactory;
 
   private static final List<String> layers = Arrays.asList(
-    "political", "eez", "geolocate_centroids",
+    "political", "eez", "centroids",
     "gadm5", "gadm4", "gadm3", "gadm2", "gadm1",
     "iho", "seavox", "wgsrpd");
 
@@ -110,8 +110,8 @@ public class Tiles {
           tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
 
-        case "geolocate_centroids":
-          tile = tileMapper.tileGeolocateCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        case "centroids":
+          tile = tileMapper.tileCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
           break;
 
         default:
