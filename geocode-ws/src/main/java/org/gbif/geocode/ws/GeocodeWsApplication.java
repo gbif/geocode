@@ -12,19 +12,15 @@ import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.management.MBeanServer;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,7 +32,6 @@ import org.springframework.context.annotation.ComponentScan;
       ManagementWebSecurityAutoConfiguration.class
     })
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
-@ServletComponentScan("org.gbif.geocode.ws.monitoring")
 @ComponentScan(
     basePackages = {
       "org.gbif.geocode.ws.advice",
@@ -77,10 +72,5 @@ public class GeocodeWsApplication {
     layers.add(geolocateCentroidsLayer);
 
     return Collections.unmodifiableList(layers);
-  }
-
-  @Bean
-  public MBeanServer mBeanServer() {
-    return ManagementFactory.getPlatformMBeanServer();
   }
 }

@@ -10,3 +10,6 @@ spring:
       minimumIdle: 2
   liquibase:
     enabled: false
+
+  jmx:
+    enabled: true

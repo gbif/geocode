@@ -11,20 +11,21 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.gbif.api.vocabulary.Country.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Check we give the preferred response for dependent territories, overseas regions, disputed
  * regions etc. These can change in the underlying data sources, and it's undesirable that we could
  * "lose" a country due to a change in politics from a data source.
  */
-@Ignore("Run manually with a local server")
+@Disabled("Run manually with a local server")
 public class CountryCheckTest {
   private static final Logger LOG = LoggerFactory.getLogger(CountryCheckTest.class);
 
@@ -664,7 +665,7 @@ public class CountryCheckTest {
 
   private void testCountry(String explanation, double lat, double lng, Country... countries) {
     LOG.info("Testing {} ({},{}); want {}", explanation, lat, lng, countries);
-    assertEquals(
+    Assertions.assertEquals(
         Arrays.asList(countries),
         Arrays.asList(getCountryForLatLng(new LatLng(lat, lng)).toArray(new Country[0])));
   }
