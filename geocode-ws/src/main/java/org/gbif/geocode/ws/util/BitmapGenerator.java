@@ -29,7 +29,6 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -55,13 +54,7 @@ import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_C
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, FeignAutoConfiguration.class})
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
-@ComponentScan(
-    basePackages = {
-      "org.gbif.geocode.ws.layers",
-      "org.gbif.geocode.ws.monitoring",
-      "org.gbif.geocode.ws.persistence",
-      "org.gbif.geocode.ws.service"
-    })
+@ComponentScan(basePackages = {"org.gbif.geocode.ws.persistence"})
 public class BitmapGenerator implements CommandLineRunner {
 
   // It does not seem worth using a templating engine for a single "template".  Welcome to 1995!
