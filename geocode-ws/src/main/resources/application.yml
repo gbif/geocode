@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: @geocode-ws.db.url@
+    username: @geocode-ws.db.username@
+    password: @geocode-ws.db.password@
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maximumPoolSize: 12
+      minimumIdle: 2
+  liquibase:
+    enabled: false
+
+  jmx:
+    enabled: true

@@ -1,49 +1,59 @@
 package org.gbif.geocode.ws.client;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.ws.client.guice.GeocodeWs;
-import org.gbif.ws.client.BaseWsClient;
 
-import javax.ws.rs.core.MultivaluedMap;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-@Singleton
-public class GeocodeWsClient extends BaseWsClient implements GeocodeService {
+import javax.annotation.Nullable;
 
-  private static final String GEOCODE_PATH = "geocode";
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-  @Inject
-  public GeocodeWsClient(@GeocodeWs WebResource resource) {
-    super(resource.path(GEOCODE_PATH));
-  }
+import com.google.common.io.ByteStreams;
+
+import feign.Response;
+
+@RequestMapping("geocode")
+public interface GeocodeWsClient extends GeocodeService {
+
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "reverse",
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  @Override
+  Collection<Location> get(
+      @RequestParam("lat") Double latitude,
+      @RequestParam("lng") Double longitude,
+      @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
+          Double uncertaintyDegrees,
+      @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
+          Double uncertaintyMeters,
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers);
 
   @Override
-  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
+  default Collection<Location> get(
+      Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, null);
   }
 
-  @Override
-  public Collection<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> layers) {
-    MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-    queryParams.add("lat", latitude.toString());
-    queryParams.add("lng", longitude.toString());
-    if (uncertaintyDegrees != null) queryParams.add("uncertaintyDegrees", uncertaintyDegrees.toString());
-    if (uncertaintyMeters != null) queryParams.add("uncertaintyMeters", uncertaintyMeters.toString());
-    layers.stream().forEach(l -> queryParams.add("layer", l));
-
-    return Arrays.asList(resource.path("reverse").queryParams(queryParams).get(Location[].class));
-  }
+  @RequestMapping(
+      method = RequestMethod.GET,
+      value = "bitmap",
+      produces = MediaType.IMAGE_PNG_VALUE)
+  Response getBitmap();
 
   @Override
-  public byte[] bitmap() {
-    return resource.path("bitmap").get(byte[].class);
+  default byte[] bitmap() {
+    try {
+      return ByteStreams.toByteArray(getBitmap().body().asInputStream());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

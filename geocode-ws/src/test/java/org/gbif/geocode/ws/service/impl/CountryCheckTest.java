@@ -2,39 +2,36 @@ package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.api.vocabulary.Country;
 import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.ws.client.GeocodeWsClient;
+import org.gbif.ws.client.ClientBuilder;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.ws.rs.core.MultivaluedMap;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
 import static org.gbif.api.vocabulary.Country.*;
 
 /**
- * Check we give the preferred response for dependent territories, overseas regions,
- * disputed regions etc.  These can change in the underlying data sources, and it's
- * undesirable that we could "lose" a country due to a change in politics from
- * a data source.
+ * Check we give the preferred response for dependent territories, overseas regions, disputed
+ * regions etc. These can change in the underlying data sources, and it's undesirable that we could
+ * "lose" a country due to a change in politics from a data source.
  */
-@Ignore("Run manually with a local server")
+@Disabled("Run manually with a local server")
 public class CountryCheckTest {
   private static final Logger LOG = LoggerFactory.getLogger(CountryCheckTest.class);
 
-  private static final String api = "http://localhost:8080/geocode/reverse";
-  WebResource r;
+  private static final String api = "http://localhost:8080";
+  private static final GeocodeService geocodeClient =
+      new ClientBuilder().withUrl(api).build(GeocodeWsClient.class);
 
   @Test
   public void testVariousLocations() {
@@ -86,13 +83,14 @@ public class CountryCheckTest {
     testCountry("Mont 'Orohena, Tahiti, French Polynesia", -17.62, -149.50, FRENCH_POLYNESIA);
     testCountry("Ocean surrounding French Polynesia", -15.64, -145.81, FRENCH_POLYNESIA);
     testCountry("Saint Pierre and Miquelon", 47.04, -56.32, SAINT_PIERRE_MIQUELON);
-    testCountry("Ocean by Saint Pierre and Miquelon", 46.92, -56.37,SAINT_PIERRE_MIQUELON);
+    testCountry("Ocean by Saint Pierre and Miquelon", 46.92, -56.37, SAINT_PIERRE_MIQUELON);
     testCountry("Wallis and Futuna", -14.28, -178.14, WALLIS_FUTUNA);
     testCountry("Ocean by Wallis and Futuna", -14.27, -178.05, WALLIS_FUTUNA);
     testCountry("Cul-de-Sac, Saint Martin", 18.10, -63.03, SAINT_MARTIN_FRENCH);
     testCountry("Ocean by Saint Martin", 18.10, -63.00, SAINT_MARTIN_FRENCH);
     testCountry("Saint Barthélemy", 17.90, -62.82, SAINT_BARTHÉLEMY);
-    // There is an error in the Marine Regions dataset, the EEZ for Saint Martin also covers Saint Barthélemy's EEZ.
+    // There is an error in the Marine Regions dataset, the EEZ for Saint Martin also covers Saint
+    // Barthélemy's EEZ.
     // See http://marineregions.org/eezdetails.php?eez_id=221
     // testCountry("Ocean by Saint Barthélemy", 17.97, -62.79, SAINT_BARTHÉLEMY);
     testCountry("New Caledonia", -20.98, 165.12, NEW_CALEDONIA);
@@ -107,9 +105,9 @@ public class CountryCheckTest {
     testCountry("Sea north of Cyprus", 35.43, 33.70, CYPRUS);
 
     // Gaza City, Palestine
-    //testCountry("Gaza CIty, Palestine", 31.52, 34.45, PALESTINIAN_TERRITORY);
+    // testCountry("Gaza CIty, Palestine", 31.52, 34.45, PALESTINIAN_TERRITORY);
     // The EEZ database puts the sea off Gaza under Israel.
-    //testCountry("Sea NW of Gaza, Palestine", 31.46, 34.34, PALESTINIAN_TERRITORY);
+    // testCountry("Sea NW of Gaza, Palestine", 31.46, 34.34, PALESTINIAN_TERRITORY);
 
     // Kosovo.
     testCountry("Pristina, Kosovo", 42.67, 21.15, KOSOVO);
@@ -125,7 +123,8 @@ public class CountryCheckTest {
     // See also, https://en.wikipedia.org/wiki/List_of_states_with_limited_recognition
 
     // There are further territories without ISO codes which we don't handle, for example
-    // • Scattered Islands in the Indian Ocean: https://en.wikipedia.org/wiki/Scattered_Islands_in_the_Indian_Ocean
+    // • Scattered Islands in the Indian Ocean:
+    // https://en.wikipedia.org/wiki/Scattered_Islands_in_the_Indian_Ocean
     // • Ashmore and Cartier Islands: https://en.wikipedia.org/wiki/Ashmore_and_Cartier_Islands
   }
 
@@ -369,7 +368,8 @@ public class CountryCheckTest {
     testCountry("Charlotte Amalie", 18.35, -64.933333, VIRGIN_ISLANDS);
     testCountry("Tashkent", 41.31666667, 69.25, UZBEKISTAN);
     testCountry("Port-Vila", -17.73333333, 168.316667, VANUATU);
-    testCountry("Vatican City", 41.903, 12.453, VATICAN, ITALY); // Within the approximation distance.
+    testCountry(
+        "Vatican City", 41.903, 12.453, VATICAN, ITALY); // Within the approximation distance.
     testCountry("Caracas", 10.48333333, -66.866667, VENEZUELA);
     testCountry("Hanoi", 21.03333333, 105.85, VIETNAM);
     testCountry("Mata-Utu", -13.28, -176.18, WALLIS_FUTUNA);
@@ -387,7 +387,8 @@ public class CountryCheckTest {
     testCountry("Mata-Utu", -13.28, -176.18, WALLIS_FUTUNA);
     testCountry("Hanoi", 21.03333333, 105.85, VIETNAM);
     testCountry("Caracas", 10.48333333, -66.866667, VENEZUELA);
-    testCountry("Vatican City", 41.903, 12.453, VATICAN, ITALY); // Within the approximation distance.
+    testCountry(
+        "Vatican City", 41.903, 12.453, VATICAN, ITALY); // Within the approximation distance.
     testCountry("Port-Vila", -17.73333333, 168.316667, VANUATU);
     testCountry("Tashkent", 41.31666667, 69.25, UZBEKISTAN);
     testCountry("Charlotte Amalie", 18.35, -64.933333, VIRGIN_ISLANDS);
@@ -627,15 +628,7 @@ public class CountryCheckTest {
     testCountry("Kabul", 34.51666667, 69.183333, AFGHANISTAN);
   }
 
-  public CountryCheckTest() {
-    ClientConfig cc = new DefaultClientConfig();
-    cc.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-    cc.getClasses().add(JacksonJsonProvider.class);
-
-    r = Client.create(cc).resource(api);
-  }
-
-  class LatLng {
+  static class LatLng {
     double lat;
     double lng;
 
@@ -656,14 +649,8 @@ public class CountryCheckTest {
   private Set<Country> getCountryForLatLng(LatLng coord) {
     Set<Country> countries = new TreeSet<>();
 
-    MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-    queryParams.add("lat", String.valueOf(coord.getLat()));
-    queryParams.add("lng", String.valueOf(coord.getLng()));
-
-    WebResource res = null;
-    res = r.queryParams(queryParams);
-    Location[] lookups = res.get(Location[].class);
-    if (lookups != null && lookups.length > 0) {
+    Collection<Location> lookups = geocodeClient.get(coord.getLat(), coord.getLng(), null, null);
+    if (lookups != null && lookups.size() > 0) {
       for (Location loc : lookups) {
         if (loc.getIsoCountryCode2Digit() != null) {
           countries.add(Country.fromIsoCode(loc.getIsoCountryCode2Digit()));
@@ -671,14 +658,15 @@ public class CountryCheckTest {
       }
       LOG.debug("Countries are {}", countries);
     }
-    LOG.debug("[{}] locations for coord {}: {}", lookups.length, coord, countries);
+    LOG.debug("[{}] locations for coord {}: {}", lookups.size(), coord, countries);
 
     return countries;
   }
 
   private void testCountry(String explanation, double lat, double lng, Country... countries) {
     LOG.info("Testing {} ({},{}); want {}", explanation, lat, lng, countries);
-    assertEquals(Arrays.asList(countries),
+    Assertions.assertEquals(
+        Arrays.asList(countries),
         Arrays.asList(getCountryForLatLng(new LatLng(lat, lng)).toArray(new Country[0])));
   }
 }

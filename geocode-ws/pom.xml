@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -15,6 +16,8 @@
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
 
   <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+    <start-class>org.gbif.geocode.ws.GeocodeWsApplication</start-class>
     <batik.version>1.13</batik.version>
     <exec-maven-plugin.version>1.3.2</exec-maven-plugin.version>
   </properties>
@@ -24,11 +27,6 @@
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>src/main/webapp</directory>
-        <filtering>true</filtering>
-        <targetPath>webapp</targetPath>
       </resource>
     </resources>
 
@@ -50,7 +48,7 @@
                 <!-- Around 36GB is required to generate the GADM map. -->
                 <argument>-Xmx40G</argument>
                 <argument>-classpath</argument>
-                <classpath />
+                <classpath/>
                 <argument>-Djava.io.tmpdir=${project.build.directory}</argument>
                 <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
                 <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>
@@ -59,70 +57,57 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty-maven-plugin.version}</version>
-        <configuration>
-          <webAppConfig>
-            <contextPath>/</contextPath>
-          </webAppConfig>
-          <scanIntervalSeconds>10</scanIntervalSeconds>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>${maven-shade-plugin.version}</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>repackage</id>
             <goals>
-              <goal>shade</goal>
+              <goal>repackage</goal>
             </goals>
             <configuration>
-              <createDependencyReducedPom>true</createDependencyReducedPom>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.gbif.ws.app.Application</mainClass>
-                  <manifestEntries>
-                    <Class-Path>conf/</Class-Path>
-                  </manifestEntries>
-                </transformer>
-              </transformers>
-              <artifactSet>
-                <excludes>
-                  <exclude>org.apache.xmlgraphics:*</exclude>
-                </excludes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>org.jruby:jruby-complete</artifact>
-                  <excludes>
-                    <exclude>org/joda/**</exclude>
-                  </excludes>
-                </filter>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>META-INF/*.SF</exclude>
-                    <exclude>META-INF/*.DSA</exclude>
-                    <exclude>META-INF/*.RSA</exclude>
-                    <exclude>logback.xml</exclude>
-                  </excludes>
-                </filter>
-                <filter>
-                  <!--Exclude configuration file that are not required in the output jar file -->
-                  <artifact>org.gbif.geocode:geocode-ws</artifact>
-                  <excludes>
-                    <exclude>mybatis.properties</exclude>
-                  </excludes>
-                </filter>
-              </filters>
+              <attach>true</attach>
+              <classifier>exec</classifier>
             </configuration>
           </execution>
+          <execution>
+            <id>build-info</id>
+            <goals>
+              <goal>build-info</goal>
+            </goals>
+          </execution>
         </executions>
+        <configuration>
+          <mainClass>${start-class}</mainClass>
+          <addResources>false</addResources>
+          <layout>ZIP</layout>
+          <excludeGroupIds>org.apache.xmlgraphics</excludeGroupIds>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+        <configuration>
+          <excludes>
+            <!-- This is where the exclusion occurs -->
+            <exclude>META-INF/*.SF</exclude>
+            <exclude>META-INF/*.DSA</exclude>
+            <exclude>META-INF/*.RSA</exclude>
+            <exclude>**/application.yml</exclude>
+            <exclude>**/bootstrap.yml</exclude>
+            <exclude>**/logback.xml</exclude>
+          </excludes>
+          <archive>
+            <manifest>
+              <mainClass>${start-class}</mainClass>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -135,114 +120,45 @@
   </repositories>
 
   <dependencies>
-    <!-- gbif-microservice: embedded jetty -->
+    <!-- Spring dependencies -->
     <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-microservice</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common</artifactId>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <!-- GBIF -->
     <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-ws</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-    </dependency>
-    <!--  Needed for mybatis-guice -->
-    <dependency>
-      <groupId>com.google.inject.extensions</groupId>
-      <artifactId>guice-multibindings</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject.extensions</groupId>
-      <artifactId>guice-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey.contribs</groupId>
-      <artifactId>jersey-guice</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common-mybatis</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.gbif</groupId>
-          <artifactId>gbif-parsers</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+
+    <!--  DB -->
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.mybatis</groupId>
-      <artifactId>mybatis-guice</artifactId>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+    </dependency>
+
+    <!-- Third party -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
@@ -253,15 +169,53 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-all</artifactId>
       <version>${batik.version}</version>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>org.gbif.geocode</groupId>
+      <artifactId>geocode-ws-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -270,8 +224,7 @@
     <profile>
       <id>local</id>
       <properties>
-        <geocode-ws.db.host>127.0.0.1:15432</geocode-ws.db.host>
-        <geocode-ws.db.name>eez</geocode-ws.db.name>
+        <geocode-ws.db.url>jdbc:postgresql://127.0.0.1:15432/eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
       </properties>
@@ -280,8 +233,7 @@
     <profile>
       <id>dev</id>
       <properties>
-        <geocode-ws.db.host>pg1.gbif-dev.org</geocode-ws.db.host>
-        <geocode-ws.db.name>dev_eez</geocode-ws.db.name>
+        <geocode-ws.db.url>jdbc:postgresql://pg1.gbif-dev.org/dev_eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
       </properties>

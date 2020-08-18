@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gbif.geocode.ws.persistence.mapper.LocationMapper">
+
+  <select id="queryLayers" resultType="Location">
+    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance
+    FROM query_layers(#{lng}, #{lat}, #{distance}, <foreach item="item" collection="layers" open="ARRAY[" separator="," close="]">#{item}</foreach>);
+  </select>
+
+</mapper>
