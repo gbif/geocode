@@ -29,6 +29,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,6 +37,7 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.google.common.base.Preconditions;
@@ -94,9 +96,12 @@ public class BitmapGenerator implements CommandLineRunner {
   private static final String SVG_FOOTER = "</svg>\n";
 
   private final TileMapper tileMapper;
+  private final ConfigurableApplicationContext context;
 
-  public BitmapGenerator(TileMapper tileMapper) {
+
+  public BitmapGenerator(TileMapper tileMapper, ConfigurableApplicationContext context) {
     this.tileMapper = tileMapper;
+    this.context = context;
   }
 
   /** Generate bitmaps for all known layers. */
@@ -127,6 +132,8 @@ public class BitmapGenerator implements CommandLineRunner {
         "seavox",
         "wgsrpd",
         "centroids");
+
+    System.exit(SpringApplication.exit(context));
   }
 
   /** Generate bitmaps for each layer. */
