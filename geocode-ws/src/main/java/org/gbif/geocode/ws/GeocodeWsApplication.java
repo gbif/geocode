@@ -1,12 +1,12 @@
 package org.gbif.geocode.ws;
 
 import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
+import org.gbif.geocode.ws.layers.CentroidsLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.Gadm0Layer;
 import org.gbif.geocode.ws.layers.Gadm1Layer;
 import org.gbif.geocode.ws.layers.Gadm2Layer;
 import org.gbif.geocode.ws.layers.Gadm3Layer;
-import org.gbif.geocode.ws.layers.GeolocateCentroidsLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
@@ -57,7 +57,7 @@ public class GeocodeWsApplication {
       IhoLayer ihoLayer,
       SeaVoXLayer seaVoxLayer,
       WgsrpdLayer wgsrpdLayer,
-      GeolocateCentroidsLayer geolocateCentroidsLayer) {
+      CentroidsLayer centroidsLayer) {
 
     List<AbstractBitmapCachedLayer> layers = new ArrayList<>();
     layers.add(politicalLayer);
@@ -69,7 +69,7 @@ public class GeocodeWsApplication {
     layers.add(ihoLayer);
     layers.add(seaVoxLayer);
     layers.add(wgsrpdLayer);
-    layers.add(geolocateCentroidsLayer);
+    layers.add(centroidsLayer);
 
     return Collections.unmodifiableList(layers);
   }

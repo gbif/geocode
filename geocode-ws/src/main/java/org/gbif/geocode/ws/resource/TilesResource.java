@@ -40,7 +40,7 @@ public class TilesResource {
       Arrays.asList(
           "political",
           "eez",
-          "geolocate_centroids",
+          "centroids",
           "gadm5",
           "gadm4",
           "gadm3",
@@ -118,9 +118,9 @@ public class TilesResource {
         tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
-      case "geolocate_centroids":
+      case "centroids":
         tile =
-            tileMapper.tileGeolocateCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+            tileMapper.tileCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
       default:

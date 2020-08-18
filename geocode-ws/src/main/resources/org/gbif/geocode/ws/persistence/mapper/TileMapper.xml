@@ -319,23 +319,23 @@
     ) AS tile;
   </select>
 
-  <!-- Tiles from the public.geolocate_centroids table -->
-  <select id="tileGeolocateCentroids" resultMap="tileMap">
+  <!-- Tiles from the public.centroids view -->
+  <select id="tileCentroids" resultMap="tileMap">
     WITH overlappings AS (
     SELECT
-    gid AS id,
-    'GEOLOCATE_CENTROIDS' AS type,
-    'http://geo-locate.org/webservices/geolocatesvcv2/' AS source,
-    iso_a2 AS title,
-    iso_a2 AS isoCountryCode2Digit,
+    id,
+    type,
+    source,
+    isoCountryCode2Digit AS title,
+    isoCountryCode2Digit,
     geom AS geom
-    FROM geolocate_centroids
+    FROM centroids
     WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
     SELECT * FROM overlappings
     WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
     )
-    SELECT ST_ASMVT(tile, 'geolocate_centroids', 4096, 'mvtgeometry') AS t
+    SELECT ST_ASMVT(tile, 'centroids', 4096, 'mvtgeometry') AS t
     FROM (
     SELECT
     id, type, source, title, isoCountryCode2Digit,
@@ -357,11 +357,11 @@
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso2 AS id, ST_AsSVG(geom) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid != 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM eez WHERE mrgid != 8492
     UNION ALL
-    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
     UNION ALL
-    SELECT iso2 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3 WHERE mrgid = 8492
+    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
   </select>
 
   <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">
@@ -408,7 +408,7 @@
     SELECT level4_cod AS id, ST_AsSVG(geom) AS shape FROM wgsrpd_level4
   </select>
 
-  <select id="svgGeolocateCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT gid AS id, ST_AsSVG(ST_Buffer(geom, 0.05, 'quad_segs=4')) AS shape FROM geolocate_centroids
+  <select id="svgCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT type || id AS id, ST_AsSVG(ST_Buffer(geom, 0.05, 'quad_segs=4')) AS shape FROM centroids
   </select>
 </mapper>

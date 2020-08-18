@@ -124,7 +124,7 @@ public class BitmapGenerator implements CommandLineRunner {
         "iho",
         "seavox",
         "wgsrpd",
-        "geolocate_centroids");
+        "centroids");
   }
 
   /** Generate bitmaps for each layer. */
@@ -142,7 +142,7 @@ public class BitmapGenerator implements CommandLineRunner {
             .put("iho", tileMapper::svgIho)
             .put("seavox", tileMapper::svgSeaVoX)
             .put("wgsrpd", tileMapper::svgWgsrpd)
-            .put("geolocate_centroids", tileMapper::svgGeolocateCentroids)
+            .put("centroids", tileMapper::svgCentroids)
             .build();
 
     for (Map.Entry<String, Supplier<List<SvgShape>>> x : svgSuppliers.entrySet()) {

@@ -27,7 +27,7 @@ public interface TileMapper {
   List<SvgShape> svgIho();
   List<SvgShape> svgSeaVoX();
   List<SvgShape> svgWgsrpd();
-  List<SvgShape> svgGeolocateCentroids();
+  List<SvgShape> svgCentroids();
 
   Tile tilePolitical(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileEez(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
@@ -39,8 +39,9 @@ public interface TileMapper {
   Tile tileIho(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileSeaVoX(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileWgsrpd(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
-  Tile tileGeolocateCentroids(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
+  Tile tileCentroids(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
 
   void toCache(@Param("layer") String layer, @Param("z") int z, @Param("x") long x, @Param("y") long y, @Param("tile") Tile tile, @Param("timeTaken") long timeTaken);
   Tile fromCache(@Param("layer") String layer, @Param("z") int z, @Param("x") long x, @Param("y") long y);
+
 }
