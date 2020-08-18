@@ -13,3 +13,10 @@ indent_size = 2
 ij_java_imports_layout = org.gbif.**,|,java.**,|,javax.**,|,org.**,|,com.**,|,*,|,$*
 ij_java_class_count_to_use_import_on_demand = 100
 ij_java_names_count_to_use_import_on_demand = 100
+
+[*.{css,html,js,sh}]
+indent_style = tab
+indent_size = 4
+
+[Dockerfile]
+indent_size = 4
