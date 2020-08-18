@@ -101,11 +101,16 @@ public class MyBatisGeocoder implements GeocodeService {
 
     if (!toQuery.isEmpty()) {
       // Retrieve anything the bitmaps couldn't help with, or didn't yet have
-      Stopwatch sw = Stopwatch.createStarted();
+      Stopwatch sw = null;
+      if (LOG.isDebugEnabled()) {
+          sw = Stopwatch.createStarted();
+      }
       List<Location> queriedLocations =
           locationMapper.queryLayers(lng, lat, uncertaintyDegrees, toQuery);
       locations.addAll(queriedLocations);
-      LOG.info("Time for {} is {}", toQuery, sw.stop());
+      if (sw != null) {
+          LOG.debug("Time for {} is {}", toQuery, sw.stop());
+      }
 
       // Push values into the bitmap caches
       for (AbstractBitmapCachedLayer layer : availableLayers) {
