@@ -102,8 +102,8 @@ public class BitmapGenerator implements CommandLineRunner {
   /** Generate bitmaps for all known layers. */
   public static void main(String... args) throws Exception {
     SpringApplication app = new SpringApplication(BitmapGenerator.class);
-    app.setBannerMode(Mode.OFF);
     app.setWebApplicationType(WebApplicationType.NONE);
+    app.setBannerMode(Mode.OFF);
     app.run(args);
   }
 

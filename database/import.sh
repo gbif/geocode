@@ -436,16 +436,16 @@ if [[ -e complete ]]; then
 	echo "Data already imported"
 else
 	echo "Importing data"
-  create_cache
-  import_centroids
-  import_natural_earth
-  align_natural_earth
-  import_marine_regions
-  align_marine_regions
-  import_gadm
-  import_iho
-  import_seavox
-  import_wgsrpd
-  create_combined_function
+	create_cache
+	import_centroids
+	import_natural_earth
+	align_natural_earth
+	import_marine_regions
+	align_marine_regions
+	import_gadm
+	import_iho
+	import_seavox
+	import_wgsrpd
+	create_combined_function
 	touch complete
 fi
