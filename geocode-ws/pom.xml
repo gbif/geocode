@@ -31,32 +31,32 @@
     </resources>
 
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>${exec-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>bitmaps</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <!-- Around 36GB is required to generate the GADM map. -->
-                <argument>-Xmx40G</argument>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>
-                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>
-                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.codehaus.mojo</groupId>-->
+<!--        <artifactId>exec-maven-plugin</artifactId>-->
+<!--        <version>${exec-maven-plugin.version}</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>bitmaps</id>-->
+<!--            <phase>prepare-package</phase>-->
+<!--            <goals>-->
+<!--              <goal>exec</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <executable>java</executable>-->
+<!--              <arguments>-->
+<!--                &lt;!&ndash; Around 36GB is required to generate the GADM map. &ndash;&gt;-->
+<!--                <argument>-Xmx40G</argument>-->
+<!--                <argument>-classpath</argument>-->
+<!--                <classpath/>-->
+<!--                <argument>-Djava.io.tmpdir=${project.build.directory}</argument>-->
+<!--                <argument>org.gbif.geocode.ws.util.BitmapGenerator</argument>-->
+<!--                <argument>${project.build.resources[0].directory}/org/gbif/geocode/ws</argument>-->
+<!--              </arguments>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
 
       <plugin>
         <groupId>org.springframework.boot</groupId>
