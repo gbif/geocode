@@ -32,6 +32,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
@@ -101,6 +102,7 @@ public class BitmapGenerator implements CommandLineRunner {
   /** Generate bitmaps for all known layers. */
   public static void main(String... args) throws Exception {
     SpringApplication app = new SpringApplication(BitmapGenerator.class);
+    app.setWebApplicationType(WebApplicationType.NONE);
     app.setBannerMode(Mode.OFF);
     app.run(args);
   }
