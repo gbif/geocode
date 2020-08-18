@@ -59,8 +59,8 @@ public class GeocodeResource implements GeocodeService {
   @Override
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
   public Collection<Location> get(
-      @RequestParam("lat") Double latitude,
-      @RequestParam("lng") Double longitude,
+      @RequestParam(value = "lat", required = false) Double latitude,
+      @RequestParam(value = "lng", required = false) Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
           Double uncertaintyDegrees,
       @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
