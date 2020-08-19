@@ -25,7 +25,7 @@
 
   <groupId>org.gbif.geocode</groupId>
   <artifactId>geocode-motherpom</artifactId>
-  <version>0.20-SNAPSHOT</version>
+  <version>0.26-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Geocode Mother POM</name>
