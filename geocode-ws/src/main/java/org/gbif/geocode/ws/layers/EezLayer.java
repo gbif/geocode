@@ -11,7 +11,7 @@ public class EezLayer extends AbstractBitmapCachedLayer {
   public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
 
   public EezLayer() {
-    super(EezLayer.class.getResourceAsStream("eez.png"));
+    super(EezLayer.class.getResourceAsStream("eez.png"), 3);
   }
 
   @Override
