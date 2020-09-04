@@ -22,9 +22,9 @@ public interface GadmMapper {
   Collection<GadmRegion> listLevel3(@Nullable @Param("query") String query, @Param("gid0") String gid0, @Param("gid1") String gid1,
                                     @Param("gid2") String gid2);
 
-  List<GadmRegion> search(@Nullable @Param("query") String query, @Param("level") int level, @Nullable @Param("gid") String gid,
+  List<GadmRegion> search(@Nullable @Param("query") String query, @Param("level") Integer level, @Nullable @Param("parentId") String parentId,
                           @Nullable @Param("page") Pageable page);
 
-  long searchCount(@Nullable @Param("query") String query, @Param("level") int level, @Nullable @Param("gid") String gid);
+  long searchCount(@Nullable @Param("query") String query, @Param("level") Integer level, @Nullable @Param("parentId") String parentId);
 
 }

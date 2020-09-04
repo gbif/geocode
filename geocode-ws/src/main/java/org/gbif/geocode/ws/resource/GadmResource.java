@@ -66,7 +66,7 @@ public class GadmResource {
   @GetMapping("search")
   public PagingResponse<GadmRegion> search(@Nullable @RequestParam(value = "q", required = false) String q,
                                            @Max(value = 2, message = "Only levels 0, 1 and 2 are supported")
-                                           @Nullable @RequestParam(value = "gadmLevel", defaultValue = "0") int gadmLevel,
+                                           @Nullable @RequestParam(value = "gadmLevel") Integer gadmLevel,
                                            @Nullable @RequestParam(value = "gadmGid") String gadmGid,
                                            @Nullable Pageable page
                                            ) {

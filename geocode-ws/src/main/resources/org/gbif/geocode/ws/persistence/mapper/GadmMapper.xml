@@ -3,7 +3,7 @@
 <mapper namespace="org.gbif.geocode.ws.persistence.mapper.GadmMapper">
 
   <select id="listLevel0" resultType="GadmRegion">
-    SELECT DISTINCT gid_0 AS id, name_0 AS name
+    SELECT DISTINCT gid_0 AS id, name_0 AS name, 'GADM0' AS type
     FROM gadm3
     <if test="query != null" >
       WHERE name_0 ILIKE trim(#{query}) || '%'
@@ -14,7 +14,7 @@
   </select>
 
   <select id="listLevel1" resultType="GadmRegion">
-    SELECT DISTINCT gid_1 AS id, name_1 AS name
+    SELECT DISTINCT gid_1 AS id, name_1 AS name, 'GADM1' AS type
     FROM gadm3
     WHERE gid_0 = UPPER(#{gid0})
     <if test="query != null" >
@@ -26,7 +26,7 @@
   </select>
 
   <select id="listLevel2" resultType="GadmRegion">
-    SELECT DISTINCT gid_2 AS id, name_2 AS name
+    SELECT DISTINCT gid_2 AS id, name_2 AS name, 'GADM2' AS type
     FROM gadm3
     WHERE gid_0 = UPPER(#{gid0}) AND gid_1 = UPPER(#{gid1})
     <if test="query != null" >
@@ -38,7 +38,7 @@
   </select>
 
   <select id="listLevel3" resultType="GadmRegion">
-    SELECT DISTINCT gid_3 AS id, name_3 AS name
+    SELECT DISTINCT gid_3 AS id, name_3 AS name, 'GADM3' AS type
     FROM gadm3
     WHERE gid_0 = UPPER(#{gid0}) AND gid_1 = UPPER(#{gid1}) AND gid_2 = UPPER(#{gid2})
     <if test="query != null" >
@@ -51,17 +51,17 @@
 
 
   <select id="search" resultType="GadmRegion">
-    <bind name="parent_col_level" value="'gid_' + (level > 0? level - 1 : level)" />
-    <bind name="col_level" value="'gid_' + level" />
-    <bind name="col_name" value="'name_' + level" />
-    SELECT DISTINCT ${col_level} AS id, ${col_name} AS name
-    FROM gadm3
+    SELECT DISTINCT id, name, type
+    FROM gadm_regions
     <where>
-      <if test="level > 0" >
-        ${parent_col_level} = #{gid}
+      <if test="level != null" >
+        type = '${'GADM' + level}'
+      </if>
+      <if test="parentId != null" >
+        AND parent_id = #{parentId}
       </if>
       <if test="query != null" >
-        AND (${col_name} ILIKE trim(#{query}) || '%'  OR ${col_level} ILIKE trim(#{query}) || '%')
+        AND (name ILIKE trim(#{query}) || '%'  OR id ILIKE trim(#{query}) || '%')
       </if>
     </where>
 
@@ -71,18 +71,18 @@
   </select>
 
   <select id="searchCount" resultType="long">
-    <bind name="parent_col_level" value="'gid_' + (level > 0? level - 1 : level)" />
-    <bind name="col_level" value="'gid_' + level" />
-    <bind name="col_name" value="'name_' + level" />
     SELECT count(*) FROM (
-      SELECT DISTINCT ${col_level}, ${col_name}
-      FROM gadm3
+      SELECT DISTINCT id, name, type
+      FROM gadm_regions
       <where>
-        <if test="level > 0" >
-          ${parent_col_level} = #{gid}
+        <if test="level != null" >
+          type = '${'GADM' + level}'
+        </if>
+        <if test="parentId != null" >
+          AND parent_id = #{parentId}
         </if>
         <if test="query != null" >
-          AND (${col_name} ILIKE trim(#{query}) || '%'  OR ${col_level} ILIKE trim(#{query}) || '%')
+          AND (name ILIKE trim(#{query}) || '%'  OR id ILIKE trim(#{query}) || '%')
         </if>
       </where>
     ) AS results

@@ -17,5 +17,5 @@ public interface GadmService {
 
   Collection<GadmRegion> listLevel3(@Nullable String query, String gid0, String gid1, String gid2);
 
-  PagingResponse<GadmRegion> search(@Nullable String query, int level, @Nullable String gid, Pageable page);
+  PagingResponse<GadmRegion> search(@Nullable String query, Integer level, @Nullable String gid, Pageable page);
 }

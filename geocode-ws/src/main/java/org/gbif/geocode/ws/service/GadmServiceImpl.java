@@ -52,7 +52,7 @@ public class GadmServiceImpl implements GadmService {
 
   @Override
   public PagingResponse<GadmRegion> search(
-    @Nullable String query, int level, @Nullable String gid, Pageable page
+    @Nullable String query, Integer level, @Nullable String gid, Pageable page
   ) {
     List<GadmRegion> results = mapper.search(query, level, gid, page);
     long count = mapper.searchCount(query, level, gid);

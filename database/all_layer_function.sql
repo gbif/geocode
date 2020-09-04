@@ -223,3 +223,13 @@ WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
 SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);
+
+
+CREATE MATERIALIZED VIEW gadm_regions AS
+SELECT DISTINCT gid_0 AS id, name_0 AS name, 'GADM0' AS type, NULL AS parent_id FROM gadm3
+UNION ALL
+SELECT DISTINCT gid_1 AS id, name_1 AS name, 'GADM1' AS type, gid_0 AS parent_id FROM gadm3
+UNION ALL
+SELECT DISTINCT gid_2 AS id, name_2 AS name, 'GADM2' AS type, gid_1 AS parent_id FROM gadm3
+UNION ALL
+SELECT DISTINCT gid_3 AS id, name_3 AS name, 'GADM3' AS type, gid_2 AS parent_id FROM gadm3;

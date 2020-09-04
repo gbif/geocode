@@ -6,9 +6,12 @@ public class GadmRegion {
 
   private final String name;
 
-  public GadmRegion(String id, String name) {
+  private final String type;
+
+  public GadmRegion(String id, String name, String type) {
     this.id = id;
     this.name = name;
+    this.type = type;
   }
 
   public String getId() {
@@ -17,5 +20,9 @@ public class GadmRegion {
 
   public String getName() {
     return name;
+  }
+
+  public String getType() {
+    return type;
   }
 }
