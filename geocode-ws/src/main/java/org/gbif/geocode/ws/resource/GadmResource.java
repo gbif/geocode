@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "gadm", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "geocode/gadm", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(
   allowedHeaders = {"authorization", "content-type"},
   exposedHeaders = {
