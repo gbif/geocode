@@ -1,5 +1,6 @@
 package org.gbif.geocode.ws.persistence;
 
+import org.gbif.geocode.api.model.GadmRegion;
 import org.gbif.geocode.api.model.Location;
 
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
@@ -14,6 +15,7 @@ public class MyBatisConfiguration {
     return configuration -> {
       configuration.setMapUnderscoreToCamelCase(true);
       configuration.getTypeAliasRegistry().registerAlias("Location", Location.class);
+      configuration.getTypeAliasRegistry().registerAlias("GadmRegion", GadmRegion.class);
     };
   }
 }

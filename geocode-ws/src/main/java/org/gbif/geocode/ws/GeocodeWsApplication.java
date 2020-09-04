@@ -11,6 +11,8 @@ import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
+import org.gbif.ws.server.provider.CountryHandlerMethodArgumentResolver;
+import org.gbif.ws.server.provider.PageableHandlerMethodArgumentResolver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,9 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication(
     exclude = {
@@ -72,5 +77,15 @@ public class GeocodeWsApplication {
     layers.add(centroidsLayer);
 
     return Collections.unmodifiableList(layers);
+  }
+
+  @Configuration
+  public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+      argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
+      argumentResolvers.add(new CountryHandlerMethodArgumentResolver());
+    }
   }
 }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gbif.geocode.ws.persistence.mapper.GadmMapper">
+
+  <select id="listLevel0" resultType="GadmRegion">
+    SELECT DISTINCT gid_0 AS id, name_0 AS name
+    FROM gadm3
+    <if test="query != null" >
+      WHERE name_0 ILIKE trim(#{query}) || '%'
+    </if>
+    <if test="query == null" >
+      ORDER BY gid_0
+    </if>
+  </select>
+
+  <select id="listLevel1" resultType="GadmRegion">
+    SELECT DISTINCT gid_1 AS id, name_1 AS name
+    FROM gadm3
+    WHERE gid_0 = UPPER(#{gid0})
+    <if test="query != null" >
+      AND name_1 ILIKE trim(#{query}) || '%'
+    </if>
+    <if test="query == null" >
+      ORDER BY gid_1
+    </if>
+  </select>
+
+  <select id="listLevel2" resultType="GadmRegion">
+    SELECT DISTINCT gid_2 AS id, name_2 AS name
+    FROM gadm3
+    WHERE gid_0 = UPPER(#{gid0}) AND gid_1 = UPPER(#{gid1})
+    <if test="query != null" >
+      AND name_2 ILIKE trim(#{query}) || '%'
+    </if>
+    <if test="query == null" >
+      ORDER BY gid_2
+    </if>
+  </select>
+
+  <select id="listLevel3" resultType="GadmRegion">
+    SELECT DISTINCT gid_3 AS id, name_3 AS name
+    FROM gadm3
+    WHERE gid_0 = UPPER(#{gid0}) AND gid_1 = UPPER(#{gid1}) AND gid_2 = UPPER(#{gid2})
+    <if test="query != null" >
+     AND name_3 ILIKE trim(#{query}) || '%'
+    </if>
+    <if test="query == null" >
+      ORDER BY gid_3
+    </if>
+  </select>
+
+
+  <select id="search" resultType="GadmRegion">
+    <bind name="parent_col_level" value="'gid_' + (level > 0? level - 1 : level)" />
+    <bind name="col_level" value="'gid_' + level" />
+    <bind name="col_name" value="'name_' + level" />
+    SELECT DISTINCT ${col_level} AS id, ${col_name} AS name
+    FROM gadm3
+    <where>
+      <if test="level > 0" >
+        ${parent_col_level} = #{gid}
+      </if>
+      <if test="query != null" >
+        AND (${col_name} ILIKE trim(#{query}) || '%'  OR ${col_level} ILIKE trim(#{query}) || '%')
+      </if>
+    </where>
+
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
+
+  <select id="searchCount" resultType="long">
+    <bind name="parent_col_level" value="'gid_' + (level > 0? level - 1 : level)" />
+    <bind name="col_level" value="'gid_' + level" />
+    <bind name="col_name" value="'name_' + level" />
+    SELECT count(*) FROM (
+      SELECT DISTINCT ${col_level}, ${col_name}
+      FROM gadm3
+      <where>
+        <if test="level > 0" >
+          ${parent_col_level} = #{gid}
+        </if>
+        <if test="query != null" >
+          AND (${col_name} ILIKE trim(#{query}) || '%'  OR ${col_level} ILIKE trim(#{query}) || '%')
+        </if>
+      </where>
+    ) AS results
+    </select>
+
+</mapper>
