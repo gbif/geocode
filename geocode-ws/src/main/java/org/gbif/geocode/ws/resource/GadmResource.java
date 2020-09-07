@@ -9,8 +9,10 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
     "Access-Control-Allow-Methods",
     "Access-Control-Allow-Headers"
   })
+@Validated
 public class GadmResource {
 
 
@@ -66,6 +69,7 @@ public class GadmResource {
   @GetMapping("search")
   public PagingResponse<GadmRegion> search(@Nullable @RequestParam(value = "q", required = false) String q,
                                            @Max(value = 2, message = "Only levels 0, 1 and 2 are supported")
+                                           @Min(value = 0, message = "Only levels 0, 1 and 2 are supported")
                                            @Nullable @RequestParam(value = "gadmLevel") Integer gadmLevel,
                                            @Nullable @RequestParam(value = "gadmGid") String gadmGid,
                                            @Nullable Pageable page
