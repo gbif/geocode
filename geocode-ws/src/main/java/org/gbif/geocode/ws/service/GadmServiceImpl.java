@@ -8,7 +8,6 @@ import org.gbif.geocode.ws.persistence.mapper.GadmMapper;
 
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nullable;
 
 import org.springframework.stereotype.Service;
 
@@ -23,36 +22,27 @@ public class GadmServiceImpl implements GadmService {
   }
 
   @Override
-  public Collection<GadmRegion> listLevel0(
-    @Nullable String query
-  ) {
+  public Collection<GadmRegion> listLevel0(String query) {
     return mapper.listLevel0(query);
   }
 
   @Override
-  public Collection<GadmRegion> listLevel1(
-    @Nullable String query, String gid0
-  ) {
+  public Collection<GadmRegion> listLevel1(String query, String gid0) {
     return mapper.listLevel1(query, gid0);
   }
 
   @Override
-  public Collection<GadmRegion> listLevel2(
-    @Nullable String query, String gid0, String gid1
-  ) {
+  public Collection<GadmRegion> listLevel2(String query, String gid0, String gid1) {
     return mapper.listLevel2(query, gid0, gid1);
   }
 
   @Override
-  public Collection<GadmRegion> listLevel3(
-    @Nullable String query, String gid0, String gid1, String gid2
-  ) {
+  public Collection<GadmRegion> listLevel3(String query, String gid0, String gid1, String gid2) {
     return mapper.listLevel3(query, gid0, gid1, gid2);
   }
 
   @Override
-  public PagingResponse<GadmRegion> search(
-    @Nullable String query, Integer level, @Nullable String gid, Pageable page
+  public PagingResponse<GadmRegion> search(String query, Integer level, String gid, Pageable page
   ) {
     List<GadmRegion> results = mapper.search(query, level, gid, page);
     long count = mapper.searchCount(query, level, gid);
