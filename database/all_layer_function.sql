@@ -230,24 +230,30 @@ CREATE EXTENSION unaccent;
 ALTER TABLE gadm3 ADD COLUMN fulltext_search_0 tsvector;
 CREATE INDEX gadm3_fulltext_search_0_idx ON gadm3 USING gin(fulltext_search_0);
 UPDATE gadm3 SET fulltext_search_0 =
-to_tsvector('english', coalesce(gid_0,'')) || to_tsvector('english', coalesce(name_0,''));
+to_tsvector(coalesce(gid_0,'')) || to_tsvector(unaccent(coalesce(name_0,'')));
 
 
 ALTER TABLE gadm3 ADD COLUMN fulltext_search_1 tsvector;
 CREATE INDEX gadm3_fulltext_search_1_idx ON gadm3 USING gin(fulltext_search_1);
 UPDATE gadm3 SET fulltext_search_1 =
-to_tsvector('english', coalesce(gid_1,'')) || to_tsvector('english', coalesce(name_1,'')) || to_tsvector('english', coalesce(varname_1,'')) || to_tsvector('english', coalesce(nl_name_1,''));
+to_tsvector(coalesce(gid_1,'')) || to_tsvector(unaccent(coalesce(name_1,'')))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(varname_1, '')), '|'))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(nl_name_1, '')), '|'));
 
 
 ALTER TABLE gadm3 ADD COLUMN fulltext_search_2 tsvector;
 CREATE INDEX gadm3_fulltext_search_2_idx ON gadm3 USING gin(fulltext_search_2);
 UPDATE gadm3 SET fulltext_search_2 =
-to_tsvector('english', coalesce(gid_2,'')) || to_tsvector('english', coalesce(name_2,'')) || to_tsvector('english', coalesce(varname_2,'')) || to_tsvector('english', coalesce(nl_name_2,''));
+to_tsvector(coalesce(gid_2,'')) || to_tsvector(unaccent(coalesce(name_2,'')))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(varname_2, '')), '|'))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(nl_name_2, '')), '|'));
 
 ALTER TABLE gadm3 ADD COLUMN fulltext_search_3 tsvector;
 CREATE INDEX gadm3_fulltext_search_3_idx ON gadm3 USING gin(fulltext_search_3);
 UPDATE gadm3 SET fulltext_search_3 =
-to_tsvector('english', coalesce(gid_3,'')) || to_tsvector('english', coalesce(name_3,'')) || to_tsvector('english', coalesce(varname_3,'')) || to_tsvector('english', coalesce(nl_name_3,''));
+to_tsvector(coalesce(gid_3,'')) || to_tsvector(unaccent(coalesce(name_3,'')))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(varname_3, '')), '|'))
+|| array_to_tsvector(string_to_array(unaccent(coalesce(nl_name_3, '')), '|'));
 
 
 

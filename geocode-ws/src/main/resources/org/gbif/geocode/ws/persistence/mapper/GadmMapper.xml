@@ -21,7 +21,7 @@
     <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
     FROM gadm_region
     <if test="query != null" >
-    JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+    JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
     WHERE gadm_level = '0'
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
@@ -32,7 +32,7 @@
     <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
     FROM gadm_region
     <if test="query != null" >
-      JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
     WHERE gadm_level = '1' AND parent_id[1] = UPPER(#{gid0})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
@@ -43,7 +43,7 @@
     <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
     FROM gadm_region
     <if test="query != null" >
-      JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
     WHERE gadm_level = '2' AND parent_id[1] = UPPER(#{gid0}) AND parent_id[2] = UPPER(#{gid1})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
@@ -54,7 +54,7 @@
     <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
     FROM gadm_region
     <if test="query != null" >
-      JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
     WHERE gadm_level = '3' AND parent_id[1] = UPPER(#{gid0}) AND parent_id[2] = UPPER(#{gid1}) AND parent_id[3] = UPPER(#{gid2})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
@@ -65,7 +65,7 @@
     SELECT <include refid="GADM_FIELDS"/>
     FROM gadm_region
     <if test="query != null" >
-    JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+    JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
     <where>
       <if test="level != null" >
@@ -86,7 +86,7 @@
       SELECT COUNT(*)
       FROM gadm_region
       <if test="query != null" >
-        JOIN to_tsquery('english',regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+        JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
       </if>
       <where>
         <if test="level != null" >
