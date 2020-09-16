@@ -20,8 +20,8 @@ public interface GadmService {
   Collection<GadmRegion> listLevel3(@Nullable String query, String gid0, String gid1, String gid2);
 
   PagingResponse<GadmRegion> search(@Nullable String query,
-                                    @Max(value = 2, message = "Only levels 0, 1 and 2 are supported")
-                                    @Min(value = 0, message = "Only levels 0, 1 and 2 are supported")
+                                    @Max(value = 3, message = "Only levels 0, 1, 2 and 3 are supported")
+                                    @Min(value = 0, message = "Only levels 0, 1, 2 and 3 are supported")
                                     @Nullable Integer level,
                                     @Nullable String gid,
                                     @Nullable Pageable page);
