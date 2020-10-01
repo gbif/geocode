@@ -149,6 +149,14 @@
       <groupId>org.gbif.geocode</groupId>
       <artifactId>geocode-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-mybatis</artifactId>
+    </dependency>
 
     <!--  DB -->
     <dependency>

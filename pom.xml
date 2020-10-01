@@ -66,6 +66,8 @@
     <!-- GBIF-->
     <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
     <gbif-common-ws.version>1.6</gbif-common-ws.version>
+    <gbif-api.version>0.118</gbif-api.version>
+    <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
 
     <!-- DB -->
     <hikaricp.version>3.2.0</hikaricp.version>
@@ -159,6 +161,16 @@
         <groupId>org.gbif</groupId>
         <artifactId>gbif-common-ws</artifactId>
         <version>${gbif-common-ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-api</artifactId>
+        <version>${gbif-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gbif</groupId>
+        <artifactId>gbif-common-mybatis</artifactId>
+        <version>${gbif-common-mybatis.version}</version>
       </dependency>
 
       <!-- DB -->
