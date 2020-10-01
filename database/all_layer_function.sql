@@ -258,10 +258,10 @@ to_tsvector(coalesce(gid_3,'')) || to_tsvector(unaccent(coalesce(name_3,'')))
 
 
 CREATE MATERIALIZED VIEW gadm_region AS
-SELECT DISTINCT id_0 AS id, gid_0 AS gid, name_0 AS name, NULL::text[] AS variant_name, NULL::text[] AS non_latin_name, ARRAY['Country'] AS type, ARRAY['Country']  AS english_type, 0 AS gadm_level, NULL::text[] AS parent_id, fulltext_search_0 AS fulltext_search FROM gadm3
+SELECT DISTINCT id_0 AS id, gid_0 AS gid, name_0 AS name, NULL::text[] AS variant_name, NULL::text[] AS non_latin_name, ARRAY['Country'] AS type, ARRAY['Country']  AS english_type, 0 AS gadm_level, NULL::text[] AS top_levels, NULL AS parent_gid, fulltext_search_0 AS fulltext_search FROM gadm3
 UNION ALL
-SELECT DISTINCT id_1 AS id, gid_1 AS gid, name_1 AS name, string_to_array(varname_1, '|') AS variant_name, string_to_array(nl_name_1, '|') AS non_latin_name, string_to_array(type_1, '|') AS type, string_to_array(engtype_1, '|') AS english_type, 1 AS gadm_level, ARRAY[gid_0] AS parent_id, fulltext_search_1 AS fulltext_search FROM gadm3
+SELECT DISTINCT id_1 AS id, gid_1 AS gid, name_1 AS name, string_to_array(varname_1, '|') AS variant_name, string_to_array(nl_name_1, '|') AS non_latin_name, string_to_array(type_1, '|') AS type, string_to_array(engtype_1, '|') AS english_type, 1 AS gadm_level, ARRAY[gid_0] AS top_levels, gid_0 AS parent_gid, fulltext_search_1 AS fulltext_search FROM gadm3
 UNION ALL
-SELECT DISTINCT id_2 AS id, gid_2 AS gid, name_2 AS name, string_to_array(varname_2, '|') AS variant_name, string_to_array(nl_name_2, '|')  AS non_latin_name, string_to_array(type_2, '|') AS type, string_to_array(engtype_2, '|') AS english_type, 2 AS gadm_level, ARRAY[gid_0, gid_1] AS parent_id, fulltext_search_2 AS fulltext_search FROM gadm3
+SELECT DISTINCT id_2 AS id, gid_2 AS gid, name_2 AS name, string_to_array(varname_2, '|') AS variant_name, string_to_array(nl_name_2, '|') AS non_latin_name, string_to_array(type_2, '|') AS type, string_to_array(engtype_2, '|') AS english_type, 2 AS gadm_level, ARRAY[gid_0, gid_1] AS top_levels, gid_1 AS parent_gid, fulltext_search_2 AS fulltext_search FROM gadm3
 UNION ALL
-SELECT DISTINCT id_3 AS id, gid_3 AS gid, name_3 AS name, string_to_array(varname_3, '|') AS variant_name, string_to_array(nl_name_3, '|')  AS non_latin_name, string_to_array(type_3, '|') AS type, string_to_array(engtype_3, '|') AS english_type, 3 AS gadm_level, ARRAY[gid_0, gid_1, gid_2]  AS parent_id , fulltext_search_3 AS fulltext_search FROM gadm3;
+SELECT DISTINCT id_3 AS id, gid_3 AS gid, name_3 AS name, string_to_array(varname_3, '|') AS variant_name, string_to_array(nl_name_3, '|') AS non_latin_name, string_to_array(type_3, '|') AS type, string_to_array(engtype_3, '|') AS english_type, 3 AS gadm_level, ARRAY[gid_0, gid_1, gid_2]  AS top_levels, gid_2 AS parent_gid, fulltext_search_3 AS fulltext_search FROM gadm3;

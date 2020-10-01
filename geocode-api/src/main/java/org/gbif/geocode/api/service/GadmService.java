@@ -11,6 +11,10 @@ import javax.validation.constraints.Min;
 
 public interface GadmService {
 
+  GadmRegion get(String gid);
+
+  Collection<GadmRegion> subdivisions(String gid, @Nullable String query);
+
   Collection<GadmRegion> listLevel0(@Nullable String query);
 
   Collection<GadmRegion> listLevel1(@Nullable String query, String gid0);
@@ -25,4 +29,5 @@ public interface GadmService {
                                     @Nullable Integer level,
                                     @Nullable String gid,
                                     @Nullable Pageable page);
+
 }

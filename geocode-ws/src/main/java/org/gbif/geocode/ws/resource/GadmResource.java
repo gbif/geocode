@@ -36,20 +36,32 @@ public class GadmResource implements GadmService {
     this.service = service;
   }
 
-  @GetMapping
+  @GetMapping("{gid}")
+  @Override
+  public GadmRegion get(@PathVariable("gid") String gid) {
+    return service.get(gid);
+  }
+
+  @GetMapping("{gid}/subdivisions")
+  @Override
+  public Collection<GadmRegion> subdivisions(@PathVariable("gid") String gid, @RequestParam(value = "q", required = false) String q) {
+    return service.subdivisions(gid, q);
+  }
+
+  @GetMapping("browse")
   @Override
   public Collection<GadmRegion> listLevel0(@RequestParam(value = "q", required = false) String q) {
     return service.listLevel0(q);
   }
 
-  @GetMapping("{level0}")
+  @GetMapping("browse/{level0}")
   @Override
   public Collection<GadmRegion> listLevel1(@PathVariable("level0") String level0,
                                            @RequestParam(value = "q", required = false) String q) {
     return service.listLevel1( q, level0);
   }
 
-  @GetMapping("{level0}/{level1}")
+  @GetMapping("browse/{level0}/{level1}")
   @Override
   public Collection<GadmRegion> listLevel2(@PathVariable("level0") String level0,
                                            @PathVariable("level1") String level1,
@@ -57,7 +69,7 @@ public class GadmResource implements GadmService {
     return service.listLevel2(q, level0, level1);
   }
 
-  @GetMapping("{level0}/{level1}/{level2}")
+  @GetMapping("browse/{level0}/{level1}/{level2}")
   @Override
   public Collection<GadmRegion> listLevel3(@PathVariable("level0") String level0,
                                            @PathVariable("level1") String level1,

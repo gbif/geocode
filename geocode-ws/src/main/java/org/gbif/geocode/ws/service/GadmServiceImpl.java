@@ -21,6 +21,17 @@ public class GadmServiceImpl implements GadmService {
     this.mapper = mapper;
   }
 
+
+  @Override
+  public Collection<GadmRegion> subdivisions(String gid, String query) {
+    return mapper.subdivisions(gid, query);
+  }
+
+  @Override
+  public GadmRegion get(String gid) {
+    return mapper.get(gid);
+  }
+
   @Override
   public Collection<GadmRegion> listLevel0(String query) {
     return mapper.listLevel0(query);

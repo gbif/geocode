@@ -13,6 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GadmMapper {
 
+  GadmRegion get(@Param("gid") String gid);
+
+  Collection<GadmRegion> subdivisions(@Param("gid") String gid, @Nullable @Param("query") String query);
+
   Collection<GadmRegion> listLevel0(@Nullable @Param("query") String query);
 
   Collection<GadmRegion> listLevel1(@Nullable @Param("query") String query, @Param("gid0") String gid0);

@@ -16,6 +16,24 @@
     gid, name, variant_name, non_latin_name, type, english_type, gadm_level
   </sql>
 
+  <select id="get" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    FROM gadm_region
+    WHERE gid = #{gid}
+  </select>
+
+
+  <select id="subdivisions" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    FROM gadm_region
+    <if test="query != null" >
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+    </if>
+    WHERE parent_gid = #{gid}
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
   <select id="listLevel0" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
     <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
@@ -34,7 +52,7 @@
     <if test="query != null" >
       JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
-    WHERE gadm_level = '1' AND parent_id[1] = UPPER(#{gid0})
+    WHERE gadm_level = '1' AND top_levels[1] = UPPER(#{gid0})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
@@ -45,7 +63,7 @@
     <if test="query != null" >
       JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
-    WHERE gadm_level = '2' AND parent_id[1] = UPPER(#{gid0}) AND parent_id[2] = UPPER(#{gid1})
+    WHERE gadm_level = '2' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
@@ -56,7 +74,7 @@
     <if test="query != null" >
       JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
     </if>
-    WHERE gadm_level = '3' AND parent_id[1] = UPPER(#{gid0}) AND parent_id[2] = UPPER(#{gid1}) AND parent_id[3] = UPPER(#{gid2})
+    WHERE gadm_level = '3' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1}) AND top_levels[3] = UPPER(#{gid2})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
@@ -72,7 +90,7 @@
         gadm_level = #{level}
       </if>
       <if test="parentId != null" >
-        AND parent_id[gadm_level] = #{parentId}
+        AND top_levels[gadm_level] = #{parentId}
       </if>
     </where>
     ORDER BY <if test="query != null" >ts_rank_cd(fulltext_search, query) DESC, </if> id
@@ -93,7 +111,7 @@
           gadm_level = #{level}
         </if>
         <if test="parentId != null" >
-          AND parent_id[gadm_level] = #{parentId}
+          AND top_levels[gadm_level] = #{parentId}
         </if>
       </where>
 
