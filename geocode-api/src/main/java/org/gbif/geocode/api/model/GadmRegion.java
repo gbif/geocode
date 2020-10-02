@@ -1,6 +1,7 @@
 package org.gbif.geocode.api.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class GadmRegion {
 
@@ -17,6 +18,8 @@ public class GadmRegion {
   private List<String> type;
 
   private List<String> englishType;
+
+  private Map<String, String> higherRegions;
 
   public String getId() {
     return id;
@@ -72,5 +75,13 @@ public class GadmRegion {
 
   public void setEnglishType(List<String> englishType) {
     this.englishType = englishType;
+  }
+
+  public Map<String, String> getHigherRegions() {
+    return higherRegions;
+  }
+
+  public void setHigherRegions(Map<String, String> higherRegions) {
+    this.higherRegions = higherRegions;
   }
 }

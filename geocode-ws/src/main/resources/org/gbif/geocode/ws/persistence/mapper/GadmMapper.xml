@@ -10,10 +10,11 @@
     <result column="non_latin_name" property="nonLatinName" typeHandler="StringArrayTypeHandler"/>
     <result column="type" property="type" typeHandler="StringArrayTypeHandler"/>
     <result column="english_type" property="englishType" typeHandler="StringArrayTypeHandler"/>
+    <result column="top_levels_map" property="higherRegions" typeHandler="HStoreHigherLevelsMapTypeHandler"/>
   </resultMap>
 
   <sql id="GADM_FIELDS">
-    gid, name, variant_name, non_latin_name, type, english_type, gadm_level
+    gid, name, variant_name, non_latin_name, type, english_type, gadm_level, top_levels_map
   </sql>
 
   <sql id="fulltext_query">

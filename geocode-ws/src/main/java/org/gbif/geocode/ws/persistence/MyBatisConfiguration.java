@@ -18,6 +18,7 @@ public class MyBatisConfiguration {
       configuration.getTypeAliasRegistry().registerAlias("Location", Location.class);
       configuration.getTypeAliasRegistry().registerAlias("GadmRegion", GadmRegion.class);
       configuration.getTypeAliasRegistry().registerAlias("StringArrayTypeHandler", StringArrayTypeHandler.class);
+      configuration.getTypeAliasRegistry().registerAlias("HStoreHigherLevelsMapTypeHandler", HStoreHigherLevelsMapTypeHandler.class);
     };
   }
 }
