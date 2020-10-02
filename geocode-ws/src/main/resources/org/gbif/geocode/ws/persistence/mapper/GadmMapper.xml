@@ -16,6 +16,17 @@
     gid, name, variant_name, non_latin_name, type, english_type, gadm_level
   </sql>
 
+  <sql id="fulltext_query">
+    <if test="query != null" >
+      LEFT JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':') AS p_query ON p_query  @@ fulltext_search
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+    </if>
+  </sql>
+
+  <sql id="fulltext_rank">
+    <if test="query != null" >, ts_rank_cd(fulltext_search, p_query) + ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+  </sql>
+
   <select id="get" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
     FROM gadm_region
@@ -25,66 +36,78 @@
 
   <select id="subdivisions" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
-    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     WHERE parent_gid = #{gid}
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
   <select id="listLevel0" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
-    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-    JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     WHERE gadm_level = '0'
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
   <select id="listLevel1" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
-    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     WHERE gadm_level = '1' AND top_levels[1] = UPPER(#{gid0})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
   <select id="listLevel2" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
-    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     WHERE gadm_level = '2' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
   <select id="listLevel3" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
-    <if test="query != null" >, ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     WHERE gadm_level = '3' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1}) AND top_levels[3] = UPPER(#{gid2})
     ORDER BY <if test="query != null" >ft_rank DESC, </if> id
   </select>
 
-
   <select id="search" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
     SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
     FROM gadm_region
-    <if test="query != null" >
-    JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-    </if>
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
     <where>
       <if test="level != null" >
         gadm_level = #{level}
@@ -93,19 +116,18 @@
         AND top_levels[gadm_level] = #{parentId}
       </if>
     </where>
-    ORDER BY <if test="query != null" >ts_rank_cd(fulltext_search, query) DESC, </if> id
+    ORDER BY gadm_level<if test="query != null" >, ft_rank DESC </if>, id
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>
   </select>
 
   <select id="searchCount" resultType="long">
-
       SELECT COUNT(*)
       FROM gadm_region
-      <if test="query != null" >
-        JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
-      </if>
+      <include refid="fulltext_query">
+        <property name="query" value="#{query}"/>
+      </include>
       <where>
         <if test="level != null" >
           gadm_level = #{level}
