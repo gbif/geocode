@@ -167,6 +167,7 @@ function import_gadm() {
 
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
+	echo "UPDATE gadm SET name_0 = 'Chinese Taipei' WHERE gid_0 = 'TWN';" | exec_psql
 
 	echo "Creating gadm4 table"
 	echo "
