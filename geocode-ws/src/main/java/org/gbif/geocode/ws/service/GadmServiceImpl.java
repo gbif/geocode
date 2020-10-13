@@ -9,6 +9,7 @@ import org.gbif.geocode.ws.persistence.mapper.GadmMapper;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.Strings;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -55,8 +56,9 @@ public class GadmServiceImpl implements GadmService {
   @Override
   public PagingResponse<GadmRegion> search(String query, Integer level, String gid, Pageable page
   ) {
-    List<GadmRegion> results = mapper.search(query, level, gid, page);
-    long count = mapper.searchCount(query, level, gid);
+    String q = Strings.emptyToNull(query);
+    List<GadmRegion> results = mapper.search(q, level, gid, page);
+    long count = mapper.searchCount(q, level, gid);
     return new PagingResponse<>(page, count, results);
   }
 }

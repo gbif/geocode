@@ -255,7 +255,7 @@ UPDATE gadm3 SET fulltext_search_3 =
 
 CREATE EXTENSION hstore;
 
-CREATE MATERIALIZED VIEW gadm_region AS
+CREATE MATERIALIZED VIEW gadm_region_2 AS
 SELECT DISTINCT
   id_0 AS id, gid_0 AS gid, name_0 AS name, NULL::text[] AS variant_name, NULL::text[] AS non_latin_name, ARRAY['Country or area'] AS type, ARRAY['Country or area']  AS english_type,
   0 AS gadm_level, NULL::text[] AS top_levels, NULL::hstore AS top_levels_map, NULL AS parent_gid, fulltext_search_0 AS fulltext_search FROM gadm3 WHERE id_0 IS NOT NULL
