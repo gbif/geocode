@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gbif.geocode.ws.persistence.mapper.GadmMapper">
+
+  <resultMap id="GADM_REGION_MAP" type="GadmRegion">
+    <id column="gid" property="id"/>
+    <result column="name" property="name"/>
+    <result column="gadm_level" property="gadmLevel"/>
+    <result column="variant_name" property="variantName" typeHandler="StringArrayTypeHandler"/>
+    <result column="non_latin_name" property="nonLatinName" typeHandler="StringArrayTypeHandler"/>
+    <result column="type" property="type" typeHandler="StringArrayTypeHandler"/>
+    <result column="english_type" property="englishType" typeHandler="StringArrayTypeHandler"/>
+    <result column="top_levels_map" property="higherRegions" typeHandler="HStoreHigherLevelsMapTypeHandler"/>
+  </resultMap>
+
+  <sql id="GADM_FIELDS">
+    gid, name, variant_name, non_latin_name, type, english_type, gadm_level, top_levels_map
+  </sql>
+
+  <sql id="fulltext_query">
+    <if test="query != null" >
+      LEFT JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':') AS p_query ON p_query  @@ fulltext_search
+      JOIN to_tsquery(regexp_replace(quote_literal(unaccent(trim(#{query}))),'\s+',':*&amp;','g')||':*') AS query ON query  @@ fulltext_search
+    </if>
+  </sql>
+
+  <sql id="fulltext_rank">
+    <if test="query != null" >, ts_rank_cd(fulltext_search, p_query) + ts_rank_cd(fulltext_search, query) AS ft_rank </if>
+  </sql>
+
+  <select id="get" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    FROM gadm_region
+    WHERE gid = #{gid}
+  </select>
+
+
+  <select id="subdivisions" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    WHERE parent_gid = #{gid}
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
+  <select id="listLevel0" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    WHERE gadm_level = '0'
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
+  <select id="listLevel1" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    WHERE gadm_level = '1' AND top_levels[1] = UPPER(#{gid0})
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
+  <select id="listLevel2" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    WHERE gadm_level = '2' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1})
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
+  <select id="listLevel3" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    WHERE gadm_level = '3' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1}) AND top_levels[3] = UPPER(#{gid2})
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+  </select>
+
+  <select id="search" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
+    SELECT <include refid="GADM_FIELDS"/>
+    <include refid="fulltext_rank">
+      <property name="query" value="#{query}"/>
+    </include>
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    <where>
+      <if test="level != null" >
+        gadm_level = #{level}
+      </if>
+      <if test="parentId != null" >
+        AND top_levels[gadm_level] = #{parentId}
+      </if>
+    </where>
+    ORDER BY gadm_level<if test="query != null" >, ft_rank DESC </if>, id
+    <if test="page != null" >
+      LIMIT #{page.limit} OFFSET #{page.offset}
+    </if>
+  </select>
+
+  <select id="searchCount" resultType="long">
+      SELECT COUNT(*)
+      FROM gadm_region
+      <include refid="fulltext_query">
+        <property name="query" value="#{query}"/>
+      </include>
+      <where>
+        <if test="level != null" >
+          gadm_level = #{level}
+        </if>
+        <if test="parentId != null" >
+          AND top_levels[gadm_level] = #{parentId}
+        </if>
+      </where>
+
+    </select>
+
+</mapper>
