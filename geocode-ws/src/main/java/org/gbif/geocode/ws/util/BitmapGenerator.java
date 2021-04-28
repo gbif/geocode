@@ -116,6 +116,7 @@ public class BitmapGenerator implements CommandLineRunner {
     combineAllBitmaps(
         targetDirectory,
         "political",
+        "continent",
         "eez",
         "gadm0",
         "gadm1",
@@ -134,13 +135,14 @@ public class BitmapGenerator implements CommandLineRunner {
     ImmutableMap<String, Supplier<List<SvgShape>>> svgSuppliers =
         new ImmutableMap.Builder<String, Supplier<List<SvgShape>>>()
             .put("political", tileMapper::svgPolitical)
+            .put("continent", tileMapper::svgContinent)
             .put("eez", tileMapper::svgEez)
-            .put("gadm5", tileMapper::svgGadm5)
-            .put("gadm4", tileMapper::svgGadm4)
-            .put("gadm3", tileMapper::svgGadm3)
-            .put("gadm2", tileMapper::svgGadm2)
-            .put("gadm1", tileMapper::svgGadm1)
             .put("gadm0", tileMapper::svgGadm0)
+            .put("gadm1", tileMapper::svgGadm1)
+            .put("gadm2", tileMapper::svgGadm2)
+            .put("gadm3", tileMapper::svgGadm3)
+            .put("gadm4", tileMapper::svgGadm4)
+            .put("gadm5", tileMapper::svgGadm5)
             .put("iho", tileMapper::svgIho)
             .put("seavox", tileMapper::svgSeaVoX)
             .put("wgsrpd", tileMapper::svgWgsrpd)
@@ -196,9 +198,12 @@ public class BitmapGenerator implements CommandLineRunner {
 
       Stack<String> colours = MakeColours.makeColours(shapes.size());
 
+      Map<String, String> knownColours = new HashMap<>();
+
       for (SvgShape shape : shapes) {
-        filledSvg.write(
-            String.format(FILLED_PATH_FORMAT, shape.getId(), colours.pop(), shape.getShape()));
+        String colour = knownColours.getOrDefault(shape.getId(), colours.pop());
+        filledSvg.write(String.format(FILLED_PATH_FORMAT, shape.getId(), colour, shape.getShape()));
+        knownColours.put(shape.getId(), colour);
         hollowSvg.write(String.format(HOLLOW_PATH_FORMAT, shape.getId(), shape.getShape()));
       }
 

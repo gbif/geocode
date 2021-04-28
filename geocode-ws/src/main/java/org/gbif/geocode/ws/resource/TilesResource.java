@@ -39,13 +39,14 @@ public class TilesResource {
   private static final List<String> layers =
       Arrays.asList(
           "political",
-          "eez",
           "centroids",
-          "gadm5",
-          "gadm4",
-          "gadm3",
-          "gadm2",
+          "continent",
+          "eez",
           "gadm1",
+          "gadm2",
+          "gadm3",
+          "gadm4",
+          "gadm5",
           "iho",
           "seavox",
           "wgsrpd");
@@ -80,6 +81,10 @@ public class TilesResource {
     switch (layer) {
       case "political":
         tile = tileMapper.tilePolitical(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        break;
+
+      case "continent":
+        tile = tileMapper.tileContinent(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
       case "eez":

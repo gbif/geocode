@@ -35,6 +35,21 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
     )
   UNION ALL
     (
+      SELECT DISTINCT
+        'Continent' AS type,
+        continent AS id,
+        'https://github.com/gbif/continents' AS source,
+        continent AS title,
+        NULL AS isoCountryCode2Digit,
+        MIN(ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326))) AS distance
+      FROM continent
+      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+        AND 'Continent' = ANY(q_layers)
+      GROUP BY continent
+      ORDER BY distance, id
+    )
+  UNION ALL
+    (
       /* EEZ: The WITH query is used to create up to three rows for polygons containing multiple
        *      overlapping claims or JRAs (joint regime areas).
        *
@@ -271,6 +286,6 @@ FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
 WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'Continent', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);
 
 SELECT * FROM query_layers(-34.2, -53.1, 0.05, ARRAY['EEZ']);

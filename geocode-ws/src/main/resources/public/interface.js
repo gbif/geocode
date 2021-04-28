@@ -218,7 +218,7 @@ layers['baselayer-labels'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
-		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=gbif-geyser',
+		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=gbif-natural-en',
 		tilePixelRatio: 2,
 		wrapX: false
 	}),
@@ -250,6 +250,21 @@ layers['political'] = new ol.layer.VectorTile({
 		wrapX: false,
 	}),
 	style: countryStyle(),
+});
+
+layers['continent'] = new ol.layer.VectorTile({
+	title: 'Continent',
+	renderMode: 'image',
+		source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/continent/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle(),
+	visible: false
 });
 
 layers['eez'] = new ol.layer.VectorTile({
@@ -399,6 +414,7 @@ layers['centroids'] = new ol.layer.VectorTile({
 		wrapX: false,
 	}),
 	style: countryStyle(),
+	visible: false
 });
 
 var source = new ol.source.Vector({
@@ -425,17 +441,18 @@ var map = new ol.Map({
 		new ol.layer.Group({
 			title: 'Layer',
 			layers: [
-				layers['political'],
-				layers['eez'],
+				layers['centroids'],
+				layers['wgsrpd'],
+				layers['seavox'],
+				layers['iho'],
 				layers['gadm5'],
 				layers['gadm4'],
 				layers['gadm3'],
 				layers['gadm2'],
 				layers['gadm1'],
-				layers['iho'],
-				layers['seavox'],
-				layers['wgsrpd'],
-				layers['centroids'],
+				layers['eez'],
+				layers['continent'],
+				layers['political']
 			]
 		}),
 		vector

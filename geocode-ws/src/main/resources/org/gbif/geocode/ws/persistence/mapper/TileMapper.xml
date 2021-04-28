@@ -37,6 +37,37 @@
     ) AS tile;
   </select>
 
+  <!-- Tiles from the public.continent table -->
+  <select id="tileContinent" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        continent AS id,
+        'Continent' AS type,
+        'https://github.com/gbif/continents' AS source,
+        continent AS title,
+        NULL AS isoCountryCode2Digit,
+        geom,
+        centroid_geom
+      FROM continent
+      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'continent', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, isoCountryCode2Digit,
+        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
   <!-- Tiles from the public.eez table -->
   <select id="tileEez" resultMap="tileMap">
     WITH overlappings AS (
@@ -354,6 +385,14 @@
 
   <select id="svgPolitical" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT iso_a2 AS id, ST_AsSVG(geom) AS shape FROM political
+  </select>
+
+  <select id="svgContinent" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT continent AS id, ST_AsSVG(geom) AS shape FROM continent WHERE gid_0 != 'CAN'
+    UNION ALL
+    SELECT continent AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.9850921630859, 90)), 4326))) AS shape FROM continent WHERE gid_0 = 'CAN'
+    UNION ALL
+    SELECT continent AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.9850921630859, -90), ST_Point(180, 90)), 4326))) AS shape FROM continent WHERE gid_0 = 'CAN'
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">

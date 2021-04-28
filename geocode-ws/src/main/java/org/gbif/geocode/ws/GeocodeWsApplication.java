@@ -2,6 +2,7 @@ package org.gbif.geocode.ws;
 
 import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.layers.CentroidsLayer;
+import org.gbif.geocode.ws.layers.ContinentLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.Gadm0Layer;
 import org.gbif.geocode.ws.layers.Gadm1Layer;
@@ -54,6 +55,7 @@ public class GeocodeWsApplication {
   @Bean
   public List<AbstractBitmapCachedLayer> layers(
       PoliticalLayer politicalLayer,
+      ContinentLayer continentLayer,
       EezLayer eezLayer,
       Gadm0Layer gadm0Layer,
       Gadm1Layer gadm1Layer,
@@ -66,6 +68,7 @@ public class GeocodeWsApplication {
 
     List<AbstractBitmapCachedLayer> layers = new ArrayList<>();
     layers.add(politicalLayer);
+    layers.add(continentLayer);
     layers.add(eezLayer);
     layers.add(gadm0Layer);
     layers.add(gadm1Layer);
