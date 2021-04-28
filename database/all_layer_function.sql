@@ -54,7 +54,7 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
           AND 'EEZ' = ANY(q_layers)
       )
-      SELECT DISTINCT
+      SELECT
         'EEZ' AS type,
         id,
         'http://vliz.be/vmdcdata/marbound/' AS source,
@@ -206,25 +206,6 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
     )
 $$ LANGUAGE SQL IMMUTABLE;
 
-SELECT
-  'SeaVoX' AS type,
-  skos_url AS id,
-  'http://marineregions.org/' AS source,
-  sub_region AS title,
-  NULL,
-  ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326))
-FROM seavox
-WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
-ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
-
-SELECT *
-FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
-WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
-ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
-
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);
-
-
 CREATE EXTENSION unaccent;
 
 ALTER TABLE gadm3 ADD COLUMN fulltext_search_0 tsvector;
@@ -272,3 +253,24 @@ SELECT DISTINCT
   id_3 AS id, gid_3 AS gid, name_3 AS name, string_to_array(varname_3, '|') AS variant_name, string_to_array(nl_name_3, '|') AS non_latin_name, string_to_array(type_3, '|') AS type, string_to_array(engtype_3, '|') AS english_type,
   3 AS gadm_level, ARRAY[gid_0, gid_1, gid_2]  AS top_levels, hstore(gid_0,name_0) || hstore(gid_1, name_1) || hstore(gid_2, name_2) AS top_levels_map, gid_2 AS parent_gid, fulltext_search_3 AS fulltext_search
 FROM gadm3 WHERE id_3 IS NOT NULL;
+
+-- Examples / tests
+SELECT
+  'SeaVoX' AS type,
+  skos_url AS id,
+  'http://marineregions.org/' AS source,
+  sub_region AS title,
+  NULL,
+  ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326))
+FROM seavox
+WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
+ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
+
+SELECT *
+FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
+WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
+ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
+
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'GADM1', 'GADM2', 'GADM3', 'Centroids', 'WGSRPD']);
+
+SELECT * FROM query_layers(-34.2, -53.1, 0.05, ARRAY['EEZ']);
