@@ -57,17 +57,17 @@
     <release.tagNameBase>geocode</release.tagNameBase>
 
     <!-- Spring -->
-    <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
-    <spring-cloud-zookeeper.version>2.2.4.RELEASE</spring-cloud-zookeeper.version>
+    <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
+    <spring-cloud-zookeeper.version>2.2.5.RELEASE</spring-cloud-zookeeper.version>
     <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
     <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
     <mybatis-spring-boot-starter-test.version>2.0.0</mybatis-spring-boot-starter-test.version>
     <spring-boot-admin.version>2.2.4</spring-boot-admin.version>
 
     <!-- GBIF-->
-    <gbif-common-mybatis.version>0.31</gbif-common-mybatis.version>
-    <gbif-common-ws.version>1.12</gbif-common-ws.version>
-    <gbif-api.version>0.118</gbif-api.version>
+    <gbif-common-mybatis.version>1.1</gbif-common-mybatis.version>
+    <gbif-common-ws.version>1.15</gbif-common-ws.version>
+    <gbif-api.version>0.154</gbif-api.version>
 
     <!-- DB -->
     <hikaricp.version>3.2.0</hikaricp.version>
