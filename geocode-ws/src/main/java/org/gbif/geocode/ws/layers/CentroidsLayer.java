@@ -1,21 +1,26 @@
 package org.gbif.geocode.ws.layers;
 
-import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component
-public class CentroidsLayer extends AbstractBitmapCachedLayer {
-  public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
+import au.org.ala.layers.intersect.SimpleShapeFile;
 
+@Component
+public class CentroidsLayer extends AbstractShapefileLayer {
   public CentroidsLayer() {
     super(CentroidsLayer.class.getResourceAsStream("centroids.png"));
+  }
+
+  public CentroidsLayer(SimpleShapeFile simpleShapeFile) {
+    super(simpleShapeFile, CentroidsLayer.class.getResourceAsStream("centroids.png"));
   }
 
   @Override
   public String name() {
     return "Centroids";
+  }
+
+  @Override
+  public String source() {
+    return "http://geo-locate.org/webservices/geolocatesvcv2/ / https://github.com/ropensci/CoordinateCleaner";
   }
 }

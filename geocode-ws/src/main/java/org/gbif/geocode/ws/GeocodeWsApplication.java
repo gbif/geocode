@@ -1,6 +1,6 @@
 package org.gbif.geocode.ws;
 
-import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
+import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.layers.CentroidsLayer;
 import org.gbif.geocode.ws.layers.ContinentLayer;
 import org.gbif.geocode.ws.layers.EezLayer;

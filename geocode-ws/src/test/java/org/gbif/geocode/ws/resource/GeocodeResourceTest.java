@@ -21,19 +21,19 @@ public class GeocodeResourceTest {
 
   @Test
   public void testMissingParameters() {
-    GeocodeService geocodeService = new GeocodeResource(null, null, null);
+    GeocodeService geocodeService = new GeocodeResource(null, null, null, null);
     assertThrows(OffWorldException.class, () -> geocodeService.get(null, null, null, null));
   }
 
   @Test
   public void testMissingParameter() {
-    GeocodeService geocodeService = new GeocodeResource(null, null, null);
+    GeocodeService geocodeService = new GeocodeResource(null, null, null, null);
     assertThrows(OffWorldException.class, () -> geocodeService.get(10.0d, null, null, null));
   }
 
   @Test
   public void testOffWorldParameter() {
-    GeocodeService geocodeService = new GeocodeResource(null, null, null);
+    GeocodeService geocodeService = new GeocodeResource(null, null, null, null);
     assertThrows(OffWorldException.class, () -> geocodeService.get(95.0d, 0.0d, null, null));
   }
 
@@ -41,7 +41,7 @@ public class GeocodeResourceTest {
   public void testGoodRequest() {
     GeocodeWsStatistics statistics = mock(GeocodeWsStatistics.class);
     GeocodeService geocoder = mock(GeocodeService.class);
-    GeocodeService geocodeService = new GeocodeResource(geocoder, statistics, null);
+    GeocodeService geocodeService = new GeocodeResource(geocoder, null, statistics, null);
 
     Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d);
     Location locationTest2 = new Location("test", "political", "source", "Germany", "DE", 0d);

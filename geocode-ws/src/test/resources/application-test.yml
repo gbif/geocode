@@ -1,10 +1,10 @@
 spring:
   datasource:
-    url: @geocode-ws.db.url@
-    username: @geocode-ws.db.username@
-    password: @geocode-ws.db.password@
+    url: jdbc:postgresql://localhost/eez
+    username: eez_rw
+    password: eez_rw
     hikari:
-      connectionTimeout: 30000
+      connectionTimeout: 1000
       idleTimeout: 600000
       maximumPoolSize: 12
       minimumIdle: 2

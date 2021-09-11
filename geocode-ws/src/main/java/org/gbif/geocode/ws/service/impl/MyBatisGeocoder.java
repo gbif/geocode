@@ -2,7 +2,7 @@ package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.ws.layers.AbstractBitmapCachedLayer;
+import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.persistence.mapper.LocationMapper;
 
@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Stopwatch;
 
-/** Implementation of {@link GeocodeService} using MyBatis to search for results. */
+/**
+ * Implementation of {@link GeocodeService} using MyBatis to search for results.
+ *
+ * Retained primarily for testing/comparing with the Shapefile geocoder.
+ */
 @Service
 public class MyBatisGeocoder implements GeocodeService {
   public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);

@@ -147,6 +147,7 @@ public class BitmapGenerator implements CommandLineRunner {
             .put("seavox", tileMapper::svgSeaVoX)
             .put("wgsrpd", tileMapper::svgWgsrpd)
             .put("centroids", tileMapper::svgCentroids)
+            .put("gadm3210", tileMapper::svgGadm3210)
             .build();
 
     for (Map.Entry<String, Supplier<List<SvgShape>>> x : svgSuppliers.entrySet()) {

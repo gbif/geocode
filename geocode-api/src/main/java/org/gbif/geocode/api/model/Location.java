@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Represents a location feature.
  */
-public class Location implements Serializable {
+public class Location implements Serializable, Comparable<Location> {
 
   private static final long serialVersionUID = -2085795867974984269L;
 
@@ -149,5 +149,15 @@ public class Location implements Serializable {
       ", isoCountryCode2Digit='" + isoCountryCode2Digit + '\'' +
       ", distance=" + distance +
       '}';
+  }
+
+  @Override
+  public int compareTo(Location o) {
+//    int byDist = DISTANCE_COMPARATOR.compare(this, o);
+//    if (byDist == 0) {
+      return this.id.compareTo(o.id);
+//    } else {
+//      return byDist;
+//    }
   }
 }

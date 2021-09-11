@@ -32,12 +32,6 @@ function wrap_drop_geometry_commands() {
 	sed -e '/SELECT DropGeometryColumn/i \\\set ON_ERROR_STOP off' -e '/SELECT DropGeometryColumn/a \\\set ON_ERROR_STOP on'
 }
 
-function import_shp() {
-	local shp_file=$1
-	local table_name=$2
-	shp2pgsql -s 4326 -I -g geometry "$shp_file" "$table_name" | exec_psql | hide_inserts
-}
-
 function hide_inserts() {
 	grep -v "INSERT 0 1"
 }
@@ -152,13 +146,13 @@ function import_gadm() {
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/gadm36_gpkg.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://biogeo.ucdavis.edu/data/gadm3.6/gadm36_gpkg.zip
+	curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2020/05/gadm36_gpkg.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://geodata.ucdavis.edu/gadm/gadm3.6/gadm36_gpkg.zip
 	mkdir -p gadm
 	unzip -oj gadm36_gpkg.zip -d gadm/
 
 	echo "Dropping old tables"
-	for i in 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i;" | exec_psql; done
+	for i in 0 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
 	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" gadm/gadm36.gpkg
@@ -242,6 +236,19 @@ function import_gadm() {
 	echo "SELECT AddGeometryColumn('gadm1', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm1 SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
+	echo "Creating gadm0 table"
+	echo "
+		CREATE TABLE gadm0 AS SELECT
+			MIN(fid) AS fid,MIN(uid) AS uid,
+			gid_0,id_0,name_0,
+			ST_UNION(geom) AS geom
+		FROM gadm1
+		GROUP BY
+			gid_0,id_0,name_0;" | exec_psql
+	echo "CREATE INDEX gadm0_geom_geom_idx ON gadm0 USING GIST (geom);" | exec_psql
+	echo "SELECT AddGeometryColumn('gadm0', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE gadm0 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
 	echo "GADM import complete"
 	echo
 }
@@ -270,7 +277,7 @@ function import_seavox() {
 	echo "SELECT AddGeometryColumn('seavox', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE seavox SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
-	echo "Seavox import complete"
+	echo "SeaVoX import complete"
 	echo
 }
 
@@ -337,7 +344,7 @@ function import_wgsrpd() {
 function insert_continent_whole_country() {
 	echo "
 		INSERT INTO continent (continent, gid_0, geom)
-		SELECT '$1', gid_0, ST_Multi(geom) FROM level0
+		SELECT '$1', gid_0, ST_Multi(geom) FROM gadm0
 		WHERE gid_0 IN ($2)
 	;" | exec_psql
 }
@@ -349,7 +356,7 @@ function insert_continent_cut_country() {
 		SELECT '$1', '$2', ST_Multi(ST_Union(ST_Intersection(ccc.geom, gadm.geom)))
 		FROM
 			(SELECT * FROM continent_cutter WHERE UPPER(continent) = '$1') AS ccc,
-			(SELECT * FROM level0 WHERE gid_0 = '$2') AS gadm
+			(SELECT * FROM gadm0 WHERE gid_0 = '$2') AS gadm
 	;" | exec_psql
 }
 
@@ -360,21 +367,18 @@ function import_continents() {
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	#curl -LSs --remote-name --continue-at - --fail https://github.org/gbif/continents/...
-	mkdir -p continent_cutter
-	cp ~/continent_cutter.gpkg continent_cutter
-	#unzip -oj continent_cutter.zip -d continent_cutter/
+	curl -LSs --remote-name --continue-at - --fail https://github.com/gbif/continents/raw/master/continent_cookie_cutter.gpkg
 
 	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS continent_cutter;" | exec_psql
+	echo "DROP TABLE IF EXISTS continent_cookie_cutter;" | exec_psql
 
 	echo "Importing Continent Cutter to PostGIS"
-	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" continent_cutter/continent_cutter.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" continent_cookie_cutter.gpkg
 
-	rm continent_cutter.zip continent_cutter/ -Rf
+	rm continent_cookie_cutter.zip -Rf
 
 	echo "
-		DROP TABLE continent;
+		DROP TABLE IF EXISTS continent;
 		CREATE TABLE continent (
 		    key        SERIAL        PRIMARY KEY,
 		    continent  VARCHAR(128)  NOT NULL,
@@ -383,49 +387,49 @@ function import_continents() {
 		" | exec_psql
 
 	# Africa
-	echo "Adding GADM level0 areas to Africa"
+	echo "Adding GADM gadm0 areas to Africa"
 	insert_continent_whole_country AFRICA "'AGO', 'BDI', 'BEN', 'BWA', 'BFA', 'CAF', 'COM', 'CIV', 'CMR', 'COD', 'COG', 'CPV', 'DJI', 'DZA', 'ERI', 'ESH', 'ETH', 'GAB', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'KEN', 'LBR', 'LBY', 'LSO', 'MAR', 'MDG', 'MLI', 'MYT', 'MOZ', 'MWI', 'MRT', 'MUS', 'NAM', 'NER', 'NGA', 'REU', 'RWA', 'SDN', 'SEN', 'SHN', 'SOM', 'SSD', 'STP', 'SWZ', 'SYC', 'SLE', 'TCD', 'TGO', 'TUN', 'TZA', 'UGA', 'ZMB', 'ZWE'"
 	for i in ATF EGY ESP PRT YEM ZAF; do
 		insert_continent_cut_country AFRICA $i
 	done
 
 	# Antarctica
-	echo "Adding GADM level0 areas to Antarctica"
+	echo "Adding GADM gadm0 areas to Antarctica"
 	insert_continent_whole_country ANTARCTICA "'ATA', 'BVT', 'HMD', 'SGS'"
 	for i in ATF ZAF; do
 		insert_continent_cut_country ANTARCTICA $i
 	done
 
 	# Asia
-	echo "Adding GADM level0 areas to Asia"
+	echo "Adding GADM gadm0 areas to Asia"
 	insert_continent_whole_country ASIA "'AFG',  'ARE', 'BGD', 'BHR', 'BRN', 'BTN', 'CHN', 'CCK', 'CXR', 'CYP', 'HKG',  'IND', 'IOT', 'IRN', 'IRQ', 'ISR', 'JOR', 'KGZ', 'KHM', 'KOR', 'KWT', 'LAO', 'LBN', 'LKA', 'MAC', 'MDV', 'MMR', 'MNG', 'MYS', 'NPL', 'OMN', 'PAK', 'PHL', 'PRK', 'PSE', 'QAT',  'SAU', 'SGP', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'TWN', 'UZB', 'VNM', 'XAD', 'XPI', 'XSP', 'XNC'"
 	for i in ARM AZE EGY GEO GRC JPN KAZ IDN RUS TUR YEM XCA; do
 		insert_continent_cut_country ASIA $i
 	done
 
 	# Europe
-	echo "Adding GADM level0 areas to Europe"
+	echo "Adding GADM gadm0 areas to Europe"
 	insert_continent_whole_country EUROPE "'ALA', 'ALB', 'AND', 'AUT', 'BLR', 'BEL', 'BIH', 'BGR', 'HRV', 'CZE', 'DNK', 'EST', 'FRO', 'FIN', 'FRA', 'DEU', 'GIB', 'GGY', 'HUN', 'ISL', 'IRL', 'IMN', 'ITA', 'JEY', 'LVA', 'LIE', 'LTU', 'LUX', 'MLT', 'MDA', 'MCO', 'MNE', 'NLD', 'MKD', 'NOR', 'POL', 'ROU', 'SMR', 'SRB', 'SVK', 'SVN', 'SJM', 'SWE', 'CHE', 'UKR', 'GBR', 'VAT', 'XKO'"
 	for i in AZE ESP GEO GRC KAZ PRT RUS TUR XCA; do
 		insert_continent_cut_country EUROPE $i
 	done
 
 	# North America
-	echo "Adding GADM level0 areas to North America"
+	echo "Adding GADM gadm0 areas to North America"
 	insert_continent_whole_country NORTH_AMERICA "'AIA',  'ATG', 'BHS', 'BLM', 'BLZ', 'BMU', 'BRB', 'CAN', 'CRI', 'CUB', 'CYM', 'DMA', 'DOM', 'GLP', 'GRL', 'GRD', 'GTM', 'HND', 'HTI', 'JAM', 'KNA', 'LCA', 'MAF', 'MEX', 'MSR', 'MTQ', 'NIC', 'PAN', 'PRI', 'SLV', 'SPM', 'SXM', 'VCT', 'TCA', 'VGB', 'VIR', 'XCL'"
 	for i in BES COL VEN USA UMI; do
 		insert_continent_cut_country NORTH_AMERICA $i
 	done
 
 	# Oceania
-	echo "Adding GADM level0 areas to Oceania"
+	echo "Adding GADM gadm0 areas to Oceania"
 	insert_continent_whole_country OCEANIA "'ASM',  'AUS', 'COK', 'FJI', 'FSM', 'GUM', 'KIR', 'MHL', 'MNP', 'NCL', 'NFK', 'NIU', 'NRU', 'NZL', 'PCN', 'PLW', 'PNG', 'PYF', 'SLB', 'TKL', 'TON', 'TUV', 'VUT', 'WLF', 'WSM'"
 	for i in CHL IDN JPN USA UMI; do
 		insert_continent_cut_country OCEANIA $i
 	done
 
 	# South America
-	echo "Adding GADM level0 areas to South America"
+	echo "Adding GADM gadm0 areas to South America"
 	insert_continent_whole_country SOUTH_AMERICA "'ARG',  'ABW', 'BOL', 'BRA', 'CUW', 'ECU', 'FLK', 'GUF', 'GUY', 'PER', 'PRY', 'SUR', 'TTO', 'URY'"
 	for i in BES CHL COL VEN; do
 		insert_continent_cut_country SOUTH_AMERICA $i
@@ -435,6 +439,9 @@ function import_continents() {
 	echo "CREATE INDEX continent_geom_geom_idx ON continent USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('continent', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE continent SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "Continents import complete"
+	echo
 }
 
 function align_natural_earth() {
@@ -537,7 +544,7 @@ function create_combined_function() {
 }
 
 
-if [[ -e complete ]]; then
+if [[ -e import-complete ]]; then
 	echo "Data already imported"
 else
 	echo "Importing data"
@@ -551,6 +558,7 @@ else
 	import_iho
 	import_seavox
 	import_wgsrpd
+	import_continents
 	create_combined_function
-	touch complete
+	touch import-complete
 fi

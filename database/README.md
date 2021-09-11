@@ -1,4 +1,4 @@
-# Geocode Webservice: Database setup and Docker image
+# Geocode Webservice: Database setup, data import, shapefile export and Docker image
 
 ## Standalone database setup
 ```
@@ -9,6 +9,12 @@ export POSTGRES_HOST=…
 export POSTGRES_PORT=5432
 
 ./import.sh
+```
+
+## Shapefile export
+
+```
+./export-shapefiles.sh
 ```
 
 ## Docker build:

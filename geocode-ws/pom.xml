@@ -81,6 +81,7 @@
           <addResources>false</addResources>
           <layout>ZIP</layout>
           <excludeGroupIds>org.apache.xmlgraphics</excludeGroupIds>
+          <jvmArguments>-Xmx16g</jvmArguments>
         </configuration>
       </plugin>
 
@@ -177,6 +178,10 @@
     </dependency>
 
     <!-- Third party -->
+    <dependency>
+      <groupId>au.org.ala</groupId>
+      <artifactId>layers-store</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>

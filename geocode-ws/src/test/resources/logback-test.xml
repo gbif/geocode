@@ -7,7 +7,10 @@
     </encoder>
   </appender>
 
-  <root level="DEBUG">
+  <logger name="org.gbif.geocode" level="DEBUG"/>
+  <logger name="org.gbif.geocode.ws.persistence.mapper" level="INFO"/>
+
+  <root level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
 

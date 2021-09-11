@@ -3,7 +3,9 @@
 .idea/
 target/
 geocode-ws/logs
-database/complete
+database/export-complete
+database/import-complete
+database/layers
 
 # Package Files #
 *.jar

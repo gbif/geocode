@@ -435,6 +435,26 @@
     SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.9850921630859, -90), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE fid = 36729
   </select>
 
+  <select id="svgGadm543210" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm
+  </select>
+
+  <select id="svgGadm43210" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm4
+  </select>
+
+  <select id="svgGadm3210" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_3, gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm3
+  </select>
+
+  <select id="svgGadm210" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm2
+  </select>
+
+  <select id="svgGadm10" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm1
+  </select>
+
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM iho
   </select>

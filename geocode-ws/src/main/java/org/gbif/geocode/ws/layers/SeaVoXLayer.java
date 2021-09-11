@@ -1,21 +1,26 @@
 package org.gbif.geocode.ws.layers;
 
-import org.gbif.geocode.ws.service.impl.MyBatisGeocoder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component
-public class SeaVoXLayer extends AbstractBitmapCachedLayer {
-  public static Logger LOG = LoggerFactory.getLogger(MyBatisGeocoder.class);
+import au.org.ala.layers.intersect.SimpleShapeFile;
 
+@Component
+public class SeaVoXLayer extends AbstractShapefileLayer {
   public SeaVoXLayer() {
     super(SeaVoXLayer.class.getResourceAsStream("seavox.png"));
+  }
+
+  public SeaVoXLayer(SimpleShapeFile simpleShapeFile) {
+    super(simpleShapeFile, SeaVoXLayer.class.getResourceAsStream("seavox.png"));
   }
 
   @Override
   public String name() {
     return "SeaVoX";
+  }
+
+  @Override
+  public String source() {
+    return "http://marineregions.org/";
   }
 }

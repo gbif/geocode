@@ -39,23 +39,24 @@ import com.google.common.io.ByteStreams;
     })
 public class GeocodeResource implements GeocodeService {
 
-  private final GeocodeService geocoder;
-
+  private final GeocodeService myBatisGeocoder;
+  private final GeocodeService shapefileGeocoder;
   private final GeocodeWsStatistics statistics;
 
   private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
-  public GeocodeResource(
-      GeocodeService geocoder, GeocodeWsStatistics statistics, BuildProperties buildProperties) {
+  public GeocodeResource(GeocodeService shapefileGeocoder, GeocodeService myBatisGeocoder, GeocodeWsStatistics statistics, BuildProperties buildProperties) {
     this.statistics = statistics;
-    this.geocoder =
-        new GeocodeBitmapCache(
-            geocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+    this.shapefileGeocoder =
+      new GeocodeBitmapCache(
+        shapefileGeocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+    this.myBatisGeocoder =
+      new GeocodeBitmapCache(
+        myBatisGeocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
     this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
   }
 
-  @Override
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Location> get(
       @RequestParam(value = "lat", required = false) Double latitude,
@@ -64,7 +65,8 @@ public class GeocodeResource implements GeocodeService {
           Double uncertaintyDegrees,
       @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
           Double uncertaintyMeters,
-      @Nullable @RequestParam(value = "layer", required = false) List<String> layers) {
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers,
+      @Nullable @RequestParam(value = "backend", required = false) String backend) {
     if (latitude == null
         || longitude == null
         || latitude < -90
@@ -78,7 +80,17 @@ public class GeocodeResource implements GeocodeService {
     }
 
     statistics.goodRequest();
-    return geocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    if ("postgis".equals(backend)) {
+      return myBatisGeocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    } else {
+      return shapefileGeocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    }
+  }
+
+  @Override
+  public List<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters,
+    List<String> layers) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers, null);
   }
 
   @Override
