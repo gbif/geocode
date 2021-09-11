@@ -1,6 +1,7 @@
 package org.gbif.geocode.api.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -9,6 +10,20 @@ import java.util.Objects;
 public class Location implements Serializable {
 
   private static final long serialVersionUID = -2085795867974984269L;
+
+  /**
+   * This is not well-ordered, so we keep locations in their original order
+   * if the distances are identical.
+   */
+  public static final Comparator<Location> DISTANCE_COMPARATOR = new Comparator<Location>() {
+    @Override
+    public int compare(Location o1, Location o2) {
+      return
+        (o1 == null || o1.distance == null) ?
+          (o2 == null ? 0 : 1) :
+          (o2 == null) ? -1 : o1.distance.compareTo(o2.distance);
+    }
+  };
 
   /**
    * Identifier for the location feature, preferably globally unique.

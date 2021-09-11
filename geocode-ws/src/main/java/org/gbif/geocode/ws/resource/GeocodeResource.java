@@ -8,7 +8,6 @@ import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class GeocodeResource implements GeocodeService {
 
   @Override
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Collection<Location> get(
+  public List<Location> get(
       @RequestParam(value = "lat", required = false) Double latitude,
       @RequestParam(value = "lng", required = false) Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
@@ -83,9 +82,9 @@ public class GeocodeResource implements GeocodeService {
   }
 
   @Override
-  public Collection<Location> get(
+  public List<Location> get(
       Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
   }
 
   /*

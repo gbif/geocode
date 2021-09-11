@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,7 @@ public class GeocodeBitmapCache implements GeocodeService {
   private final static int NOTHING = 0xFFFFFF;
   private final int imgWidth;
   private final int imgHeight;
-  private final Map<Integer, Collection<Location>> colourKey = new HashMap<>();
+  private final Map<Integer, List<Location>> colourKey = new HashMap<>();
 
   public GeocodeBitmapCache(GeocodeService geocodeService, InputStream bitmap) {
     this.geocodeService = geocodeService;
@@ -50,7 +49,7 @@ public class GeocodeBitmapCache implements GeocodeService {
    * Simple get candidates by point.  No cache if layers are specified.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> layers) {
+  public List<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters, List<String> layers) {
     if (layers == null || layers.isEmpty()) {
       // No layers, use the method below
       return get(lat, lng, uncertaintyDegrees, uncertaintyMeters);
@@ -64,8 +63,8 @@ public class GeocodeBitmapCache implements GeocodeService {
    * Simple get candidates by point.
    */
   @Override
-  public Collection<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    Collection<Location> locations = null;
+  public List<Location> get(Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
+    List<Location> locations = null;
 
     // Convert uncertainty in metres to degrees, approximating the Earth as a sphere.
     if (uncertaintyMeters != null) {
@@ -98,7 +97,7 @@ public class GeocodeBitmapCache implements GeocodeService {
    * time they are found.
    * @return Locations or null if the bitmap can't answer.
    */
-  protected Collection<Location> getFromBitmap(double lat, double lng) {
+  protected List<Location> getFromBitmap(double lat, double lng) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
@@ -109,7 +108,7 @@ public class GeocodeBitmapCache implements GeocodeService {
     String hex = String.format("#%06x", colour);
     LOG.debug("LatLong {},{} has pixel {},{} with colour {}", lat, lng, x, y, hex);
 
-    Collection<Location> locations;
+    List<Location> locations;
 
     switch (colour) {
       case BORDER:
@@ -137,7 +136,7 @@ public class GeocodeBitmapCache implements GeocodeService {
     return locations;
   }
 
-  private String joinLocations(Collection<Location> loc) {
+  private String joinLocations(List<Location> loc) {
     return loc.stream().map(l -> l.getId()).distinct().collect(Collectors.joining(", "));
   }
 }

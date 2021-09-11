@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public abstract class AbstractBitmapCachedLayer {
   private final int imgHeight;
   // Maximum number of locations in a coloured part of the map
   private final int maxLocations;
-  private final Map<Integer, Collection<Location>> colourKey = new HashMap<>();
+  private final Map<Integer, List<Location>> colourKey = new HashMap<>();
 
   public AbstractBitmapCachedLayer(InputStream bitmap) {
     this(bitmap, 1);
@@ -53,7 +53,7 @@ public abstract class AbstractBitmapCachedLayer {
    * Check the colour of a pixel from the map image to determine the country.
    * @return Locations or null if the bitmap can't answer.
    */
-  public Collection<Location> checkBitmap(double lat, double lng) {
+  public List<Location> checkBitmap(double lat, double lng) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
@@ -64,7 +64,7 @@ public abstract class AbstractBitmapCachedLayer {
     String hex = String.format("#%06x", colour);
     LOG.debug("LatLong {},{} has pixel {},{} with colour {}", lat, lng, x, y, hex);
 
-    Collection<Location> locations;
+    List<Location> locations;
 
     switch (colour) {
       case BORDER:
@@ -88,7 +88,7 @@ public abstract class AbstractBitmapCachedLayer {
   /**
    * Store a result in the bitmap's cache, if it's not a border region.
    */
-  public void putBitmap(double lat, double lng, Collection<Location> locations) {
+  public void putBitmap(double lat, double lng, List<Location> locations) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));
@@ -120,7 +120,7 @@ public abstract class AbstractBitmapCachedLayer {
   /**
    * Only used for the log message.
    */
-  private String joinLocations(Collection<Location> loc) {
+  private String joinLocations(List<Location> loc) {
     return loc.stream().map(Location::getId).collect(Collectors.joining(", ")) + " " +
       loc.stream().map(l -> l.getDistance().toString()).collect(Collectors.joining(", "));
   }

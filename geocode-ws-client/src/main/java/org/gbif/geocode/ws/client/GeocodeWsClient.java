@@ -4,7 +4,6 @@ import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -26,7 +25,7 @@ public interface GeocodeWsClient extends GeocodeService {
       value = "reverse",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Override
-  Collection<Location> get(
+  List<Location> get(
       @RequestParam("lat") Double latitude,
       @RequestParam("lng") Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
@@ -36,7 +35,7 @@ public interface GeocodeWsClient extends GeocodeService {
       @Nullable @RequestParam(value = "layer", required = false) List<String> layers);
 
   @Override
-  default Collection<Location> get(
+  default List<Location> get(
       Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
     return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, null);
   }

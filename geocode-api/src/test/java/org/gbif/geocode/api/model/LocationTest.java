@@ -2,6 +2,7 @@ package org.gbif.geocode.api.model;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class LocationTest {
@@ -26,5 +27,18 @@ public class LocationTest {
     locationTwo.setDistance(0d);
     MatcherAssert.assertThat(locationOne, CoreMatchers.equalTo(locationTwo));
     MatcherAssert.assertThat(locationOne.hashCode(), CoreMatchers.equalTo(locationTwo.hashCode()));
+  }
+
+  @Test
+  public void testCompare() {
+    Location locationOne = new Location("EC", "EEZ", "EEZ", "EC", "EC", 0d);
+    Location locationOneB = new Location("EC", "EEZ", "EEZ", "EC", "EC", 0d);
+    Location locationTwo = new Location("EC", "Political", "Political", "EC", "EC", 0.015848712600069228d);
+    Location locationThree = new Location("EC", "Political", "Political", "EC", "EC", 0d);
+
+    Assertions.assertTrue(Location.DISTANCE_COMPARATOR.compare(locationOne, locationTwo) < 0);
+    Assertions.assertTrue(Location.DISTANCE_COMPARATOR.compare(locationOne, locationOneB) == 0);
+    Assertions.assertTrue(Location.DISTANCE_COMPARATOR.compare(locationTwo, locationOne) > 0);
+    Assertions.assertTrue(Location.DISTANCE_COMPARATOR.compare(locationOne, locationThree) == 0);
   }
 }

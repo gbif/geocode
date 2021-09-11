@@ -7,7 +7,6 @@ import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.persistence.mapper.LocationMapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,14 +49,14 @@ public class MyBatisGeocoder implements GeocodeService {
 
   /** Simple get candidates by point. */
   @Override
-  public Collection<Location> get(
+  public List<Location> get(
       Double lat, Double lng, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(lat, lng, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
+    return get(lat, lng, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
   }
 
   /** Simple get candidates by point. */
   @Override
-  public Collection<Location> get(
+  public List<Location> get(
       Double lat,
       Double lng,
       Double uncertaintyDegrees,
@@ -87,7 +86,7 @@ public class MyBatisGeocoder implements GeocodeService {
     for (AbstractBitmapCachedLayer layer : availableLayers) {
       if (useLayers.isEmpty() || useLayers.contains(layer.name())) {
         if (unc <= DEFAULT_DISTANCE) {
-          Collection<Location> found = layer.checkBitmap(lat, lng);
+          List<Location> found = layer.checkBitmap(lat, lng);
           if (found == null) {
             toQuery.add(layer.name());
           } else {
