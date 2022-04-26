@@ -11,22 +11,16 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 public class GeocodeResourceIT {
-
-  @MockBean(name = "myBatisGeocoder")
-  private GeocodeService myBatisGeocoder;
 
   private final GeocodeService geocodeClient;
 
@@ -39,29 +33,17 @@ public class GeocodeResourceIT {
 
   @Test
   public void reverseTest() {
-    Location testLocation = new Location();
-    testLocation.setTitle("my title");
-
-    when(myBatisGeocoder.get(any(), any(), any(), any()))
-        .thenReturn(Collections.singletonList(testLocation));
-
-    Collection<Location> result = geocodeClient.get(1d, 1d, 1d, null, Collections.emptyList());
+    Collection<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList());
     assertEquals(1, result.size());
-    assertEquals(testLocation, result.iterator().next());
+    assertEquals("South Atlantic Ocean", result.iterator().next().getTitle());
   }
 
   @Test
   public void reverseWithLayersTest() {
-    Location testLocation = new Location();
-    testLocation.setTitle("my title");
-
-    when(myBatisGeocoder.get(any(), any(), any(), any(), any()))
-        .thenReturn(Collections.singletonList(testLocation));
-
     Collection<Location> result =
-        geocodeClient.get(1d, 1d, 1d, null, Collections.singletonList("political"));
+        geocodeClient.get(51d, 18d, 0.1d, null, Collections.singletonList("Political"));
     assertEquals(1, result.size());
-    assertEquals(testLocation, result.iterator().next());
+    assertEquals("PL", result.iterator().next().getId());
   }
 
   @Test

@@ -11,7 +11,7 @@ spring:
   liquibase:
     enabled: false
   shapefiles:
-    root: /home/matt/GBIF/Workspace/geocode/database/layers/
+    root: /mnt/auto/scratch/mblissett/layers/
 
   jmx:
     enabled: true
