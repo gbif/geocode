@@ -372,21 +372,6 @@ layers['iho'] = new ol.layer.VectorTile({
 	visible: false,
 });
 
-layers['seavox'] = new ol.layer.VectorTile({
-	title: 'SeaVoX',
-	renderMode: 'image',
-	source: new ol.source.VectorTile({
-		projection: 'EPSG:4326',
-		format: new ol.format.MVT(),
-		tileGrid: tileGrid,
-		tilePixelRatio: 8,
-		url: './tile/seavox/{z}/{x}/{y}.mvt',
-		wrapX: false,
-	}),
-	style: countryStyle(),
-	visible: false
-});
-
 layers['wgsrpd'] = new ol.layer.VectorTile({
 	title: 'WGSRPD',
 	renderMode: 'image',
@@ -443,7 +428,6 @@ var map = new ol.Map({
 			layers: [
 				layers['centroids'],
 				layers['wgsrpd'],
-				layers['seavox'],
 				layers['iho'],
 				layers['gadm5'],
 				layers['gadm4'],

@@ -7,7 +7,6 @@ import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
-import org.gbif.geocode.ws.layers.SeaVoXLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 import org.gbif.ws.server.provider.CountryHandlerMethodArgumentResolver;
 import org.gbif.ws.server.provider.PageableHandlerMethodArgumentResolver;
@@ -56,7 +55,6 @@ public class GeocodeWsApplication {
       EezLayer eezLayer,
       GadmLayer gadmLayer,
       IhoLayer ihoLayer,
-      SeaVoXLayer seaVoxLayer,
       WgsrpdLayer wgsrpdLayer,
       CentroidsLayer centroidsLayer) {
 
@@ -66,7 +64,6 @@ public class GeocodeWsApplication {
     layers.add(eezLayer);
     layers.add(gadmLayer);
     layers.add(ihoLayer);
-    layers.add(seaVoxLayer);
     layers.add(wgsrpdLayer);
     layers.add(centroidsLayer);
 

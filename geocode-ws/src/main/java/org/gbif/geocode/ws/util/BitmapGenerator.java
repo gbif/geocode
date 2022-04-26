@@ -123,7 +123,6 @@ public class BitmapGenerator implements CommandLineRunner {
         "gadm2",
         "gadm3",
         "iho",
-        "seavox",
         "wgsrpd",
         "centroids");
 
@@ -144,7 +143,6 @@ public class BitmapGenerator implements CommandLineRunner {
             .put("gadm4", tileMapper::svgGadm4)
             .put("gadm5", tileMapper::svgGadm5)
             .put("iho", tileMapper::svgIho)
-            .put("seavox", tileMapper::svgSeaVoX)
             .put("wgsrpd", tileMapper::svgWgsrpd)
             .put("centroids", tileMapper::svgCentroids)
             .put("gadm3210", tileMapper::svgGadm3210)

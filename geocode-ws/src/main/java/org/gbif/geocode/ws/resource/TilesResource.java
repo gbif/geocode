@@ -48,7 +48,6 @@ public class TilesResource {
           "gadm4",
           "gadm5",
           "iho",
-          "seavox",
           "wgsrpd");
 
   private final TileMapper tileMapper;
@@ -113,10 +112,6 @@ public class TilesResource {
 
       case "iho":
         tile = tileMapper.tileIho(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
-        break;
-
-      case "seavox":
-        tile = tileMapper.tileSeaVoX(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
       case "wgsrpd":

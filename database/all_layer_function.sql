@@ -180,20 +180,6 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (
       SELECT
-        'SeaVoX' AS type,
-        skos_url AS id,
-        'http://marineregions.org/' AS source,
-        sub_region AS title,
-        NULL,
-        ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance
-      FROM seavox
-      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
-        AND 'SeaVoX' = ANY(q_layers)
-      ORDER BY distance, id
-    )
-  UNION ALL
-    (
-      SELECT
         'WGSRPD' AS type,
         'WGSRPD:' || level4_cod AS id,
         'http://www.tdwg.org/standards/109' AS source,
@@ -223,13 +209,13 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 -- Examples / tests
 SELECT
-  'SeaVoX' AS type,
-  skos_url AS id,
+  'IHO' AS type,
+  'http://marineregions.org/mrgid/' || mrgid AS id,
   'http://marineregions.org/' AS source,
-  sub_region AS title,
+  name AS title,
   NULL,
   ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326))
-FROM seavox
+FROM iho
 WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
@@ -238,7 +224,7 @@ FROM gadm3 LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
 WHERE ST_DWithin(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(gadm3.geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['SeaVoX', 'IHO', 'EEZ', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['IHO', 'EEZ', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD']);
 
 SELECT * FROM query_layers(-34.2, -53.1, 0.05, ARRAY['EEZ']);
 

@@ -290,36 +290,6 @@
     ) AS tile;
   </select>
 
-  <!-- Tiles from the public.seavox table -->
-  <select id="tileSeaVoX" resultMap="tileMap">
-    WITH overlappings AS (
-      SELECT
-        skos_url AS id,
-        'SeaVoX' AS type,
-        'http://marineregions.org' AS source,
-        sub_region AS title,
-        geom,
-        centroid_geom
-      FROM seavox
-      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
-    ), intersectings AS (
-      SELECT * FROM overlappings
-      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
-    )
-    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
-    FROM (
-      SELECT
-        id, type, source, title,
-        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-      UNION ALL
-      SELECT
-        id, type, source, title,
-        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-    ) AS tile;
-  </select>
-
   <!-- Tiles from the public.wgsrpd_level4 table -->
   <select id="tileWgsrpd" resultMap="tileMap">
     WITH overlappings AS (
@@ -457,10 +427,6 @@
 
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM iho
-  </select>
-
-  <select id="svgSeaVoX" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT skos_url AS id, ST_AsSVG(geom) AS shape FROM seavox
   </select>
 
   <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">

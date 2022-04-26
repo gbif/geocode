@@ -9,7 +9,6 @@ import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
-import org.gbif.geocode.ws.layers.SeaVoXLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
 import java.util.ArrayList;
@@ -68,11 +67,6 @@ public class ShapefileGeocoder implements GeocodeService {
         SimpleShapeFile iho = new SimpleShapeFile(root + "iho_subdivided", columns);
         IhoLayer ihoLayer = new IhoLayer(iho);
         layers.put(ihoLayer.name(), ihoLayer);
-      }
-      {
-        SimpleShapeFile seavox = new SimpleShapeFile(root + "seavox", columns);
-        SeaVoXLayer seaVoXLayer = new SeaVoXLayer(seavox);
-        layers.put(seaVoXLayer.name(), seaVoXLayer);
       }
       {
         SimpleShapeFile wgsrpd = new SimpleShapeFile(root + "wgsrpd_subdivided", columns);

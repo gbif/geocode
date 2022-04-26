@@ -56,14 +56,6 @@ function export_gadm() {
 	echo
 }
 
-function export_seavox() {
-	echo "Exporting SeaVoX to shapefile"
-	exec_pgsql2shp layers/seavox "SELECT skos_url AS id, sub_region AS name, NULL AS isoCountryCode2Digit, geom FROM seavox"
-
-	echo "SeaVoX shapefile export complete"
-	echo
-}
-
 function export_iho() {
 	echo "Exporting IHO to shapefile"
 	exec_pgsql2shp layers/iho_subdivided "SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, name, NULL AS isoCountryCode2Digit, geom FROM iho_subdivided"
@@ -108,7 +100,6 @@ else
 	export_marine_regions
 	export_gadm
 	export_iho
-	export_seavox
 	export_wgsrpd
 	export_continents
 	touch export-complete

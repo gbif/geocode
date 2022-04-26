@@ -252,34 +252,6 @@ function import_gadm() {
 	echo
 }
 
-function import_seavox() {
-	echo "Downloading Seavox dataset"
-
-	# SeaVoX version 17: http://www.marineregions.org/downloads.php#seavox
-
-	mkdir -p /var/tmp/import
-	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/SeaVoX_sea_areas_polygons_v17.zip
-	mkdir -p seavox
-	unzip -oj SeaVoX_sea_areas_polygons_v17.zip -d seavox/
-
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 seavox/SeaVoX_sea_areas_polygons_v17_att.shp public.seavox | wrap_drop_geometry_commands > seavox/seavox.sql
-
-	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS seavox;" | exec_psql
-
-	echo "Importing SeaVoX to PostGIS"
-	exec_psql_file seavox/seavox.sql
-
-	rm SeaVoX_sea_areas_polygons_v17.zip seavox/ -Rf
-
-	echo "SELECT AddGeometryColumn('seavox', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE seavox SET centroid_geom = ST_Centroid(geom);" | exec_psql
-
-	echo "SeaVoX import complete"
-	echo
-}
-
 function import_iho() {
 	echo "Downloading IHO dataset"
 
@@ -557,7 +529,6 @@ else
 	align_marine_regions
 	import_gadm
 	import_iho
-	import_seavox
 	import_wgsrpd
 	import_continents
 	create_combined_function
