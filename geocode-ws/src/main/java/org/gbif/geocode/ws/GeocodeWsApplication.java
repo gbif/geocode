@@ -4,10 +4,7 @@ import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.layers.CentroidsLayer;
 import org.gbif.geocode.ws.layers.ContinentLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
-import org.gbif.geocode.ws.layers.Gadm0Layer;
-import org.gbif.geocode.ws.layers.Gadm1Layer;
-import org.gbif.geocode.ws.layers.Gadm2Layer;
-import org.gbif.geocode.ws.layers.Gadm3Layer;
+import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
@@ -57,10 +54,7 @@ public class GeocodeWsApplication {
       PoliticalLayer politicalLayer,
       ContinentLayer continentLayer,
       EezLayer eezLayer,
-      Gadm0Layer gadm0Layer,
-      Gadm1Layer gadm1Layer,
-      Gadm2Layer gadm2Layer,
-      Gadm3Layer gadm3Layer,
+      GadmLayer gadmLayer,
       IhoLayer ihoLayer,
       SeaVoXLayer seaVoxLayer,
       WgsrpdLayer wgsrpdLayer,
@@ -70,10 +64,7 @@ public class GeocodeWsApplication {
     layers.add(politicalLayer);
     layers.add(continentLayer);
     layers.add(eezLayer);
-    layers.add(gadm0Layer);
-    layers.add(gadm1Layer);
-    layers.add(gadm2Layer);
-    layers.add(gadm3Layer);
+    layers.add(gadmLayer);
     layers.add(ihoLayer);
     layers.add(seaVoxLayer);
     layers.add(wgsrpdLayer);

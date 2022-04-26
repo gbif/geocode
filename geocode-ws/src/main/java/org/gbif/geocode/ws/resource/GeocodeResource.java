@@ -79,6 +79,12 @@ public class GeocodeResource implements GeocodeService {
       throw new VeryUncertainException("Cannot specify uncertainty in both degrees and metres.");
     }
 
+    // As an optimization, GADM is queried as single layer
+    if (layers != null && !layers.isEmpty()
+      && (layers.contains("GADM0") || layers.contains("GADM1") || layers.contains("GADM2") || layers.contains("GADM3"))) {
+      layers.add("GADM");
+    }
+
     statistics.goodRequest();
     if ("postgis".equals(backend)) {
       return myBatisGeocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);

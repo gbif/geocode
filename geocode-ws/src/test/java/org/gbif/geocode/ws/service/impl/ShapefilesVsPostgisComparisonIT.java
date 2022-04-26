@@ -1,12 +1,9 @@
 package org.gbif.geocode.ws.service.impl;
 
-import au.org.ala.layers.intersect.ComplexRegion;
-
 import org.gbif.geocode.api.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
@@ -17,19 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.google.common.base.Stopwatch;
+import au.org.ala.layers.intersect.ComplexRegion;
 
 /**
- * Speed comparisont/test for PostGIS and ShapeFile geocoders.
+ * Compare results (accuracy) between PostGIS and ShapeFile geocoders.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = GeocoderIntegrationTestsConfiguration.class)
+@Disabled
 public class ShapefilesVsPostgisComparisonIT {
   final MyBatisGeocoder myBatisGeocoder;
   final ShapefileGeocoder shapefileGeocoder;
 
-  Stopwatch pg = Stopwatch.createUnstarted();
-  Stopwatch sf = Stopwatch.createUnstarted();
   List<String> layers = new ArrayList<>();
   int i = 0;
 
@@ -69,6 +65,7 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{60.40749059677498, 22.158713066700017}); // Finland
     points.add(new double[]{61.00346895410195, -147.92568394223184}); // Alaska EEZ
     points.add(new double[]{59.00003632575556, 178.88992354530086}); // US/RU joint regime (US before RU)
+    points.add(new double[]{70.29634012819375, 20.305876112895362}); // Norway EEZ (I think)
 
     for (double[] point : points) {
       check(point[0], point[1], false);
@@ -92,7 +89,7 @@ public class ShapefilesVsPostgisComparisonIT {
   @Test
   public void compareVariousGadmQueries() {
     layers.clear();
-    layers.add("GADM3210");
+    layers.add("GADM");
 
     List<double[]> points = new ArrayList<>();
     points.add(new double[]{-20.87899757475735,-62.752318771018494});
@@ -105,6 +102,7 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{52.9313560477876,122.71514675874727});
     points.add(new double[]{-74.72108973271868,42.498406709271535});
     points.add(new double[]{-75.7882187778486,-140.36844990373686});
+    points.add(new double[]{-8.129791605459658, -61.50063994508639});
 
     for (double[] point : points) {
       check(point[0], point[1], false);
@@ -170,14 +168,15 @@ public class ShapefilesVsPostgisComparisonIT {
 
   @Test
   public void compareRandomQueries() {
-    int count = 10000;
+    int count = 10_000;
 
     layers.clear();
     layers.add("Political");
     layers.add("EEZ");
     layers.add("Continent");
     layers.add("GADM3210");
-    layers.add("EEZ");
+    layers.add("IHO");
+    layers.add("WGSRPD");
 
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
@@ -188,23 +187,13 @@ public class ShapefilesVsPostgisComparisonIT {
   }
 
   private void check(double latitude, double longitude, boolean debug) {
-    System.out.println("Checking "+latitude+", "+longitude);
+    System.out.println(i + "> Checking "+latitude+", "+longitude);
 
     ComplexRegion.debug = debug;
     boolean fail = false;
 
-    pg.start();
-    List<Location> p = myBatisGeocoder.get(latitude, longitude, 0.05, null).stream().sorted().collect(Collectors.toList());
-    pg.stop();
-    sf.start();
-    List<Location> s = shapefileGeocoder.get(latitude, longitude, 0.05, null).stream().distinct().sorted().collect(Collectors.toList());
-    sf.stop();
-
-    if (i % 1000 == 0 && i > 0) {
-      System.out.print("After "+i+" queries, rate for ");
-      System.out.print("PostGIS is "+(((double)i)/pg.elapsed(TimeUnit.SECONDS))+" per second, ");
-      System.out.print("ShapeFile is "+(((double)i)/sf.elapsed(TimeUnit.SECONDS))+" per second\n");
-    }
+    List<Location> p = myBatisGeocoder.get(latitude, longitude, 0.05, null, layers).stream().sorted().collect(Collectors.toList());
+    List<Location> s = shapefileGeocoder.get(latitude, longitude, 0.05, null, layers).stream().distinct().sorted().collect(Collectors.toList());
 
     if (debug) {
       if (p.size() == s.size()) {
@@ -263,6 +252,5 @@ public class ShapefilesVsPostgisComparisonIT {
     }
 
     i++;
-    System.out.println();
   }
 }

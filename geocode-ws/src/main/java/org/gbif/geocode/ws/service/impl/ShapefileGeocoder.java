@@ -6,7 +6,7 @@ import org.gbif.geocode.ws.layers.AbstractShapefileLayer;
 import org.gbif.geocode.ws.layers.CentroidsLayer;
 import org.gbif.geocode.ws.layers.ContinentLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
-import org.gbif.geocode.ws.layers.Gadm3210Layer;
+import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.SeaVoXLayer;
@@ -45,17 +45,17 @@ public class ShapefileGeocoder implements GeocodeService {
       String[] columns = new String[]{"id", "name", "isoCountry"};
 
       {
-        SimpleShapeFile political = new SimpleShapeFile(root + "political", columns);
+        SimpleShapeFile political = new SimpleShapeFile(root + "political_subdivided", columns);
         PoliticalLayer politicalLayer = new PoliticalLayer(political);
         layers.put(politicalLayer.name(), politicalLayer);
       }
       {
-        SimpleShapeFile eez = new SimpleShapeFile(root + "eez", columns);
+        SimpleShapeFile eez = new SimpleShapeFile(root + "eez_subdivided", columns);
         EezLayer eezLayer = new EezLayer(eez);
         layers.put(eezLayer.name(), eezLayer);
       }
       {
-        SimpleShapeFile continent = new SimpleShapeFile(root + "continents", columns);
+        SimpleShapeFile continent = new SimpleShapeFile(root + "continents_subdivided", columns);
         ContinentLayer continentLayer = new ContinentLayer(continent);
         layers.put(continentLayer.name(), continentLayer);
       }
@@ -65,7 +65,7 @@ public class ShapefileGeocoder implements GeocodeService {
         layers.put(centroidsLayer.name(), centroidsLayer);
       }
       {
-        SimpleShapeFile iho = new SimpleShapeFile(root + "iho", columns);
+        SimpleShapeFile iho = new SimpleShapeFile(root + "iho_subdivided", columns);
         IhoLayer ihoLayer = new IhoLayer(iho);
         layers.put(ihoLayer.name(), ihoLayer);
       }
@@ -75,15 +75,15 @@ public class ShapefileGeocoder implements GeocodeService {
         layers.put(seaVoXLayer.name(), seaVoXLayer);
       }
       {
-        SimpleShapeFile wgsrpd = new SimpleShapeFile(root + "wgsrpd", columns);
+        SimpleShapeFile wgsrpd = new SimpleShapeFile(root + "wgsrpd_subdivided", columns);
         WgsrpdLayer wgsrpdLayer = new WgsrpdLayer(wgsrpd);
         layers.put(wgsrpdLayer.name(), wgsrpdLayer);
       }
       {
         String[] gadmColumns = new String[]{"gid_0", "gid_1", "gid_2", "gid_3", "name_0", "name_1", "name_2", "name_3", "isoCountry"};
-        SimpleShapeFile gadm3210 = new SimpleShapeFile(root + "gadm", gadmColumns);
-        Gadm3210Layer gadm3210Layer = new Gadm3210Layer(gadm3210);
-        layers.put(gadm3210Layer.name(), gadm3210Layer);
+        SimpleShapeFile gadm3210 = new SimpleShapeFile(root + "gadm_subdivided", gadmColumns);
+        GadmLayer gadmLayer = new GadmLayer(gadm3210);
+        layers.put(gadmLayer.name(), gadmLayer);
       }
 
       LOG.info("Available (and thus default) layers are {}", layers.keySet());

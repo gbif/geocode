@@ -18,10 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.google.common.base.Stopwatch;
 
 /**
- * Speed comparisont/test for PostGIS and ShapeFile geocoders.
+ * Speed comparison/test for PostGIS and ShapeFile geocoders.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = GeocoderIntegrationTestsConfiguration.class)
+@Disabled
 public class GeocoderSpeedIT {
   GeocodeService geocoder;
 
@@ -38,28 +39,28 @@ public class GeocoderSpeedIT {
 
     // Change according to test.
     geocoder = shapefileGeocoder;
+    //geocoder = myBatisGeocoder;
   }
 
   @Test
   @Disabled
-  public void compareRandomQueries() {
+  public void speedTestRandomQueries() {
+    // PostGIS speeds (localhost PostGIS)
+    // Political:   10000 queries in   8 seconds;   1250 per second
+    // EEZ:         10000 queries in  34 seconds;    294 per second
+    // GADM:       100000 queries in 112 seconds;    892 per second
+    // Continent:  100000 queries in  10 seconds;  10000 per second
+    // IHO:        100000 queries in  74 seconds;   1351 per second
+    // WGSRPD:     100000 queries in  23 seconds;   4347 per second
 
-    int count = 100_000;
+    int count = 10_000_000;
     List<String> testLayers = Arrays.asList(
-      "Political",  // Political:  100000 queries in   1 seconds; 100000 per second
-      "EEZ",        // EEZ:        100000 queries in  16 seconds;   6250 per second
-      "GADM3210",   // GADM3210:   100000 queries in 449 seconds;    222 per second
-      "Continent",  // Continent:  100000 queries in  34 seconds;   2941 per second
-      "IHO",        // IHO:        100000 queries in  12 seconds;   8333 per second
-      "WGSRPD");    // WGSRPD:    1000000 queries in   8 seconds; 125000 per second
-
-    //                 PostGIS comparison (localhost PostGIS)
-    //                 Political:   10000 queries in   8 seconds;   1250 per second
-    //                 EEZ:         10000 queries in  34 seconds;    294 per second
-    //                 GADM3210:   100000 queries in 112 seconds;    892 per second
-    //                 Continent:  100000 queries in1314 seconds;     76 per second
-    //                 IHO:        100000 queries in  74 seconds;   1351 per second
-    //                 WGSRPD:     100000 queries in  23 seconds;   4347 per second
+      "Political",  // Political: 10000000 queries in 15 seconds; 666666.6 per second
+      "EEZ",        // EEZ:       10000000 queries in 17 seconds; 588235.3 per second
+      "GADM",       // GADM:      10000000 queries in 46 seconds; 217391.3 per second
+      "Continent",  // Continent: 10000000 queries in 17 seconds; 588235.3 per second
+      "IHO",        // IHO:       10000000 queries in 16 seconds; 625000.0 per second
+      "WGSRPD");    // WGSRPD:    10000000 queries in 15 seconds; 666666.6 per second
 
     for (String l : testLayers) {
       System.out.println("Testing layer "+l);
@@ -83,18 +84,11 @@ public class GeocoderSpeedIT {
 
   @Test
   @Disabled
-  public void compareRandomQueriesGadm() {
-    int count = 20_000;
-
-    List<String> testSfLayers = Arrays.asList("GADM3210"); // ShapeFile: 100000 queries in 449 seconds; 222 per second
+  public void speedTestRandomGadmQueries() {
+    int count = 10_000_000;
+    // SF GADM3210: 10000000 queries in 45 seconds; 222222.2 per second
+    List<String> testSfLayers = Arrays.asList("GADM");
     System.out.println("Testing GADM with Shapefile backend");
-    testSfLayers = Arrays.asList(
-      "Political",  // Political:  100000 queries in   1 seconds; 100000 per second
-      "EEZ",        // EEZ:        100000 queries in  16 seconds;   6250 per second
-      "GADM3210",   // GADM3210:   100000 queries in 449 seconds;    222 per second
-      //"Continent",  // Continent:  100000 queries in  34 seconds;   2941 per second
-      "IHO",        // IHO:        100000 queries in  12 seconds;   8333 per second
-      "WGSRPD");    // WGSRPD:    1000000 queries in   8 seconds; 125000 per second
 
     sf.reset();
     sf.start();
@@ -107,15 +101,10 @@ public class GeocoderSpeedIT {
     System.out.println("SF " + "GADM3210: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
       + ((double)count) / sf.elapsed(TimeUnit.SECONDS) + " per second");
 
-    List<String> testMBLayers = Arrays.asList("GADM3", "GADM2", "GADM1"); // PostGIS: 100000 queries in 449 seconds; 222 per second
+    count = 100_000;
+    // PG GADM3210: 100000 queries in 128 seconds; 781.25 per second
+    List<String> testMBLayers = Arrays.asList("GADM");
     System.out.println("Testing GADM with MyBatis backend");
-    testMBLayers = Arrays.asList(
-      "Political",  // Political:  100000 queries in   1 seconds; 100000 per second
-      "EEZ",        // EEZ:        100000 queries in  16 seconds;   6250 per second
-      "GADM3", "GADM2", "GADM1",   // GADM3210:   100000 queries in 449 seconds;    222 per second
-      //"Continent",  // Continent:  100000 queries in  34 seconds;   2941 per second
-      "IHO",        // IHO:        100000 queries in  12 seconds;   8333 per second
-      "WGSRPD");    // WGSRPD:    1000000 queries in   8 seconds; 125000 per second
 
     sf.reset();
     sf.start();
@@ -131,10 +120,11 @@ public class GeocoderSpeedIT {
 
   @Test
   @Disabled
-  public void allLayerQueries() {
-    int count = 20_000;
+  public void speedTestAllLayerQueries() {
 
-    // ShapeFile: 20,000 queries in 125 seconds; 160 per second
+    int count = 10_000_000;
+    // SF all layers: 10000000 queries in 137 seconds; 72992.7 per second
+
     System.out.println("Testing all layers with Shapefile backend");
     sf.reset();
     sf.start();
@@ -147,7 +137,8 @@ public class GeocoderSpeedIT {
     System.out.println("SF all layers: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
       + ((double)count) / sf.elapsed(TimeUnit.SECONDS) + " per second");
 
-    // PostGIS: 20,000 queries in 493 seconds; 40 per second
+    count = 10_000;
+    // PG all layers: 10000 queries in 87 seconds; 114.9 per second
     System.out.println("Testing all layers with MyBatis backend");
     sf.reset();
     sf.start();

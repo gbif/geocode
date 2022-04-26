@@ -6,7 +6,9 @@ import org.gbif.geocode.api.model.Location;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -64,36 +66,45 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     List<Location> locations = new ArrayList<>();
 
     for (Pair<Integer, Double> countryValue : countryValues) {
-      String id = idColumnLookup[idColumnIndex[countryValue.getLeft()]];
-      String title = titleColumnLookup[titleColumnIndex[countryValue.getLeft()]];
-      String isoCode = isoCodeColumnLookup[isoCodeColumnIndex[countryValue.getLeft()]];
+      List<Location> ls = resultToLocation(countryValue);
 
-      boolean additionalHit = false;
-      for (Location e : locations) {
-        // We may get multiple results for a MultiPolygon; return only the nearest hit.
-        if (e.getId().equals(id)) {
-          additionalHit = true;
-          if (e.getDistance() > countryValue.getRight()) {
-            // Replace
-            e.setDistance(countryValue.getRight());
-          } else {
-            break;
+      for (Location l : ls) {
+        boolean additionalHit = false;
+        for (Location e : locations) {
+          // We may get multiple results for a MultiPolygon; return only the nearest hit.
+          // We may also get multiple genuine results, e.g. for GADM and EEZ.
+          if (Objects.equals(e.getId(), l.getId())
+            && Objects.equals(e.getIsoCountryCode2Digit(), l.getIsoCountryCode2Digit())) {
+            additionalHit = true;
+            if (e.getDistance() > countryValue.getRight()) {
+              // Replace
+              e.setDistance(countryValue.getRight());
+            }
           }
         }
-      }
-      if (!additionalHit) {
-        Location l = new Location();
-        l.setType(name());
-        l.setSource(source());
-        l.setId(id);
-        l.setTitle(title);
-        l.setIsoCountryCode2Digit(Strings.emptyToNull(isoCode));
-        l.setDistance(countryValue.getRight());
-        locations.add(l);
+        if (!additionalHit) {
+          locations.add(l);
+        }
       }
     }
 
     return locations;
+  }
+
+  public List<Location> resultToLocation(Pair<Integer, Double> countryValue) {
+    String id = idColumnLookup[idColumnIndex[countryValue.getLeft()]];
+    String title = titleColumnLookup[titleColumnIndex[countryValue.getLeft()]];
+    String isoCode = isoCodeColumnLookup[isoCodeColumnIndex[countryValue.getLeft()]];
+
+    Location l = new Location();
+    l.setType(name());
+    l.setSource(source());
+    l.setId(id);
+    l.setTitle(title);
+    l.setIsoCountryCode2Digit(Strings.emptyToNull(isoCode));
+    l.setDistance(countryValue.getRight());
+
+    return Collections.singletonList(l);
   }
 
   public List<Location> lookup(double latitude, double longitude, double uncertainty) {

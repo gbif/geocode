@@ -121,7 +121,7 @@ public class MyBatisGeocoder implements GeocodeService {
           List<Location> found = new ArrayList<>();
           found.addAll(
               queriedLocations.stream()
-                  .filter(l -> l.getType().equals(layer.name()))
+                  .filter(l -> l.getType().startsWith(layer.name()))
                   .collect(Collectors.toList()));
           layer.putBitmap(lat, lng, found);
         }

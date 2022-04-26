@@ -128,7 +128,6 @@ function import_marine_regions() {
 
 	rm World_EEZ_v10_20180221.zip eez/ -Rf
 
-	echo "Simplifying Marine Regions EEZs"
 
 	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -370,7 +369,7 @@ function import_continents() {
 	curl -LSs --remote-name --continue-at - --fail https://github.com/gbif/continents/raw/master/continent_cookie_cutter.gpkg
 
 	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS continent_cookie_cutter;" | exec_psql
+	echo "DROP TABLE IF EXISTS continent_cutter;" | exec_psql
 
 	echo "Importing Continent Cutter to PostGIS"
 	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" continent_cookie_cutter.gpkg
@@ -439,6 +438,8 @@ function import_continents() {
 	echo "CREATE INDEX continent_geom_geom_idx ON continent USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('continent', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE continent SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "CREATE TABLE continent_union AS SELECT continent, ST_Union(geom) AS geom FROM continent GROUP BY continent;" | exec_psql
 
 	echo "Continents import complete"
 	echo
