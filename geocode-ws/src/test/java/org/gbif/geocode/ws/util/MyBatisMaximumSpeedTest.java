@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 public class MyBatisMaximumSpeedTest {
@@ -23,7 +22,7 @@ public class MyBatisMaximumSpeedTest {
 
   @Test
   @Disabled
-  public void testFastestMyBatisQuery() {
+  public void testFastestMyBatisQuery() throws Exception {
     for (int a = 0; a < 5; a++) {
       try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
            PreparedStatement ps = conn.prepareStatement(QUERY)) {
@@ -43,8 +42,6 @@ public class MyBatisMaximumSpeedTest {
 
         System.out.println("Test: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
           + ((double) count) / sf.elapsed(TimeUnit.SECONDS) + " per second");
-      } catch (SQLException e) {
-        e.printStackTrace();
       }
     }
   }

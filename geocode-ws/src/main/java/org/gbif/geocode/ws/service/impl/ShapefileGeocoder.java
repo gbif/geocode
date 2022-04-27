@@ -35,7 +35,6 @@ public class ShapefileGeocoder implements GeocodeService {
   private static final Logger LOG = LoggerFactory.getLogger(ShapefileGeocoder.class);
 
   private final Map<String,AbstractShapefileLayer> layers = new HashMap<>();
-  private long queries = 0;
 
   private static final double DEFAULT_DISTANCE = 0.05d;
 
@@ -134,14 +133,8 @@ public class ShapefileGeocoder implements GeocodeService {
           layer.putBitmap(lat, lng, found);
         }
         locations.addAll(found);
-
-        if (LOG.isInfoEnabled() && (queries+1) % 1000 == 0) {
-          layer.reportCache();
-          layer.reportLookup(queries+1);
-        }
       }
     }
-    queries++;
 
     Collections.sort(locations, Location.DISTANCE_COMPARATOR);
     return locations;

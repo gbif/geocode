@@ -1,8 +1,8 @@
 package org.gbif.geocode.ws.service.impl;
 
+import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.persistence.mapper.LocationMapper;
 
@@ -105,15 +105,9 @@ public class MyBatisGeocoder implements GeocodeService {
     if (!toQuery.isEmpty()) {
       // Retrieve anything the bitmaps couldn't help with, or didn't yet have
       Stopwatch sw = null;
-      if (LOG.isDebugEnabled()) {
-          sw = Stopwatch.createStarted();
-      }
       List<Location> queriedLocations =
           locationMapper.queryLayers(lng, lat, uncertaintyDegrees, toQuery);
       locations.addAll(queriedLocations);
-      if (sw != null) {
-          LOG.debug("Time for {} is {}", toQuery, sw.stop());
-      }
 
       // Push values into the bitmap caches
       for (AbstractBitmapCachedLayer layer : availableLayers) {

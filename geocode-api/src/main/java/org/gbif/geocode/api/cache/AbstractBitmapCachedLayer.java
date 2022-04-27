@@ -35,7 +35,6 @@ public abstract class AbstractBitmapCachedLayer {
   // Maximum number of locations in a coloured part of the map
   private final int maxLocations;
   private final Map<Integer, List<Location>> colourKey = new HashMap<>();
-  private final Stopwatch sw = Stopwatch.createUnstarted();
   public long queries = 0, border = 0, empty = 0, miss = 0, hit = 0;
 
   public AbstractBitmapCachedLayer(InputStream bitmap) {
@@ -62,8 +61,6 @@ public abstract class AbstractBitmapCachedLayer {
    * @return Locations or null if the bitmap can't answer.
    */
   public List<Location> checkBitmap(double lat, double lng) {
-    sw.start();
-
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round((lng + 180d) / 360d * (imgWidth - 1)));
@@ -100,18 +97,12 @@ public abstract class AbstractBitmapCachedLayer {
         }
     }
 
-    queries++;
-    sw.stop();
+    if ((++queries % 10_000) == 0) {
+      LOG.info("{} did {} cache lookups: {} border, {} empty, {} hit, {} miss.",
+        name(), queries, border, empty, hit, miss);
+    }
 
     return locations;
-  }
-
-  public void reportCache() {
-    long elapsed = sw.elapsed(TimeUnit.SECONDS);
-    if (elapsed > 0) {
-      LOG.info("{} did {} cache lookups ({} per second). {} border, {} empty, {} hit, {} miss.",
-        name(), queries, queries / elapsed, border, empty, hit, miss);
-    }
   }
 
   /**

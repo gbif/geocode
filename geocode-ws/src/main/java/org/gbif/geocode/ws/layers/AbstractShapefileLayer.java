@@ -9,14 +9,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Stopwatch;
 
 import au.org.ala.layers.intersect.SimpleShapeFile;
 
@@ -28,7 +25,6 @@ import au.org.ala.layers.intersect.SimpleShapeFile;
 public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
   private Logger LOG = LoggerFactory.getLogger(getClass());
   final SimpleShapeFile simpleShapeFile;
-  private final Stopwatch intersectionSw = Stopwatch.createUnstarted();
   private long queries = 0;
 
   String[] idColumnLookup;
@@ -108,20 +104,13 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
   }
 
   public List<Location> lookup(double latitude, double longitude, double uncertainty) {
-    intersectionSw.start();
-
     List<ImmutablePair<Integer, Double>> intersections = simpleShapeFile.intersectInt(longitude, latitude, uncertainty);
     List<Location> locations = convertResultToLocation(intersections);
 
-    queries++;
-    intersectionSw.stop();
-    return locations;
-  }
-
-  public void reportLookup(long q) {
-    long elapsed = intersectionSw.elapsed(TimeUnit.SECONDS);
-    if (elapsed > 0) {
-      LOG.info("[At {}] {} did {} shapefile queries ({} per second).", q, name(), queries, queries / elapsed);
+    if ((++queries % 10_000) == 0) {
+      LOG.info("{} did {} shapefile queries.", name(), queries);
     }
+
+    return locations;
   }
 }
