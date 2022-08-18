@@ -53,6 +53,7 @@ function import_centroids() {
 	echo
 }
 
+# Note: Natural Earth replaced with the Marine Regions Countries Union polygons.
 function import_natural_earth() {
 	echo "Downloading Natural Earth dataset"
 
@@ -106,6 +107,7 @@ function import_natural_earth() {
 	echo
 }
 
+# Note: Marine Regions replaced with the Marine Regions Countries Union polygons.
 function import_marine_regions() {
 	echo "Downloading Marine Regions dataset"
 
@@ -128,13 +130,152 @@ function import_marine_regions() {
 
 	rm World_EEZ_v10_20180221.zip eez/ -Rf
 
-
 	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
 	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
 
 	echo "Marine Regions import complete"
+	echo
+}
+
+# Within a bounding box, to mr1 add osmu and remove osmd. To mr2, remove osmu and add osmd.
+function use_osm_border_instead() {
+	bbox=$1
+	osmu=$2
+	osmd=$3
+	mr1=$4
+	mr2=$5
+
+	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;$bbox') AS geom)," \
+		"mru AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmu')," \
+		"mrd AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmd')" \
+		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(ST_UNION(political_eez.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr1;" | exec_psql
+
+	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;$bbox') AS geom)," \
+		"mru AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmd')," \
+		"mrd AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmu')" \
+		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(ST_UNION(political_eez.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr2;" | exec_psql
+}
+
+function import_marine_regions_union() {
+	echo "Downloading Marine Regions Land Union dataset"
+
+	# EEZ + land union (we're currently on version 3, which uses EEZ version 11):
+	# Download from here: http://www.marineregions.org/downloads.php
+
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2022/05/EEZ_land_union_v3_202003.zip
+	mkdir -p political_eez
+	unzip -oj EEZ_land_union_v3_202003.zip -d political_eez/
+
+	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 political_eez/EEZ_Land_v3_202030.shp public.political_eez | wrap_drop_geometry_commands > political_eez/political_eez.sql
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS political_eez;" | exec_psql
+
+	echo "Importing Marine Regions to PostGIS"
+	exec_psql_file political_eez/political_eez.sql
+
+	rm EEZ_land_union_v3_202003.zip political_eez/ -Rf
+
+	echo "DROP TABLE IF EXISTS osm;" | exec_psql
+
+	cd $START_DIR/osm
+	for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188; do
+		[[ -f $id.xml ]] || curl -Ssfo $id.xml https://www.openstreetmap.org/api/0.6/relation/$id/full
+		ogr2ogr -append -f PostgreSQL "$PGCONN dbname=dev_eez" $id.xml -nln osm -lco GEOMETRY_NAME=geom multipolygons
+	done
+
+	# Morocco 8367 https://www.openstreetmap.org/relation/13407035
+	# Algeria 8378 https://www.openstreetmap.org/relation/192756
+	use_osm_border_instead 'POLYGON((-8.777 27.517,-8.777 35.247,-0.593 35.247,-0.593 27.517,-8.777 27.517))' \
+		13407035 192756 8367 8378
+
+	# Indonesia 8492 https://www.openstreetmap.org/relation/304751
+	# Malaysia 8483 https://www.openstreetmap.org/relation/2108121
+	use_osm_border_instead 'POLYGON((109.067 -1.523,109.067 5.187,119.624 5.187,119.624 -1.523,109.067 -1.523))' \
+		304751 2108121 8492 8483
+
+	# Missing Bouvet Island waters: 260 https://www.openstreetmap.org/relation/2425963
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2425963')" \
+		"UPDATE political_eez SET geom = osm.geom FROM osm WHERE iso_ter1 = 'BVT';" | exec_psql
+
+	# China / Taiwan: remove Fukien Province from China and add to Taiwan
+	# 8486 / 8321 / https://www.openstreetmap.org/relation/3777250
+	# https://github.com/gbif/geocode/issues/2
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '3777250')" \
+		"UPDATE political_eez SET geom = ST_Difference(political_eez.geom, osm.geom) FROM osm WHERE mrgid_eez = '8486';" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '3777250')" \
+		"UPDATE political_eez SET geom = ST_Union(political_eez.geom, osm.geom) FROM osm WHERE mrgid_eez = '8321';" | exec_psql
+
+	# Serbia / Kosovo
+	# SRB / XKX / https://www.openstreetmap.org/relation/2088990
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2088990')," \
+		"xkx AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'SRB')" \
+		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Kosovo', 'Kosovo', 'XKX', 'XKX', ST_Multi(geom) FROM xkx;" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2088990')" \
+		"UPDATE political_eez SET geom = ST_Difference(political_eez.geom, osm.geom) FROM osm WHERE iso_ter1 = 'SRB';" | exec_psql
+
+	# China / Hong Kong
+	# CHN / HKG / https://www.openstreetmap.org/relation/913110
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '913110')," \
+		"hkg AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'CHN')" \
+		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Hong Kong', 'Hong Kong', 'HKG', 'HKG', ST_Multi(geom) FROM hkg;" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '913110')" \
+		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
+	echo "DELETE FROM political_eez WHERE iso_ter1 = 'HKG' AND ST_NPoints(geom) = 0;" | exec_psql
+
+	# China / Macao
+	# CHN / MAC / https://www.openstreetmap.org/relation/1867188
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1867188')," \
+		"mac AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'CHN')" \
+		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Macao', 'Macao', 'MAC', 'MAC', ST_Multi(geom) FROM mac;" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1867188')" \
+		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
+	echo "DELETE FROM political_eez WHERE iso_ter1 = 'MAC' AND ST_NPoints(geom) = 0;" | exec_psql
+
+	# Netherlands / Belgium water bit
+	# NLD / BEL / https://www.openstreetmap.org/relation/52411
+	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((4.15 51.008,4.15 51.408,4.439 51.408,4.439 51.008,4.15 51.008))') AS geom)," \
+		"osm AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '52411')" \
+		"UPDATE political_eez SET geom = ST_Union(political_eez.geom, osm.geom) FROM osm WHERE iso_ter1 = 'BEL';" | exec_psql
+	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((4.15 51.008,4.15 51.408,4.439 51.408,4.439 51.008,4.15 51.008))') AS geom)," \
+		"osm AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '52411')" \
+		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'NLD';" | exec_psql
+
+	# Remove Antarctica EEZ, based on advice from VLIZ etc (emails with Tim Hirsch, 2019-02-19).
+	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Atlantic Ocean';" | exec_psql
+	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Southern Ocean';" | exec_psql
+	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Pacific Ocean';" | exec_psql
+	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Indian Ocean';" | exec_psql
+
+	# Remove Overlapping Claim South China Sea, MR DB doesn't mark a sovereign claim here (only case of this).
+	echo "DELETE from political_eez WHERE mrgid_eez = 49003;" | exec_psql
+
+	# Delete the Joint Regime Areas that completely overlap an ordinary EEZ.
+	echo "DELETE FROM political_eez WHERE mrgid_eez IN(48961, 21795, 48970, 48968, 50167, 48974, 48969, 48973, 48975, 48976, 48962, 48964, 48966, 48967);" | exec_psql
+
+	# Add ISO codes where they are missing
+	echo "UPDATE political_eez SET iso_ter1 = iso_sov1 WHERE iso_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter2 IS NULL;" | exec_psql
+	echo "UPDATE political_eez SET iso_ter3 = iso_sov3 WHERE iso_ter3 IS NULL;" | exec_psql
+
+	# Use sovereign codes rather than territory codes for disputed territories
+	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter1 IN ('FLK', 'SGS', 'MYT', 'ESH');" | exec_psql
+
+	# France considers the Tromelin Island part of the French Southern and Antarctic Lands
+	echo "UPDATE political_eez SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48946;" | exec_psql
+	# And the Matthew and Hunter Islands part of New Caledonia
+	echo "UPDATE political_eez SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48948;" | exec_psql
+
+	echo "SELECT AddGeometryColumn('political_eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE political_eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "CREATE INDEX political_eez_iso_3digit ON political_eez (iso_ter1);" | exec_psql
+
+	echo "Marine Regions Land Union import complete"
 	echo
 }
 
@@ -527,6 +668,7 @@ else
 	align_natural_earth
 	import_marine_regions
 	align_marine_regions
+	import_marine_regions_union
 	import_gadm
 	import_iho
 	import_wgsrpd

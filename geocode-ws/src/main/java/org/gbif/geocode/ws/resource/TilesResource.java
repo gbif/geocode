@@ -36,20 +36,6 @@ import com.google.common.base.Stopwatch;
 public class TilesResource {
   public static final Logger LOG = LoggerFactory.getLogger(TilesResource.class);
 
-  private static final List<String> layers =
-      Arrays.asList(
-          "political",
-          "centroids",
-          "continent",
-          "eez",
-          "gadm1",
-          "gadm2",
-          "gadm3",
-          "gadm4",
-          "gadm5",
-          "iho",
-          "wgsrpd");
-
   private final TileMapper tileMapper;
 
   public TilesResource(TileMapper tileMapper) {
@@ -63,7 +49,10 @@ public class TilesResource {
       @PathVariable("z") int z,
       @PathVariable("x") long x,
       @PathVariable("y") long y) {
-    checkParameters(layer, z, x, y);
+    if (z < 0 || x > Math.pow(2, (z + 1)) || y > Math.pow(2, z)) {
+      LOG.warn("Off world {}/{}/{}", z, x, y);
+      throw new OffWorldException();
+    }
 
     Tile tile = tileMapper.fromCache(layer, z, x, y);
     if (tile != null) {
@@ -78,6 +67,10 @@ public class TilesResource {
     Stopwatch sw = Stopwatch.createStarted();
 
     switch (layer) {
+      case "political_eez":
+        tile = tileMapper.tilePoliticalEez(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        break;
+
       case "political":
         tile = tileMapper.tilePolitical(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
@@ -144,16 +137,6 @@ public class TilesResource {
     }
 
     throw new UnsupportedOperationException();
-  }
-
-  private static void checkParameters(String layer, int z, long x, long y) {
-    if (!layers.contains(layer)) {
-      LOG.warn("Unknown layer {}", layer);
-    }
-    if (z < 0 || x > Math.pow(2, (z + 1)) || y > Math.pow(2, z)) {
-      LOG.warn("Off world {}/{}/{}", z, x, y);
-      throw new OffWorldException();
-    }
   }
 
   /**

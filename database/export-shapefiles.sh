@@ -48,6 +48,14 @@ function export_marine_regions() {
 	echo
 }
 
+function export_marine_regions_union() {
+	echo "Exporting Marine Regions Land Union to shapefile"
+	exec_pgsql2shp layers/political_eez_subdivided "SELECT mrgid_eez AS id, \"union\" AS name, CONCAT_WS(' ', im1.iso2, im2.iso2, im3.iso2) AS isoCountryCode2Digit, geom FROM political_eez_subdivided eez LEFT OUTER JOIN iso_map im1 ON eez.iso_ter1 = im1.iso3 LEFT OUTER JOIN iso_map im2 ON eez.iso_ter2 = im2.iso3 LEFT OUTER JOIN iso_map im3 ON eez.iso_ter3 = im3.iso3"
+
+	echo "Marine Regions Land Union shapefile export complete"
+	echo
+}
+
 function export_gadm() {
 	echo "Exporting GADM to shapefile"
 	exec_pgsql2shp layers/gadm_subdivided "SELECT gid_0, gid_1, gid_2, gid_3, name_0, name_1, name_2, name_3, iso_map.iso2 AS isoCountryCode2Digit, geom FROM gadm3_subdivided LEFT OUTER JOIN iso_map ON gadm3_subdivided.gid_0 = iso_map.iso3"
@@ -98,6 +106,7 @@ else
 	export_centroids
 	export_natural_earth
 	export_marine_regions
+	export_marine_regions_union
 	export_gadm
 	export_iho
 	export_wgsrpd

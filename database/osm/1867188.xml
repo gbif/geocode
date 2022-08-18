@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.6 (521127 spike-07.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <node id="75338995" visible="true" version="9" changeset="93189306" timestamp="2020-10-28T16:01:42Z" user="samsung galaxy s6" uid="3691120" lat="22.1356780" lon="113.5404002"/>
+ <node id="1939592594" visible="true" version="28" changeset="119552563" timestamp="2022-04-10T22:12:15Z" user="EnumMapper" uid="2188716" lat="22.1899448" lon="113.5380454">
+  <tag k="capital" v="3"/>
+  <tag k="name" v="澳門 Macau"/>
+  <tag k="name:ar" v="ماكاو"/>
+  <tag k="name:cs" v="Macao"/>
+  <tag k="name:de" v="Macao"/>
+  <tag k="name:en" v="Macau"/>
+  <tag k="name:eo" v="Makao"/>
+  <tag k="name:es" v="Macao"/>
+  <tag k="name:fa" v="ماکائو"/>
+  <tag k="name:fr" v="Macao"/>
+  <tag k="name:hi" v="मकाउ"/>
+  <tag k="name:hu" v="Makaó"/>
+  <tag k="name:ja" v="マカオ"/>
+  <tag k="name:lzh" v="澳門市"/>
+  <tag k="name:nl" v="Macau"/>
+  <tag k="name:pl" v="Makau"/>
+  <tag k="name:pt" v="Macau"/>
+  <tag k="name:ru" v="Макао"/>
+  <tag k="name:sk" v="Macao"/>
+  <tag k="name:ur" v="مکاؤ"/>
+  <tag k="name:vi" v="Ma Cao"/>
+  <tag k="name:zh" v="澳門"/>
+  <tag k="name:zh-Hans" v="澳门"/>
+  <tag k="name:zh-Hant" v="澳門"/>
+  <tag k="name:zh_pinyin" v="Àomén-shì"/>
+  <tag k="place" v="city"/>
+  <tag k="population" v="622567"/>
+  <tag k="wikidata" v="Q841086"/>
+ </node>
+ <node id="2392006845" visible="true" version="8" changeset="24621693" timestamp="2014-08-08T18:54:16Z" user="tomlee721" uid="1665943" lat="22.1206188" lon="113.5465553"/>
+ <node id="2492640281" visible="true" version="5" changeset="107827066" timestamp="2021-07-12T09:31:20Z" user="HindmarshSquare" uid="9389050" lat="22.1206337" lon="113.5465553"/>
+ <node id="2710689309" visible="true" version="6" changeset="24621693" timestamp="2014-08-08T18:54:17Z" user="tomlee721" uid="1665943" lat="22.1240579" lon="113.5407564"/>
+ <node id="2931449672" visible="true" version="4" changeset="24621693" timestamp="2014-08-08T18:54:17Z" user="tomlee721" uid="1665943" lat="22.1361129" lon="113.5474145"/>
+ <node id="2936918970" visible="true" version="4" changeset="24621693" timestamp="2014-08-08T18:54:17Z" user="tomlee721" uid="1665943" lat="22.1205986" lon="113.5456658"/>
+ <node id="2936918976" visible="true" version="5" changeset="29151265" timestamp="2015-02-28T09:15:09Z" user="tomlee721" uid="1665943" lat="22.1326277" lon="113.5472783"/>
+ <node id="2936918979" visible="true" version="5" changeset="29151265" timestamp="2015-02-28T09:15:09Z" user="tomlee721" uid="1665943" lat="22.1332193" lon="113.5473084"/>
+ <node id="2992376909" visible="true" version="2" changeset="24621693" timestamp="2014-08-08T18:54:17Z" user="tomlee721" uid="1665943" lat="22.1235021" lon="113.5411005"/>
+ <node id="3005526035" visible="true" version="1" changeset="24621693" timestamp="2014-08-08T18:53:43Z" user="tomlee721" uid="1665943" lat="22.1354523" lon="113.5401725"/>
+ <node id="3005526042" visible="true" version="2" changeset="111190272" timestamp="2021-09-14T11:04:33Z" user="TerryWangty" uid="14013912" lat="22.1355756" lon="113.5473820">
+  <tag k="leisure" v="marina"/>
+  <tag k="seamark:harbour:category" v="marina"/>
+  <tag k="seamark:type" v="harbour"/>
+ </node>
+ <node id="3676025360" visible="true" version="4" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.1155833" lon="113.5483056"/>
+ <node id="3901158555" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.0766667" lon="113.5709722"/>
+ <node id="3901158556" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.0766667" lon="113.6102222"/>
+ <node id="3901160357" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.0988333" lon="113.5709722"/>
+ <node id="3901160358" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.1088611" lon="113.5496389"/>
+ <node id="3901160359" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.1088611" lon="113.6301389"/>
+ <node id="3901160360" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1453611" lon="113.5495555"/>
+ <node id="3901160361" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1507777" lon="113.5452500"/>
+ <node id="3901160362" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1570000" lon="113.5395277"/>
+ <node id="3901160363" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.1656389" lon="113.6301389"/>
+ <node id="3901160364" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1720833" lon="113.5321388"/>
+ <node id="3901160365" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1733055" lon="113.5319722"/>
+ <node id="3901160366" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1754444" lon="113.5305833"/>
+ <node id="3901160367" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1770000" lon="113.5294166"/>
+ <node id="3901160368" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1821666" lon="113.5281666"/>
+ <node id="3901160369" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1845000" lon="113.5283611"/>
+ <node id="3901160370" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1865555" lon="113.5291666"/>
+ <node id="3901160371" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1879165" lon="113.5301944"/>
+ <node id="3901160372" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1885277" lon="113.5292220"/>
+ <node id="3901160373" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.1945000" lon="113.5336110"/>
+ <node id="3901160374" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2023055" lon="113.5356388"/>
+ <node id="3901160375" visible="true" version="7" changeset="111397047" timestamp="2021-09-19T07:31:52Z" user="孟天皓" uid="13790098" lat="22.2040775" lon="113.5705406"/>
+ <node id="3901160376" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2041111" lon="113.6052500"/>
+ <node id="3901160377" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2066944" lon="113.5353889"/>
+ <node id="3901160378" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2073666" lon="113.5346527"/>
+ <node id="3901160379" visible="true" version="4" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2090833" lon="113.5689722"/>
+ <node id="3901160380" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2096444" lon="113.5339694"/>
+ <node id="3901160382" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2123056" lon="113.5330833"/>
+ <node id="3901160383" visible="true" version="2" changeset="110814215" timestamp="2021-09-06T17:21:45Z" user="samsung galaxy s6" uid="3691120" lat="22.2130259" lon="113.5411979"/>
+ <node id="3901160384" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2130333" lon="113.5409000"/>
+ <node id="3901160385" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2130861" lon="113.5413305"/>
+ <node id="3901160386" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2132333" lon="113.5417166"/>
+ <node id="3901160387" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2133250" lon="113.5415333"/>
+ <node id="3901160388" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2134750" lon="113.5354388"/>
+ <node id="3901160389" visible="true" version="2" changeset="54837897" timestamp="2017-12-22T10:37:22Z" user="user_2620510" uid="2620510" lat="22.2134317" lon="113.5351943"/>
+ <node id="3901160390" visible="true" version="2" changeset="54837897" timestamp="2017-12-22T10:37:22Z" user="user_2620510" uid="2620510" lat="22.2131976" lon="113.5345671"/>
+ <node id="3901160391" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2135583" lon="113.5357055"/>
+ <node id="3901160392" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2136361" lon="113.5363333"/>
+ <node id="3901160393" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:48Z" user="tomlee721" uid="1665943" lat="22.2136417" lon="113.5381416"/>
+ <node id="3901160394" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2136722" lon="113.5419555"/>
+ <node id="3901160395" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2136944" lon="113.5420138"/>
+ <node id="3901160396" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2142861" lon="113.5424083"/>
+ <node id="3901160397" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2144333" lon="113.5424638"/>
+ <node id="3901160398" visible="true" version="5" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2154250" lon="113.5509250"/>
+ <node id="3901160399" visible="true" version="4" changeset="81446337" timestamp="2020-02-25T09:22:03Z" user="Gary Y" uid="10146810" lat="22.2155290" lon="113.5507876"/>
+ <node id="3901160400" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2156639" lon="113.5507222"/>
+ <node id="3901160401" visible="true" version="4" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2160000" lon="113.5520278"/>
+ <node id="3901160402" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2163138" lon="113.5433916"/>
+ <node id="3901160403" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2165583" lon="113.5476278"/>
+ <node id="3901160404" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2166139" lon="113.5492000"/>
+ <node id="3901160405" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2166167" lon="113.5487528"/>
+ <node id="3901160406" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2166583" lon="113.5477167"/>
+ <node id="3901160407" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2167333" lon="113.5483361"/>
+ <node id="3901160408" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2167333" lon="113.5496528"/>
+ <node id="3901160409" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2167805" lon="113.5470388"/>
+ <node id="3901160410" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2167833" lon="113.5465666"/>
+ <node id="3901160411" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2167972" lon="113.5465055"/>
+ <node id="3901160412" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2168111" lon="113.5454777"/>
+ <node id="3901160413" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2169222" lon="113.5451888"/>
+ <node id="3901160414" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2169333" lon="113.5500028"/>
+ <node id="3901160415" visible="true" version="1" changeset="36062809" timestamp="2015-12-20T10:56:49Z" user="tomlee721" uid="1665943" lat="22.2169527" lon="113.5443555"/>
+ <node id="3901160416" visible="true" version="3" changeset="68501725" timestamp="2019-03-25T11:04:10Z" user="Supaplex" uid="274857" lat="22.2170361" lon="113.5508472"/>
+ <node id="4027144668" visible="true" version="1" changeset="37451286" timestamp="2016-02-26T03:17:51Z" user="mhjiaway" uid="3628344" lat="22.1362809" lon="113.5491743"/>
+ <node id="4047114823" visible="true" version="1" changeset="37678330" timestamp="2016-03-08T03:31:39Z" user="samsung galaxy s6" uid="3691120" lat="22.2154729" lon="113.5508513"/>
+ <node id="4642463209" visible="true" version="29" changeset="121206436" timestamp="2022-05-19T17:46:15Z" user="Jeff Underwood" uid="2021533" lat="22.1757605" lon="113.5514142">
+  <tag k="alt_name:en" v="Macao"/>
+  <tag k="alt_name:eu" v="Macau"/>
+  <tag k="capital" v="3"/>
+  <tag k="ISO3166-1" v="MO"/>
+  <tag k="ISO3166-1:alpha2" v="MO"/>
+  <tag k="ISO3166-1:alpha3" v="MAC"/>
+  <tag k="ISO3166-2" v="CN-MO"/>
+  <tag k="name" v="澳門 Macau"/>
+  <tag k="name:ar" v="ماكاو"/>
+  <tag k="name:cs" v="Macao"/>
+  <tag k="name:de" v="Macao"/>
+  <tag k="name:en" v="Macau"/>
+  <tag k="name:eo" v="Macao"/>
+  <tag k="name:et" v="Macau"/>
+  <tag k="name:fa" v="ماکائو"/>
+  <tag k="name:fr" v="Macao"/>
+  <tag k="name:fy" v="Makau"/>
+  <tag k="name:hi" v="मकाउ"/>
+  <tag k="name:hr" v="Makao"/>
+  <tag k="name:ia" v="Macao"/>
+  <tag k="name:io" v="Makau"/>
+  <tag k="name:ja" v="マカオ"/>
+  <tag k="name:ko" v="마카오"/>
+  <tag k="name:lzh" v="澳門"/>
+  <tag k="name:ml" v="മകൗ"/>
+  <tag k="name:nl" v="Macau"/>
+  <tag k="name:pl" v="Makau"/>
+  <tag k="name:pt" v="Macau"/>
+  <tag k="name:ru" v="Макао"/>
+  <tag k="name:sk" v="Macao"/>
+  <tag k="name:sr" v="Макао"/>
+  <tag k="name:tzl" v="Macau"/>
+  <tag k="name:ur" v="مکاؤ"/>
+  <tag k="name:vi" v="Ma Cao"/>
+  <tag k="name:zh" v="澳門"/>
+  <tag k="name:zh-Hans" v="澳门"/>
+  <tag k="name:zh-Hant" v="澳門"/>
+  <tag k="official_name" v="澳門特別行政區"/>
+  <tag k="official_name:ar" v="ماكاو المنطقة الإدارية الخاصة"/>
+  <tag k="official_name:cs" v="Zvláštní administrativní oblast Macao"/>
+  <tag k="official_name:en" v="Macau Special Administrative Region"/>
+  <tag k="official_name:eo" v="Speciala Administra Divido de Makao"/>
+  <tag k="official_name:fr" v="Région administrative spéciale de Macao"/>
+  <tag k="official_name:hi" v="मकाउ विशेष प्रशासनिक क्षेत्र"/>
+  <tag k="official_name:ml" v="മകൗ പ്രത്യേക ഭരണമേഖല"/>
+  <tag k="official_name:nl" v="Speciale Administratieve Regio Macau"/>
+  <tag k="official_name:pl" v="Specjalny Region Administracyjny Makau"/>
+  <tag k="official_name:sk" v="Špeciálna administratívna oblasť Čínskej ľudovej republiky"/>
+  <tag k="official_name:zh" v="澳門特別行政區"/>
+  <tag k="place" v="state"/>
+  <tag k="population" v="650900"/>
+  <tag k="wikidata" v="Q14773"/>
+  <tag k="wikipedia" v="en:Macau"/>
+ </node>
+ <node id="4777986703" visible="true" version="2" changeset="47706884" timestamp="2017-04-12T19:51:38Z" user="tudo_chris" uid="2774547" lat="22.1180695" lon="113.5484730"/>
+ <node id="5272991806" visible="true" version="7" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967" lat="22.2040370" lon="113.5756680"/>
+ <node id="5272991808" visible="true" version="7" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967" lat="22.2040431" lon="113.5768452"/>
+ <node id="5273111208" visible="true" version="2" changeset="55398285" timestamp="2018-01-13T05:01:01Z" user="samsung galaxy s6" uid="3691120" lat="22.2040419" lon="113.5780596"/>
+ <node id="5295497274" visible="true" version="5" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967" lat="22.2040424" lon="113.5767123"/>
+ <node id="5299107482" visible="true" version="1" changeset="54837897" timestamp="2017-12-22T10:37:20Z" user="user_2620510" uid="2620510" lat="22.2136153" lon="113.5359971"/>
+ <node id="5457030336" visible="true" version="1" changeset="56907027" timestamp="2018-03-05T15:30:08Z" user="user_2620510" uid="2620510" lat="22.2040474" lon="113.5802249"/>
+ <node id="5457030337" visible="true" version="4" changeset="72366447" timestamp="2019-07-17T22:03:47Z" user="feta2" uid="6095836" lat="22.2040476" lon="113.5804350"/>
+ <node id="5548010333" visible="true" version="3" changeset="65209159" timestamp="2018-12-05T15:55:24Z" user="This Is A Display Name Desu" uid="196051" lat="22.2040287" lon="113.5714987"/>
+ <node id="5548010334" visible="true" version="3" changeset="65209159" timestamp="2018-12-05T15:55:24Z" user="This Is A Display Name Desu" uid="196051" lat="22.2040474" lon="113.5802128"/>
+ <node id="6027951507" visible="true" version="3" changeset="89781493" timestamp="2020-08-22T13:28:41Z" user="Gary Y" uid="10146810" lat="22.1399104" lon="113.5493272"/>
+ <node id="6027951508" visible="true" version="2" changeset="89781493" timestamp="2020-08-22T13:28:41Z" user="Gary Y" uid="10146810" lat="22.1400363" lon="113.5493326"/>
+ <node id="6052763953" visible="true" version="2" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967" lat="22.2040377" lon="113.5755114"/>
+ <node id="6119505590" visible="true" version="2" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967" lat="22.2040393" lon="113.5761137">
+  <tag k="barrier" v="border_control"/>
+ </node>
+ <node id="6139163555" visible="true" version="2" changeset="93189306" timestamp="2020-10-28T16:01:42Z" user="samsung galaxy s6" uid="3691120" lat="22.1207204" lon="113.5465599"/>
+ <node id="6251280690" visible="true" version="1" changeset="66827658" timestamp="2019-02-01T09:43:49Z" user="jose_sousa" uid="4337122" lat="22.2153136" lon="113.5538902"/>
+ <node id="6419314666" visible="true" version="2" changeset="90482805" timestamp="2020-09-06T14:41:37Z" user="tomlee721" uid="1665943" lat="22.2122222" lon="113.5622778"/>
+ <node id="6419314679" visible="true" version="1" changeset="69427720" timestamp="2019-04-21T15:36:00Z" user="Антін Сартенченко" uid="571410" lat="22.2048477" lon="113.5354940"/>
+ <node id="6419328585" visible="true" version="1" changeset="69427942" timestamp="2019-04-21T15:47:46Z" user="Антін Сартенченко" uid="571410" lat="22.1967588" lon="113.5341978"/>
+ <node id="6419328616" visible="true" version="1" changeset="69427942" timestamp="2019-04-21T15:47:46Z" user="Антін Сартенченко" uid="571410" lat="22.1987720" lon="113.5347208"/>
+ <node id="6554325775" visible="true" version="1" changeset="71349221" timestamp="2019-06-18T02:40:48Z" user="samsung galaxy s6" uid="3691120" lat="22.2132588" lon="113.5414771"/>
+ <node id="6636690572" visible="true" version="1" changeset="72501805" timestamp="2019-07-22T07:26:06Z" user="user_2620510" uid="2620510" lat="22.2112214" lon="113.5334443"/>
+ <node id="6636690573" visible="true" version="1" changeset="72501805" timestamp="2019-07-22T07:26:06Z" user="user_2620510" uid="2620510" lat="22.2113078" lon="113.5334156"/>
+ <node id="7742758808" visible="true" version="1" changeset="88438283" timestamp="2020-07-24T06:13:47Z" user="samsung galaxy s6" uid="3691120" lat="22.1193645" lon="113.5485229"/>
+ <node id="8269674685" visible="true" version="1" changeset="96591172" timestamp="2020-12-29T10:39:30Z" user="Baeurodo" uid="7130456" lat="22.1829841" lon="113.5282302"/>
+ <node id="8735400263" visible="true" version="1" changeset="104753957" timestamp="2021-05-16T04:23:22Z" user="samsung galaxy s6" uid="3691120" lat="22.2132986" lon="113.5415861"/>
+ <node id="8882438009" visible="true" version="1" changeset="107247608" timestamp="2021-07-01T08:33:37Z" user="samsung galaxy s6" uid="3691120" lat="22.1707545" lon="113.5327898"/>
+ <node id="8882438013" visible="true" version="1" changeset="107247608" timestamp="2021-07-01T08:33:37Z" user="samsung galaxy s6" uid="3691120" lat="22.1712382" lon="113.5325528"/>
+ <node id="9067412354" visible="true" version="1" changeset="110814215" timestamp="2021-09-06T17:21:45Z" user="samsung galaxy s6" uid="3691120" lat="22.2130560" lon="113.5412642"/>
+ <node id="9104806324" visible="true" version="1" changeset="111397047" timestamp="2021-09-19T07:31:52Z" user="孟天皓" uid="13790098" lat="22.2081903" lon="113.5700254"/>
+ <node id="9104806325" visible="true" version="1" changeset="111397047" timestamp="2021-09-19T07:31:52Z" user="孟天皓" uid="13790098" lat="22.2061935" lon="113.5706156"/>
+ <node id="9504012414" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1358164" lon="113.5473966"/>
+ <node id="9504016336" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1344245" lon="113.5473460"/>
+ <node id="9504016347" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1337041" lon="113.5473235"/>
+ <node id="9504016348" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1317387" lon="113.5472247"/>
+ <node id="9504016367" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1304145" lon="113.5471448"/>
+ <node id="9504016368" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1207717" lon="113.5465630"/>
+ <node id="9504016375" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1212185" lon="113.5465900"/>
+ <node id="9504016376" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1215936" lon="113.5466126"/>
+ <node id="9504016383" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1220412" lon="113.5466396"/>
+ <node id="9504016384" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1224140" lon="113.5466621"/>
+ <node id="9504016391" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1231689" lon="113.5467076"/>
+ <node id="9504016434" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1272685" lon="113.5469550"/>
+ <node id="9504016435" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1274032" lon="113.5469631"/>
+ <node id="9504016451" visible="true" version="1" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120" lat="22.1293264" lon="113.5470791"/>
+ <way id="386370758" visible="true" version="13" changeset="117377293" timestamp="2022-02-14T05:57:29Z" user="samsung galaxy s6" uid="3691120">
+  <nd ref="2931449672"/>
+  <nd ref="75338995"/>
+  <nd ref="3005526035"/>
+  <nd ref="2710689309"/>
+  <nd ref="2992376909"/>
+  <nd ref="2936918970"/>
+  <nd ref="2392006845"/>
+  <nd ref="2492640281"/>
+  <nd ref="6139163555"/>
+  <nd ref="9504016368"/>
+  <nd ref="9504016375"/>
+  <nd ref="9504016376"/>
+  <nd ref="9504016383"/>
+  <nd ref="9504016384"/>
+  <nd ref="9504016391"/>
+  <nd ref="9504016434"/>
+  <nd ref="9504016435"/>
+  <nd ref="9504016451"/>
+  <nd ref="9504016367"/>
+  <nd ref="9504016348"/>
+  <nd ref="2936918976"/>
+  <nd ref="2936918979"/>
+  <nd ref="9504016347"/>
+  <nd ref="9504016336"/>
+  <nd ref="3005526042"/>
+  <nd ref="9504012414"/>
+  <nd ref="2931449672"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="alt_name" v="澳門大學橫琴校區;澳門大學;澳门大学新校区"/>
+  <tag k="amenity" v="university"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="Universidade de Macau em Ilha de Montanha 澳門大學橫琴校區"/>
+  <tag k="name:cs" v="Macajská univerzita"/>
+  <tag k="name:de" v="Universität von Macau"/>
+  <tag k="name:en" v="University of Macau"/>
+  <tag k="name:es" v="Universidad de Macau"/>
+  <tag k="name:et" v="Macau ülikool"/>
+  <tag k="name:fi" v="Macaon yliopisto"/>
+  <tag k="name:fr" v="Université de Macao"/>
+  <tag k="name:ja" v="澳門大学"/>
+  <tag k="name:ko" v="마카오 대학"/>
+  <tag k="name:lt" v="Makao universitetas"/>
+  <tag k="name:no" v="Macaouniversitetet"/>
+  <tag k="name:pt" v="Universidade de Macau em Ilha de Montanha"/>
+  <tag k="name:tl" v="Unibersidad ng Macau"/>
+  <tag k="name:yue" v="澳門大學"/>
+  <tag k="name:zh" v="澳门大学"/>
+  <tag k="website" v="https://www.um.edu.mo/"/>
+  <tag k="wikidata" v="Q1563050"/>
+  <tag k="wikipedia" v="zh:澳門大學"/>
+ </way>
+ <way id="386766618" visible="true" version="8" changeset="96591172" timestamp="2020-12-29T10:39:30Z" user="Baeurodo" uid="7130456">
+  <nd ref="6419328585"/>
+  <nd ref="3901160373"/>
+  <nd ref="3901160372"/>
+  <nd ref="3901160371"/>
+  <nd ref="3901160370"/>
+  <nd ref="3901160369"/>
+  <nd ref="8269674685"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="內港段 Segmento do Porto Interior"/>
+  <tag k="name:pt" v="Segmento do Porto Interior"/>
+  <tag k="name:zh" v="內港段"/>
+ </way>
+ <way id="386766619" visible="true" version="9" changeset="111397047" timestamp="2021-09-19T07:31:52Z" user="孟天皓" uid="13790098">
+  <nd ref="3901160375"/>
+  <nd ref="9104806325"/>
+  <nd ref="9104806324"/>
+  <nd ref="3901160379"/>
+  <nd ref="6419314666"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="澳門北部海域段 Segmento das águas a norte de Macau"/>
+  <tag k="name:pt" v="Segmento das águas a norte de Macau"/>
+  <tag k="name:zh" v="澳門北部海域段"/>
+ </way>
+ <way id="386766620" visible="true" version="5" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="3901160357"/>
+  <nd ref="3901158555"/>
+  <nd ref="3901158556"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="澳門南部海域段 Segmento das águas a sul de Macau"/>
+  <tag k="name:pt" v="Segmento das águas a sul de Macau"/>
+  <tag k="name:zh" v="澳門南部海域段"/>
+ </way>
+ <way id="386766621" visible="true" version="6" changeset="77894559" timestamp="2019-12-03T18:32:11Z" user="This Is A Display Name Desu" uid="196051">
+  <nd ref="3901160359"/>
+  <nd ref="3901160363"/>
+  <nd ref="3901160376"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="澳門東部海域段 Segmento das águas a leste de Macau"/>
+  <tag k="name:pt" v="Segmento das águas a leste de Macau"/>
+  <tag k="name:zh" v="澳門東部海域段"/>
+ </way>
+ <way id="386766622" visible="true" version="5" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="3676025360"/>
+  <nd ref="3901160358"/>
+  <nd ref="3901160357"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="路氹航道段 Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:pt" v="Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:zh" v="路氹航道段"/>
+ </way>
+ <way id="386766623" visible="true" version="9" changeset="107247608" timestamp="2021-07-01T08:33:37Z" user="samsung galaxy s6" uid="3691120">
+  <nd ref="3901160365"/>
+  <nd ref="3901160364"/>
+  <nd ref="8882438013"/>
+  <nd ref="8882438009"/>
+  <nd ref="3901160362"/>
+  <nd ref="3901160361"/>
+  <nd ref="3901160360"/>
+  <nd ref="6027951508"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="路氹航道段 Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:pt" v="Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:zh" v="路氹航道段"/>
+ </way>
+ <way id="386766624" visible="true" version="7" changeset="44002064" timestamp="2016-11-28T09:09:27Z" user="BCNorwich" uid="322785">
+  <nd ref="3901160398"/>
+  <nd ref="4047114823"/>
+  <nd ref="3901160399"/>
+  <nd ref="3901160400"/>
+  <nd ref="3901160416"/>
+  <nd ref="3901160414"/>
+  <nd ref="3901160408"/>
+  <nd ref="3901160404"/>
+  <nd ref="3901160405"/>
+  <nd ref="3901160407"/>
+  <nd ref="3901160406"/>
+  <nd ref="3901160403"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="關閘澳門邊檢大樓段 Segmento do Posto Fronteiriço das Portas do Cerco de Macau"/>
+  <tag k="name:pt" v="Segmento do Posto Fronteiriço das Portas do Cerco de Macau"/>
+  <tag k="name:zh" v="關閘澳門邊檢大樓段"/>
+ </way>
+ <way id="386766625" visible="true" version="10" changeset="110814215" timestamp="2021-09-06T17:21:45Z" user="samsung galaxy s6" uid="3691120">
+  <nd ref="3901160403"/>
+  <nd ref="3901160409"/>
+  <nd ref="3901160410"/>
+  <nd ref="3901160411"/>
+  <nd ref="3901160412"/>
+  <nd ref="3901160413"/>
+  <nd ref="3901160415"/>
+  <nd ref="3901160402"/>
+  <nd ref="3901160397"/>
+  <nd ref="3901160396"/>
+  <nd ref="3901160395"/>
+  <nd ref="3901160394"/>
+  <nd ref="3901160386"/>
+  <nd ref="8735400263"/>
+  <nd ref="3901160387"/>
+  <nd ref="6554325775"/>
+  <nd ref="3901160385"/>
+  <nd ref="9067412354"/>
+  <nd ref="3901160383"/>
+  <nd ref="3901160384"/>
+  <nd ref="3901160393"/>
+  <nd ref="3901160392"/>
+  <nd ref="5299107482"/>
+  <nd ref="3901160391"/>
+  <nd ref="3901160388"/>
+  <nd ref="3901160389"/>
+  <nd ref="3901160390"/>
+  <nd ref="3901160382"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="鴨涌河段 Segmento do Canal dos Patos"/>
+  <tag k="name:pt" v="Segmento do Canal dos Patos"/>
+  <tag k="name:zh" v="鴨涌河段"/>
+ </way>
+ <way id="566743647" visible="true" version="5" changeset="75360549" timestamp="2019-10-07T07:19:30Z" user="XD346" uid="4892967">
+  <nd ref="5457030336"/>
+  <nd ref="5548010334"/>
+  <nd ref="5273111208"/>
+  <nd ref="5272991808"/>
+  <nd ref="5295497274"/>
+  <nd ref="6119505590"/>
+  <nd ref="5272991806"/>
+  <nd ref="6052763953"/>
+  <nd ref="5548010333"/>
+  <nd ref="3901160375"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="人工島段 Segmento da Ilha Artificial"/>
+  <tag k="name:pt" v="Segmento da Ilha Artificial"/>
+  <tag k="name:zh" v="人工島段"/>
+ </way>
+ <way id="566743649" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="5457030337"/>
+  <nd ref="5457030336"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="人工島段 Segmento da Ilha Artificial"/>
+  <tag k="name:pt" v="Segmento da Ilha Artificial"/>
+  <tag k="name:zh" v="人工島段"/>
+ </way>
+ <way id="639777152" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6027951508"/>
+  <nd ref="6027951507"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="路氹航道段 Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:pt" v="Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:zh" v="路氹航道段"/>
+ </way>
+ <way id="639777154" visible="true" version="3" changeset="88438283" timestamp="2020-07-24T06:13:47Z" user="samsung galaxy s6" uid="3691120">
+  <nd ref="6027951507"/>
+  <nd ref="4027144668"/>
+  <nd ref="7742758808"/>
+  <nd ref="4777986703"/>
+  <nd ref="3676025360"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="路氹航道段 Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:pt" v="Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:zh" v="路氹航道段"/>
+ </way>
+ <way id="685087856" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="3901160366"/>
+  <nd ref="3901160365"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="路氹航道段 Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:pt" v="Segmento do Canal da Taipa-Coloane"/>
+  <tag k="name:zh" v="路氹航道段"/>
+ </way>
+ <way id="685087859" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="3901160378"/>
+  <nd ref="3901160377"/>
+  <nd ref="6419314679"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="內港段 Segmento do Porto Interior"/>
+  <tag k="name:pt" v="Segmento do Porto Interior"/>
+  <tag k="name:zh" v="內港段"/>
+ </way>
+ <way id="685087860" visible="true" version="5" changeset="91265623" timestamp="2020-09-22T06:10:10Z" user="samsung galaxy s6" uid="3691120">
+  <nd ref="6419314666"/>
+  <nd ref="6251280690"/>
+  <nd ref="3901160401"/>
+  <nd ref="3901160398"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="澳門北部海域段 Segmento das águas a norte de Macau"/>
+  <tag k="name:pt" v="Segmento das águas a norte de Macau"/>
+  <tag k="name:zh" v="澳門北部海域段"/>
+ </way>
+ <way id="685089389" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6419314679"/>
+  <nd ref="3901160374"/>
+  <nd ref="6419328616"/>
+  <nd ref="6419328585"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="內港段 Segmento do Porto Interior"/>
+  <tag k="name:pt" v="Segmento do Porto Interior"/>
+  <tag k="name:zh" v="內港段"/>
+ </way>
+ <way id="706298801" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6636690573"/>
+  <nd ref="6636690572"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="鴨涌河段 Segmento do Canal dos Patos"/>
+  <tag k="name:pt" v="Segmento do Canal dos Patos"/>
+  <tag k="name:zh" v="鴨涌河段"/>
+ </way>
+ <way id="706298803" visible="true" version="2" changeset="74876706" timestamp="2019-09-24T20:30:40Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6636690572"/>
+  <nd ref="3901160380"/>
+  <nd ref="3901160378"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="鴨涌河段 Segmento do Canal dos Patos"/>
+  <tag k="name:pt" v="Segmento do Canal dos Patos"/>
+  <tag k="name:zh" v="鴨涌河段"/>
+ </way>
+ <way id="751981002" visible="true" version="1" changeset="77894559" timestamp="2019-12-03T18:32:11Z" user="This Is A Display Name Desu" uid="196051">
+  <nd ref="3901158556"/>
+  <nd ref="3901160359"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="澳門東部海域段 Segmento das águas a leste de Macau"/>
+  <tag k="name:pt" v="Segmento das águas a leste de Macau"/>
+  <tag k="name:zh" v="澳門東部海域段"/>
+ </way>
+ <way id="889508509" visible="true" version="1" changeset="96591172" timestamp="2020-12-29T10:39:30Z" user="Baeurodo" uid="7130456">
+  <nd ref="8269674685"/>
+  <nd ref="3901160368"/>
+  <nd ref="3901160367"/>
+  <nd ref="3901160366"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="內港段 Segmento do Porto Interior"/>
+  <tag k="name:pt" v="Segmento do Porto Interior"/>
+  <tag k="name:zh" v="內港段"/>
+ </way>
+ <way id="906184349" visible="true" version="1" changeset="99112702" timestamp="2021-02-11T14:06:40Z" user="katpatuka" uid="17497">
+  <nd ref="3901160382"/>
+  <nd ref="6636690573"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="鴨涌河段 Segmento do Canal dos Patos"/>
+  <tag k="name:pt" v="Segmento do Canal dos Patos"/>
+  <tag k="name:zh" v="鴨涌河段"/>
+ </way>
+ <way id="963121714" visible="true" version="2" changeset="107734943" timestamp="2021-07-10T06:01:49Z" user="NM$L" uid="10231391">
+  <nd ref="3901160376"/>
+  <nd ref="5457030337"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="name" v="人工島段 Segmento da Ilha Artificial"/>
+  <tag k="name:pt" v="Segmento da Ilha Artificial"/>
+  <tag k="name:zh" v="人工島段"/>
+ </way>
+ <relation id="1867188" visible="true" version="85" changeset="116641437" timestamp="2022-01-26T22:23:33Z" user="Jeff Underwood" uid="2021533">
+  <member type="node" ref="4642463209" role="label"/>
+  <member type="node" ref="1939592594" role="admin_centre"/>
+  <member type="way" ref="685087859" role="outer"/>
+  <member type="way" ref="706298803" role="outer"/>
+  <member type="way" ref="706298801" role="outer"/>
+  <member type="way" ref="906184349" role="outer"/>
+  <member type="way" ref="386766625" role="outer"/>
+  <member type="way" ref="386766624" role="outer"/>
+  <member type="way" ref="685087860" role="outer"/>
+  <member type="way" ref="386766619" role="outer"/>
+  <member type="way" ref="566743647" role="outer"/>
+  <member type="way" ref="566743649" role="outer"/>
+  <member type="way" ref="963121714" role="outer"/>
+  <member type="way" ref="386766621" role="outer"/>
+  <member type="way" ref="751981002" role="outer"/>
+  <member type="way" ref="386766620" role="outer"/>
+  <member type="way" ref="386766622" role="outer"/>
+  <member type="way" ref="639777154" role="outer"/>
+  <member type="way" ref="639777152" role="outer"/>
+  <member type="way" ref="386766623" role="outer"/>
+  <member type="way" ref="685087856" role="outer"/>
+  <member type="way" ref="889508509" role="outer"/>
+  <member type="way" ref="386766618" role="outer"/>
+  <member type="way" ref="685089389" role="outer"/>
+  <member type="way" ref="386370758" role="outer"/>
+  <member type="relation" ref="9506158" role="subarea"/>
+  <member type="relation" ref="5758868" role="subarea"/>
+  <member type="relation" ref="5758867" role="subarea"/>
+  <member type="relation" ref="5758869" role="subarea"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="alt_name:en" v="Macao"/>
+  <tag k="alt_name:eo" v="Macau"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="driving_side" v="left"/>
+  <tag k="is_in:continent" v="Asia"/>
+  <tag k="ISO3166-1" v="MO"/>
+  <tag k="ISO3166-1:alpha2" v="MO"/>
+  <tag k="ISO3166-1:alpha3" v="MAC"/>
+  <tag k="ISO3166-1:numeric" v="446"/>
+  <tag k="ISO3166-2" v="CN-MO"/>
+  <tag k="name" v="澳門 Macau"/>
+  <tag k="name:af" v="Macau"/>
+  <tag k="name:am" v="ማካው"/>
+  <tag k="name:an" v="Macau"/>
+  <tag k="name:ar" v="ماكاو"/>
+  <tag k="name:as" v="মাকাও"/>
+  <tag k="name:az" v="Makao"/>
+  <tag k="name:ba" v="Макао"/>
+  <tag k="name:be" v="Макаа"/>
+  <tag k="name:bg" v="Макао"/>
+  <tag k="name:bn" v="মাকাও"/>
+  <tag k="name:br" v="Makao"/>
+  <tag k="name:bs" v="Makao"/>
+  <tag k="name:ca" v="Macau"/>
+  <tag k="name:ce" v="Макао"/>
+  <tag k="name:co" v="Macau"/>
+  <tag k="name:cs" v="Macao"/>
+  <tag k="name:cv" v="Макао"/>
+  <tag k="name:cy" v="Macau"/>
+  <tag k="name:da" v="Macao"/>
+  <tag k="name:de" v="Macau"/>
+  <tag k="name:dv" v="މަކާއޫ"/>
+  <tag k="name:ee" v="Macau"/>
+  <tag k="name:el" v="Μακάου"/>
+  <tag k="name:en" v="Macau"/>
+  <tag k="name:eo" v="Macao"/>
+  <tag k="name:es" v="Macao"/>
+  <tag k="name:et" v="Macau"/>
+  <tag k="name:eu" v="Macao"/>
+  <tag k="name:fa" v="ماکائو"/>
+  <tag k="name:fi" v="Macao"/>
+  <tag k="name:fo" v="Makao"/>
+  <tag k="name:fr" v="Macao"/>
+  <tag k="name:fy" v="Makau"/>
+  <tag k="name:ga" v="Macau"/>
+  <tag k="name:gd" v="Macau"/>
+  <tag k="name:gl" v="Macau"/>
+  <tag k="name:gu" v="મકાઉ"/>
+  <tag k="name:ha" v="Macau"/>
+  <tag k="name:he" v="מקאו"/>
+  <tag k="name:hi" v="मकाउ"/>
+  <tag k="name:hr" v="Makao"/>
+  <tag k="name:hu" v="Makaó"/>
+  <tag k="name:hy" v="Մակաո"/>
+  <tag k="name:ia" v="Macao"/>
+  <tag k="name:id" v="Makau"/>
+  <tag k="name:io" v="Makau"/>
+  <tag k="name:is" v="Makaó"/>
+  <tag k="name:it" v="Macao"/>
+  <tag k="name:ja" v="マカオ"/>
+  <tag k="name:jv" v="Makau"/>
+  <tag k="name:ka" v="მაკაო"/>
+  <tag k="name:ki" v="Macau"/>
+  <tag k="name:kk" v="Макао"/>
+  <tag k="name:km" v="ម៉ាកាវ"/>
+  <tag k="name:kn" v="ಮಕಾವು"/>
+  <tag k="name:ko" v="마카오"/>
+  <tag k="name:ky" v="Макао"/>
+  <tag k="name:la" v="Macaum"/>
+  <tag k="name:lb" v="Macau"/>
+  <tag k="name:li" v="Macau"/>
+  <tag k="name:ln" v="Makau"/>
+  <tag k="name:lt" v="Makao"/>
+  <tag k="name:lv" v="Makao"/>
+  <tag k="name:lzh" v="澳門"/>
+  <tag k="name:mk" v="Макао"/>
+  <tag k="name:ml" v="മകൗ"/>
+  <tag k="name:mn" v="Макао"/>
+  <tag k="name:mr" v="मकाओ"/>
+  <tag k="name:ms" v="Makau"/>
+  <tag k="name:my" v="မကာအို"/>
+  <tag k="name:ne" v="मकाउ"/>
+  <tag k="name:nl" v="Macau"/>
+  <tag k="name:nn" v="Macao"/>
+  <tag k="name:no" v="Macao"/>
+  <tag k="name:oc" v="Macau"/>
+  <tag k="name:os" v="Макао"/>
+  <tag k="name:pa" v="ਮਕਾਉ"/>
+  <tag k="name:pl" v="Makau"/>
+  <tag k="name:pt" v="Macau"/>
+  <tag k="name:qu" v="Macau"/>
+  <tag k="name:ro" v="Macao"/>
+  <tag k="name:ru" v="Макао"/>
+  <tag k="name:rw" v="Makawo"/>
+  <tag k="name:sc" v="Macau"/>
+  <tag k="name:si" v="මකාවෝ"/>
+  <tag k="name:sk" v="Macao"/>
+  <tag k="name:sl" v="Macau"/>
+  <tag k="name:so" v="Makaw"/>
+  <tag k="name:sq" v="Makao"/>
+  <tag k="name:sr" v="Макао"/>
+  <tag k="name:su" v="Makau"/>
+  <tag k="name:sv" v="Macao"/>
+  <tag k="name:sw" v="Macau"/>
+  <tag k="name:ta" v="மக்காவு"/>
+  <tag k="name:te" v="మకావు"/>
+  <tag k="name:tg" v="Макао"/>
+  <tag k="name:th" v="มาเก๊า"/>
+  <tag k="name:tk" v="Makao"/>
+  <tag k="name:tl" v="Macau"/>
+  <tag k="name:tr" v="Makao"/>
+  <tag k="name:tzl" v="Macau"/>
+  <tag k="name:ug" v="ئاۋمېن"/>
+  <tag k="name:uk" v="Аоминь"/>
+  <tag k="name:ur" v="مکاؤ"/>
+  <tag k="name:uz" v="Makao"/>
+  <tag k="name:vi" v="Ma Cao"/>
+  <tag k="name:wo" v="Makaaw"/>
+  <tag k="name:yo" v="Màkáù"/>
+  <tag k="name:za" v="Aumwnz"/>
+  <tag k="name:zh" v="澳門"/>
+  <tag k="name:zh-Hans" v="澳门"/>
+  <tag k="name:zh-Hant" v="澳門"/>
+  <tag k="ne:brk_a3" v="B95"/>
+  <tag k="ne_id" v="1746705295"/>
+  <tag k="official_name" v="澳門特別行政區"/>
+  <tag k="official_name:ar" v="ماكاو المنطقة الإدارية الخاصة"/>
+  <tag k="official_name:cs" v="Zvláštní administrativní oblast Macao"/>
+  <tag k="official_name:en" v="Macao Special Administrative Region"/>
+  <tag k="official_name:eo" v="Speciala Administra Divido de Makao"/>
+  <tag k="official_name:fr" v="Région administrative spéciale de Macao"/>
+  <tag k="official_name:nl" v="Speciale Administratieve Regio Macau"/>
+  <tag k="official_name:pl" v="Specjalny Region Administracyjny Makau"/>
+  <tag k="official_name:sk" v="Špeciálna administratívna oblasť Čínskej ľudovej republiky"/>
+  <tag k="official_name:za" v="Aumwnz Dwzbez Hingzcwnggih"/>
+  <tag k="official_name:zh" v="澳門特別行政區"/>
+  <tag k="ref" v="澳"/>
+  <tag k="ref:en" v="MO"/>
+  <tag k="ref:zh" v="澳"/>
+  <tag k="source" v="Guess from Bing"/>
+  <tag k="timezone" v="Asia/Macau"/>
+  <tag k="timezone:note" v="Incomplete object"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q14773"/>
+  <tag k="wikipedia" v="en:Macau"/>
+ </relation>
+ <relation id="5758867" visible="true" version="8" changeset="102161919" timestamp="2021-04-02T05:25:35Z" user="sebastic" uid="665748">
+  <member type="node" ref="662068917" role="label"/>
+  <member type="way" ref="386830035" role="outer"/>
+  <member type="way" ref="386893933" role="outer"/>
+  <member type="way" ref="386893932" role="outer"/>
+  <member type="way" ref="386893934" role="outer"/>
+  <tag k="admin_level" v="6"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="路氹填海區 Zona do Aterro de Cotai"/>
+  <tag k="name:de" v="Cotai"/>
+  <tag k="name:en" v="Cotai Landfill Zone"/>
+  <tag k="name:es" v="Cotai"/>
+  <tag k="name:fa" v="کوتای"/>
+  <tag k="name:fr" v="Cotai"/>
+  <tag k="name:it" v="Cotai"/>
+  <tag k="name:ja" v="コタイ"/>
+  <tag k="name:ko" v="코타이"/>
+  <tag k="name:nl" v="Cotai"/>
+  <tag k="name:no" v="Cotai"/>
+  <tag k="name:pt" v="Zona do Aterro de Cotai"/>
+  <tag k="name:ru" v="Котай"/>
+  <tag k="name:sv" v="Cotai"/>
+  <tag k="name:ur" v="کوتائی"/>
+  <tag k="name:vi" v="Lộ Đãng Thành"/>
+  <tag k="name:zh" v="路凼填海区"/>
+  <tag k="name:zh-Hans" v="路凼填海区"/>
+  <tag k="name:zh-Hant" v="路氹填海區"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q1362196"/>
+  <tag k="wikipedia" v="pt:Cotai"/>
+ </relation>
+ <relation id="5758868" visible="true" version="12" changeset="102177484" timestamp="2021-04-02T08:57:36Z" user="sebastic" uid="665748">
+  <member type="node" ref="3912941340" role="label"/>
+  <member type="way" ref="772147057" role="outer"/>
+  <member type="way" ref="386893934" role="outer"/>
+  <member type="way" ref="386370758" role="outer"/>
+  <member type="relation" ref="5758865" role="subarea"/>
+  <tag k="admin_level" v="5"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="氹仔 Taipa"/>
+  <tag k="name:ar" v="تايبا"/>
+  <tag k="name:az" v="Taypa adası"/>
+  <tag k="name:de" v="Taipa"/>
+  <tag k="name:en" v="Taipa"/>
+  <tag k="name:es" v="Taipa"/>
+  <tag k="name:fr" v="Taipa"/>
+  <tag k="name:he" v="טייפה"/>
+  <tag k="name:it" v="Taipa"/>
+  <tag k="name:ja" v="タイパ"/>
+  <tag k="name:ko" v="타이파섬"/>
+  <tag k="name:nl" v="Taipa"/>
+  <tag k="name:no" v="Taipa"/>
+  <tag k="name:pl" v="Taipa"/>
+  <tag k="name:pt" v="Taipa"/>
+  <tag k="name:ru" v="Тайпа"/>
+  <tag k="name:sv" v="Taipa"/>
+  <tag k="name:uk" v="Тайпа"/>
+  <tag k="name:ur" v="تائیپا"/>
+  <tag k="name:vi" v="Đãng Tể"/>
+  <tag k="name:zh" v="氹仔"/>
+  <tag k="name:zh-Hans" v="氹仔"/>
+  <tag k="name:zh-Hant" v="氹仔"/>
+  <tag k="population" v="78497"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q1073822"/>
+  <tag k="wikipedia" v="zh:氹仔"/>
+ </relation>
+ <relation id="5758869" visible="true" version="13" changeset="102156005" timestamp="2021-04-02T03:31:57Z" user="sebastic" uid="665748">
+  <member type="node" ref="3902504623" role="label"/>
+  <member type="way" ref="771793939" role="outer"/>
+  <member type="way" ref="386893933" role="outer"/>
+  <member type="relation" ref="5758866" role="subarea"/>
+  <tag k="admin_level" v="5"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="路環 Coloane"/>
+  <tag k="name:cs" v="Coloane"/>
+  <tag k="name:de" v="Coloane"/>
+  <tag k="name:en" v="Coloane"/>
+  <tag k="name:es" v="Coloane"/>
+  <tag k="name:fa" v="کولوان"/>
+  <tag k="name:fr" v="Coloane"/>
+  <tag k="name:id" v="Pulau Coloane"/>
+  <tag k="name:it" v="Coloane"/>
+  <tag k="name:ja" v="コロアネ"/>
+  <tag k="name:ko" v="콜로아느섬"/>
+  <tag k="name:nl" v="Coloane"/>
+  <tag k="name:no" v="Coloane"/>
+  <tag k="name:pl" v="Coloane"/>
+  <tag k="name:pt" v="Coloane"/>
+  <tag k="name:ru" v="Колоане"/>
+  <tag k="name:sv" v="Coloane"/>
+  <tag k="name:th" v="โกโลอานี"/>
+  <tag k="name:ur" v="کولوان"/>
+  <tag k="name:vi" v="Lộ Hoàn"/>
+  <tag k="name:zh" v="路环"/>
+  <tag k="name:zh-Hans" v="路环"/>
+  <tag k="name:zh-Hant" v="路環"/>
+  <tag k="population" v="4262"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q1022920"/>
+  <tag k="wikipedia" v="zh:路環"/>
+ </relation>
+ <relation id="9506158" visible="true" version="18" changeset="104753957" timestamp="2021-05-16T04:23:22Z" user="samsung galaxy s6" uid="3691120">
+  <member type="way" ref="685087856" role="outer"/>
+  <member type="way" ref="889508509" role="outer"/>
+  <member type="way" ref="386766618" role="outer"/>
+  <member type="way" ref="685089389" role="outer"/>
+  <member type="way" ref="685087859" role="outer"/>
+  <member type="way" ref="706298803" role="outer"/>
+  <member type="way" ref="706298801" role="outer"/>
+  <member type="way" ref="906184349" role="outer"/>
+  <member type="way" ref="386766625" role="outer"/>
+  <member type="way" ref="386766624" role="outer"/>
+  <member type="way" ref="685087860" role="outer"/>
+  <member type="way" ref="685087861" role="outer"/>
+  <member type="way" ref="685087857" role="outer"/>
+  <member type="relation" ref="9506168" role="subarea"/>
+  <member type="relation" ref="9506156" role="subarea"/>
+  <member type="relation" ref="12107627" role="subarea"/>
+  <member type="relation" ref="12107628" role="subarea"/>
+  <member type="relation" ref="12107629" role="subarea"/>
+  <tag k="admin_level" v="5"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="name" v="澳門 Macau"/>
+  <tag k="name:ar" v="ماكاو"/>
+  <tag k="name:de" v="Concelho de Macau"/>
+  <tag k="name:en" v="Municipality of Macau"/>
+  <tag k="name:eo" v="Makao"/>
+  <tag k="name:es" v="Macao"/>
+  <tag k="name:fa" v="ماکائو"/>
+  <tag k="name:fr" v="Municipalité de Macao"/>
+  <tag k="name:hu" v="Makaó"/>
+  <tag k="name:it" v="Consiglio di Macao"/>
+  <tag k="name:ja" v="澳門市"/>
+  <tag k="name:ko" v="마카오 시"/>
+  <tag k="name:lzh" v="澳門"/>
+  <tag k="name:nl" v="Macau"/>
+  <tag k="name:pl" v="Makau"/>
+  <tag k="name:pt" v="Macau"/>
+  <tag k="name:ru" v="Макао"/>
+  <tag k="name:sk" v="Macao"/>
+  <tag k="name:ur" v="مکاؤ"/>
+  <tag k="name:vi" v="Ma Cao"/>
+  <tag k="name:zh" v="澳門市"/>
+  <tag k="name:zh-Hans" v="澳门"/>
+  <tag k="name:zh-Hant" v="澳門"/>
+  <tag k="name:zh_pinyin" v="Àomén-shì"/>
+  <tag k="official_name:ar" v="بلدية ماكاو"/>
+  <tag k="official_name:ur" v="بلدیہ مکاؤ"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q841086"/>
+  <tag k="wikipedia" v="pt:Concelho de Macau"/>
+ </relation>
+</osm>

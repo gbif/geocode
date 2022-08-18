@@ -48,7 +48,7 @@ public class MyBatisGeocoder implements GeocodeService {
     this.availableLayers = layers;
 
     this.availableLayerNames = layers.stream().map(l -> l.name()).collect(Collectors.toList());
-    LOG.info("Available (and thus default) layers are {}", this.availableLayerNames);
+    LOG.info("Available layers are {}", this.availableLayerNames);
   }
 
   /** Simple get candidates by point. */

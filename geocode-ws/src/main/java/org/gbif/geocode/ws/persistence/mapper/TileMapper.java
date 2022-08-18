@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TileMapper {
 
+  List<SvgShape> svgPoliticalEez();
   List<SvgShape> svgPolitical();
   List<SvgShape> svgCentroids();
   List<SvgShape> svgContinent();
@@ -34,6 +35,7 @@ public interface TileMapper {
   List<SvgShape> svgIho();
   List<SvgShape> svgWgsrpd();
 
+  Tile tilePoliticalEez(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tilePolitical(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileCentroids(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);
   Tile tileContinent(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4);

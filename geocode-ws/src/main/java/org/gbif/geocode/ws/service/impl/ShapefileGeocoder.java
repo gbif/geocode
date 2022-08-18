@@ -8,6 +8,7 @@ import org.gbif.geocode.ws.layers.ContinentLayer;
 import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
+import org.gbif.geocode.ws.layers.PoliticalEezLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
@@ -42,6 +43,11 @@ public class ShapefileGeocoder implements GeocodeService {
     synchronized (this) {
       String[] columns = new String[]{"id", "name", "isoCountry"};
 
+      {
+        SimpleShapeFile politicalEez = new SimpleShapeFile(root + "political_eez_subdivided", columns);
+        PoliticalEezLayer politicalEezLayer = new PoliticalEezLayer(politicalEez);
+        layers.put(politicalEezLayer.name(), politicalEezLayer);
+      }
       {
         SimpleShapeFile political = new SimpleShapeFile(root + "political_subdivided", columns);
         PoliticalLayer politicalLayer = new PoliticalLayer(political);
@@ -79,7 +85,7 @@ public class ShapefileGeocoder implements GeocodeService {
         layers.put(gadmLayer.name(), gadmLayer);
       }
 
-      LOG.info("Available (and thus default) layers are {}", layers.keySet());
+      LOG.info("Available layers are {}", layers.keySet());
     }
   }
 

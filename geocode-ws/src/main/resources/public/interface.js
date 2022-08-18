@@ -135,9 +135,9 @@ function countryStyle() {
 		var colour = countryColour(isocode);
 		var invertColour = oppositeCountryColour(isocode);
 
-		if (feature.get('type') == 'Political') {
+		if (feature.get('type') == 'PoliticalEEZ') {
 			pattern = makePatternB(colour);
-		} else if (feature.get('type') == 'EEZ') {
+		} else if (feature.get('type') == 'GADM3') {
 			pattern = makePatternH(colour);
 		} else {
 			pattern = makePatternF(colour);
@@ -238,6 +238,20 @@ layers['bitmapCache'] = new ol.layer.Tile({
 	visible: false
 });
 
+layers['political_eez'] = new ol.layer.VectorTile({
+	title: 'PoliticalEEZ',
+	renderMode: 'image',
+	source: new ol.source.VectorTile({
+		projection: 'EPSG:4326',
+		format: new ol.format.MVT(),
+		tileGrid: tileGrid,
+		tilePixelRatio: 8,
+		url: './tile/political_eez/{z}/{x}/{y}.mvt',
+		wrapX: false,
+	}),
+	style: countryStyle()
+});
+
 layers['political'] = new ol.layer.VectorTile({
 	title: 'Political',
 	renderMode: 'image',
@@ -250,6 +264,7 @@ layers['political'] = new ol.layer.VectorTile({
 		wrapX: false,
 	}),
 	style: countryStyle(),
+	visible: false
 });
 
 layers['continent'] = new ol.layer.VectorTile({
@@ -436,7 +451,8 @@ var map = new ol.Map({
 				layers['gadm1'],
 				layers['eez'],
 				layers['continent'],
-				layers['political']
+				layers['political'],
+				layers['political_eez']
 			]
 		}),
 		vector

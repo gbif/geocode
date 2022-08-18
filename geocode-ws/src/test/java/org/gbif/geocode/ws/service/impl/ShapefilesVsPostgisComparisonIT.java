@@ -109,10 +109,7 @@ public class ShapefilesVsPostgisComparisonIT {
     }
   }
 
-  /**
-   * I think these errors are problems with the PostGIS bitmap cache.
-   */
-  //@Test
+  @Test
   public void compareVariousQueries() {
     layers.clear();
     layers.add("Political");
@@ -171,6 +168,7 @@ public class ShapefilesVsPostgisComparisonIT {
     int count = 10_000;
 
     layers.clear();
+    layers.add("PoliticalEEZ");
     layers.add("Political");
     layers.add("EEZ");
     layers.add("Continent");
@@ -189,7 +187,6 @@ public class ShapefilesVsPostgisComparisonIT {
   private void check(double latitude, double longitude, boolean debug) {
     System.out.println(i + "> Checking "+latitude+", "+longitude);
 
-    ComplexRegion.debug = debug;
     boolean fail = false;
 
     List<Location> p = myBatisGeocoder.get(latitude, longitude, 0.05, null, layers).stream().sorted().collect(Collectors.toList());
