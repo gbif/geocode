@@ -41,9 +41,9 @@ function import_centroids() {
 
 	echo "Dropping old tables"
 	# Generated (for the moment) with GeoLocateCentroids.java "test" in the geocode-ws module.
-	echo "DROP TABLE IF EXISTS geolocate_centroids;" | exec_psql
+	echo "DROP TABLE IF EXISTS geolocate_centroids CASCADE;" | exec_psql
 	# Generated from the R script in the comment in this file.
-	echo "DROP TABLE IF EXISTS coordinatecleaner_centroids;" | exec_psql
+	echo "DROP TABLE IF EXISTS coordinatecleaner_centroids CASCADE;" | exec_psql
 
 	echo "Importing Centroids to PostGIS"
 	exec_psql_file $SCRIPT_DIR/geolocate_centroids.sql
@@ -250,6 +250,7 @@ function import_marine_regions_union() {
 	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Southern Ocean';" | exec_psql
 	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Pacific Ocean';" | exec_psql
 	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Indian Ocean';" | exec_psql
+	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(geom, ST_MakeEnvelope(-67.0, -60.1, -35.0, -59.9, 4326))) WHERE iso_ter1 = 'ATA';" | exec_psql
 
 	# Remove Overlapping Claim South China Sea, MR DB doesn't mark a sovereign claim here (only case of this).
 	echo "DELETE from political_eez WHERE mrgid_eez = 49003;" | exec_psql
@@ -303,6 +304,20 @@ function import_gadm() {
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
 	echo "UPDATE gadm SET name_0 = 'Chinese Taipei' WHERE gid_0 = 'TWN';" | exec_psql
 	echo "UPDATE gadm SET name_0 = 'Falkland Islands (Malvinas)' WHERE gid_0 = 'FLK';" | exec_psql
+	echo "UPDATE gadm SET gid_1 = 'UKR.11_1', name_1 = 'Kiev City', varname_1 = 'Kyiv', nl_name_1 = 'Київ', hasc_1 = 'UA.KC', type_1 = 'Independent City', engtype_1 = 'Independent City', validfr_1 = '~1955', gid_2 = 'UKR.11.1_1', name_2 = 'Darnyts''kyi', varname_2 = 'Darnytskyi', hasc_2 = 'UA.KC.DA', type_2 = 'Raion', engtype_2 = 'Raion', validfr_2 = 'Unknown' WHERE fid = 328778;" | exec_psql
+
+	for i in \
+		gid_0 name_0 varname_0 \
+		gid_1 name_1 varname_1 nl_name_1 iso_1 hasc_1 cc_1 type_1 engtype_1 validfr_1 \
+		gid_2 name_2 varname_2 nl_name_2 hasc_2 cc_2 type_2 engtype_2 validfr_2 \
+		gid_3 name_3 varname_3 nl_name_3 hasc_3 cc_3 type_3 engtype_3 validfr_3 \
+		gid_4 name_4 varname_4 cc_4 type_4 engtype_4 validfr_4 \
+		gid_5 name_5 cc_5 type_5 engtype_5 \
+		governedby sovereign disputedby region varregion country continent subcont
+	do
+		echo "Setting '' to NULL for $i column"
+		echo "UPDATE gadm SET $i = NULL WHERE $i = '';" | exec_psql
+	done
 
 	echo "Creating gadm4 table"
 	echo "
@@ -414,6 +429,8 @@ function import_iho() {
 
 	rm World_Seas_IHO_v3.zip iho/ -Rf
 
+	echo "UPDATE iho SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
 	echo "SELECT AddGeometryColumn('iho', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE iho SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
@@ -453,22 +470,51 @@ function import_wgsrpd() {
 	echo
 }
 
+function import_esri_countries() {
+	mkdir -p /var/tmp/import
+	cd /var/tmp/import
+	for i in `seq 8`; do
+		curl -LSs --remote-name --fail https://download.gbif.org/MapDataMirror/2022/08/World_Countries_$i.zip
+	done
+
+	echo "Dropping old tables"
+	echo "DROP TABLE IF EXISTS esri_countries;" | exec_psql
+	echo "DROP TABLE IF EXISTS world_countries;" | exec_psql
+
+	echo "Importing ESRI World Countries to PostGIS"
+	unzip -d world_countries_1 World_Countries_1.zip
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" -nlt PROMOTE_TO_MULTI -select 'FID, COUNTRY, ISO_CC, CONTINENT' world_countries_1/World_Countries.shp
+	for i in `seq 2 8`; do
+		unzip -d world_countries_$i World_Countries_$i.zip
+		ogr2ogr -append -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" -nlt PROMOTE_TO_MULTI -fieldmap '0,1,2,3,-1,-1,-1,-1,-1' world_countries_$i/World_Countries.shp
+	done
+
+	echo "ALTER TABLE world_countries RENAME TO esri_countries;" | exec_psql
+	rm World_Countries* world_countries* -Rf
+
+	echo "UPDATE esri_countries SET iso_cc = 'XAS' WHERE iso_cc IS NULL AND continent = 'Asia';" | exec_psql
+
+	for i in AGO ARE ARG AUS BGD BRA CAN CHL CHN CMR DNK ECU ESP FIN GLP GRL HND IDN IND IRN ISL JPN KEN MDG MEX MYS NGA NOR QAT RUS SLE SWE TKM URY USA VNM; do
+		echo "UPDATE esri_countries SET geom = ST_MakeValid(geom) WHERE iso_cc = '$i' AND NOT ST_IsValid(geom);" | exec_psql
+	done
+}
+
 function insert_continent_whole_country() {
 	echo "
-		INSERT INTO continent (continent, gid_0, geom)
-		SELECT '$1', gid_0, ST_Multi(geom) FROM gadm0
-		WHERE gid_0 IN ($2)
+		INSERT INTO continent_step1 (continent, gid_0, geom)
+		SELECT '$1', CONCAT(iso_cc, '-', fid), ST_Multi(geom) FROM esri_countries
+		WHERE iso_cc IN ($2)
 	;" | exec_psql
 }
 
 function insert_continent_cut_country() {
 	echo "… $i"
 	echo "
-		INSERT INTO continent (continent, gid_0, geom)
-		SELECT '$1', '$2', ST_Multi(ST_Union(ST_Intersection(ccc.geom, gadm.geom)))
+		INSERT INTO continent_step1 (continent, gid_0, geom)
+		SELECT '$1', CONCAT('$2', '-', '$1'), ST_MakeValid(ST_Multi(ST_Union(ST_Intersection(ccc.geom, ec.geom))))
 		FROM
 			(SELECT * FROM continent_cutter WHERE UPPER(continent) = '$1') AS ccc,
-			(SELECT * FROM gadm0 WHERE gid_0 = '$2') AS gadm
+			(SELECT * FROM esri_countries WHERE iso_cc = '$2') AS ec
 	;" | exec_psql
 }
 
@@ -479,7 +525,7 @@ function import_continents() {
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail https://github.com/gbif/continents/raw/master/continent_cookie_cutter.gpkg
+	curl -LSs --remote-name --fail https://github.com/gbif/continents/raw/master/continent_cookie_cutter.gpkg
 
 	echo "Dropping old tables"
 	echo "DROP TABLE IF EXISTS continent_cutter;" | exec_psql
@@ -490,69 +536,102 @@ function import_continents() {
 	rm continent_cookie_cutter.zip -Rf
 
 	echo "
-		DROP TABLE IF EXISTS continent;
-		CREATE TABLE continent (
+		DROP TABLE IF EXISTS continent_step1;
+		CREATE TABLE continent_step1 (
 		    key        SERIAL        PRIMARY KEY,
 		    continent  VARCHAR(128)  NOT NULL,
-		    gid_0      CHAR(3)       NOT NULL);
-		SELECT AddGeometryColumn('continent', 'geom', 4326, 'MULTIPOLYGON', 2);
+		    gid_0      CHAR(20)      NOT NULL);
+		SELECT AddGeometryColumn('continent_step1', 'geom', 4326, 'MULTIPOLYGON', 2);
 		" | exec_psql
 
 	# Africa
-	echo "Adding GADM gadm0 areas to Africa"
+	echo "Adding Pol/EEZ areas to Africa"
 	insert_continent_whole_country AFRICA "'AGO', 'BDI', 'BEN', 'BWA', 'BFA', 'CAF', 'COM', 'CIV', 'CMR', 'COD', 'COG', 'CPV', 'DJI', 'DZA', 'ERI', 'ESH', 'ETH', 'GAB', 'GHA', 'GIN', 'GMB', 'GNB', 'GNQ', 'KEN', 'LBR', 'LBY', 'LSO', 'MAR', 'MDG', 'MLI', 'MYT', 'MOZ', 'MWI', 'MRT', 'MUS', 'NAM', 'NER', 'NGA', 'REU', 'RWA', 'SDN', 'SEN', 'SHN', 'SOM', 'SSD', 'STP', 'SWZ', 'SYC', 'SLE', 'TCD', 'TGO', 'TUN', 'TZA', 'UGA', 'ZMB', 'ZWE'"
 	for i in ATF EGY ESP PRT YEM ZAF; do
 		insert_continent_cut_country AFRICA $i
 	done
 
 	# Antarctica
-	echo "Adding GADM gadm0 areas to Antarctica"
+	echo "Adding Pol/EEZ areas to Antarctica"
 	insert_continent_whole_country ANTARCTICA "'ATA', 'BVT', 'HMD', 'SGS'"
 	for i in ATF ZAF; do
 		insert_continent_cut_country ANTARCTICA $i
 	done
 
 	# Asia
-	echo "Adding GADM gadm0 areas to Asia"
-	insert_continent_whole_country ASIA "'AFG',  'ARE', 'BGD', 'BHR', 'BRN', 'BTN', 'CHN', 'CCK', 'CXR', 'CYP', 'HKG',  'IND', 'IOT', 'IRN', 'IRQ', 'ISR', 'JOR', 'KGZ', 'KHM', 'KOR', 'KWT', 'LAO', 'LBN', 'LKA', 'MAC', 'MDV', 'MMR', 'MNG', 'MYS', 'NPL', 'OMN', 'PAK', 'PHL', 'PRK', 'PSE', 'QAT',  'SAU', 'SGP', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'TWN', 'UZB', 'VNM', 'XAD', 'XPI', 'XSP', 'XNC'"
-	for i in ARM AZE EGY GEO GRC JPN KAZ IDN RUS TUR YEM XCA; do
+	echo "Adding Pol/EEZ areas to Asia"
+	insert_continent_whole_country ASIA "'AFG', 'ARE', 'BGD', 'BHR', 'BRN', 'BTN', 'CHN', 'CCK', 'CXR', 'CYP', 'HKG',  'IND', 'IOT', 'IRN', 'IRQ', 'ISR', 'JOR', 'KGZ', 'KHM', 'KOR', 'KWT', 'LAO', 'LBN', 'LKA', 'MAC', 'MDV', 'MMR', 'MNG', 'MYS', 'NPL', 'OMN', 'PAK', 'PHL', 'PRK', 'PSE', 'QAT',  'SAU', 'SGP', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'TWN', 'UZB', 'VNM', 'XAS'"
+	for i in ARM AZE EGY GEO GRC JPN KAZ IDN RUS TUR YEM; do
 		insert_continent_cut_country ASIA $i
 	done
 
 	# Europe
-	echo "Adding GADM gadm0 areas to Europe"
-	insert_continent_whole_country EUROPE "'ALA', 'ALB', 'AND', 'AUT', 'BLR', 'BEL', 'BIH', 'BGR', 'HRV', 'CZE', 'DNK', 'EST', 'FRO', 'FIN', 'FRA', 'DEU', 'GIB', 'GGY', 'HUN', 'ISL', 'IRL', 'IMN', 'ITA', 'JEY', 'LVA', 'LIE', 'LTU', 'LUX', 'MLT', 'MDA', 'MCO', 'MNE', 'NLD', 'MKD', 'NOR', 'POL', 'ROU', 'SMR', 'SRB', 'SVK', 'SVN', 'SJM', 'SWE', 'CHE', 'UKR', 'GBR', 'VAT', 'XKO'"
-	for i in AZE ESP GEO GRC KAZ PRT RUS TUR XCA; do
+	echo "Adding Pol/EEZ areas to Europe"
+	insert_continent_whole_country EUROPE "'ALA', 'ALB', 'AND', 'AUT', 'BLR', 'BEL', 'BIH', 'BGR', 'HRV', 'CZE', 'DNK', 'EST', 'FRO', 'FIN', 'DEU', 'GIB', 'GGY', 'HUN', 'ISL', 'IRL', 'IMN', 'ITA', 'JEY', 'LVA', 'LIE', 'LTU', 'LUX', 'MLT', 'MDA', 'MCO', 'MNE', 'NLD', 'MKD', 'NOR', 'POL', 'ROU', 'SMR', 'SRB', 'SVK', 'SVN', 'SJM', 'SWE', 'CHE', 'UKR', 'GBR', 'VAT'"
+	for i in AZE ESP FRA GEO GRC KAZ PRT RUS TUR; do
 		insert_continent_cut_country EUROPE $i
 	done
 
 	# North America
-	echo "Adding GADM gadm0 areas to North America"
-	insert_continent_whole_country NORTH_AMERICA "'AIA',  'ATG', 'BHS', 'BLM', 'BLZ', 'BMU', 'BRB', 'CAN', 'CRI', 'CUB', 'CYM', 'DMA', 'DOM', 'GLP', 'GRL', 'GRD', 'GTM', 'HND', 'HTI', 'JAM', 'KNA', 'LCA', 'MAF', 'MEX', 'MSR', 'MTQ', 'NIC', 'PAN', 'PRI', 'SLV', 'SPM', 'SXM', 'VCT', 'TCA', 'VGB', 'VIR', 'XCL'"
-	for i in BES COL VEN USA UMI; do
+	echo "Adding Pol/EEZ areas to North America"
+	insert_continent_whole_country NORTH_AMERICA "'AIA', 'ATG', 'BHS', 'BLM', 'BLZ', 'BMU', 'BRB', 'CAN', 'CRI', 'CUB', 'CYM', 'DMA', 'DOM', 'GLP', 'GRL', 'GRD', 'GTM', 'HND', 'HTI', 'JAM', 'KNA', 'LCA', 'MAF', 'MEX', 'MSR', 'MTQ', 'NIC', 'PAN', 'PRI', 'SLV', 'SPM', 'SXM', 'VCT', 'TCA', 'VGB', 'VIR'"
+	for i in BES COL FRA VEN USA UMI; do
 		insert_continent_cut_country NORTH_AMERICA $i
 	done
 
 	# Oceania
-	echo "Adding GADM gadm0 areas to Oceania"
-	insert_continent_whole_country OCEANIA "'ASM',  'AUS', 'COK', 'FJI', 'FSM', 'GUM', 'KIR', 'MHL', 'MNP', 'NCL', 'NFK', 'NIU', 'NRU', 'NZL', 'PCN', 'PLW', 'PNG', 'PYF', 'SLB', 'TKL', 'TON', 'TUV', 'VUT', 'WLF', 'WSM'"
+	echo "Adding Pol/EEZ areas to Oceania"
+	insert_continent_whole_country OCEANIA "'ASM', 'AUS', 'COK', 'FJI', 'FSM', 'GUM', 'KIR', 'MHL', 'MNP', 'NCL', 'NFK', 'NIU', 'NRU', 'NZL', 'PCN', 'PLW', 'PNG', 'PYF', 'SLB', 'TKL', 'TON', 'TUV', 'VUT', 'WLF', 'WSM'"
 	for i in CHL IDN JPN USA UMI; do
 		insert_continent_cut_country OCEANIA $i
 	done
 
 	# South America
-	echo "Adding GADM gadm0 areas to South America"
-	insert_continent_whole_country SOUTH_AMERICA "'ARG',  'ABW', 'BOL', 'BRA', 'CUW', 'ECU', 'FLK', 'GUF', 'GUY', 'PER', 'PRY', 'SUR', 'TTO', 'URY'"
+	echo "Adding Pol/EEZ areas to South America"
+	insert_continent_whole_country SOUTH_AMERICA "'ARG', 'ABW', 'BOL', 'BRA', 'CUW', 'ECU', 'FLK', 'GUF', 'GUY', 'PER', 'PRY', 'SUR', 'TTO', 'URY'"
 	for i in BES CHL COL VEN; do
 		insert_continent_cut_country SOUTH_AMERICA $i
 	done
 
-	echo "DELETE FROM continent WHERE ST_IsEmpty(geom);" | exec_psql
+	# Caspian Sea (just a box since it will be unioned anyway)
+	for i in ASIA EUROPE; do
+		echo "… Caspian sea ($i)"
+		echo "
+			WITH caspian AS (SELECT ST_SetSRID(ST_Expand(ST_Extent(geom), 1.0), 4326) AS geom FROM gadm0 WHERE gid_0 = 'XCA')
+			INSERT INTO continent_step1 (continent, gid_0, geom)
+			SELECT '$i', CONCAT('XCA', '-', '$i'), ST_MakeValid(ST_Multi(ST_Union(ST_Intersection(ccc.geom, caspian.geom))))
+			FROM
+				(SELECT * FROM continent_cutter WHERE UPPER(continent) = '$i') AS ccc,
+				caspian
+		;" | exec_psql
+	done
+
+	# Bottom bit of Antarctica is missing
+	echo "INSERT INTO continent_step1 (continent, gid_0, geom) SELECT 'ANTARCTICA', 'ANT-89-90', ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326);" | exec_psql
+
+	echo "Deleting empty geometries"
+	echo "DELETE FROM continent_step1 WHERE ST_IsEmpty(geom) OR ST_Area(geom) = 0;" | exec_psql
+
+	echo "Calculating union of continent parts"
+	# https://gis.stackexchange.com/questions/431664/deleting-small-holes-in-polygons-specifying-the-size-with-postgis
+	echo "
+		CREATE OR REPLACE FUNCTION ST_RemoveHolesInPolygonsByArea(geom GEOMETRY, area real)
+		RETURNS GEOMETRY AS
+		$BODY$
+		WITH tbla AS (SELECT ST_Dump(geom))
+        SELECT ST_Collect(ARRAY(SELECT ST_MakePolygon(ST_ExteriorRing(geom),
+               ARRAY(SELECT ST_ExteriorRing(rings.geom) FROM ST_DumpRings(geom) AS rings
+               WHERE rings.path[1]>0 AND ST_Area(rings.geom)>=area))
+               FROM ST_Dump(geom))) AS geom FROM tbla;
+		$BODY$
+		LANGUAGE SQL;" | exec_psql
+	echo "DROP TABLE IF EXISTS continent;" | exec_psql
+	echo "CREATE TABLE continent AS SELECT continent, ST_RemoveHolesInPolygonsByArea(ST_Union(geom), 0.0001) AS geom FROM continent_step1 GROUP BY continent;" | exec_psql
+
+	echo "Creating index"
 	echo "CREATE INDEX continent_geom_geom_idx ON continent USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('continent', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE continent SET centroid_geom = ST_Centroid(geom);" | exec_psql
-
-	echo "CREATE TABLE continent_union AS SELECT continent, ST_Union(geom) AS geom FROM continent GROUP BY continent;" | exec_psql
 
 	echo "Continents import complete"
 	echo
@@ -668,9 +747,9 @@ else
 	align_natural_earth
 	import_marine_regions
 	align_marine_regions
+	import_iho
 	import_marine_regions_union
 	import_gadm
-	import_iho
 	import_wgsrpd
 	import_continents
 	create_combined_function

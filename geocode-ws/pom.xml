@@ -42,8 +42,8 @@
             <configuration>
               <executable>java</executable>
               <arguments>
-                <!-- Around 36GB is required to generate the GADM map. -->
-                <argument>-Xmx40G</argument>
+                <!-- Around 75GB is required to generate the GADM map. -->
+                <argument>-Xmx100G</argument>
                 <argument>-classpath</argument>
                 <classpath />
                 <argument>-Djava.io.tmpdir=${project.build.directory}</argument>

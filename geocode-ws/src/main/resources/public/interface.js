@@ -137,7 +137,7 @@ function countryStyle() {
 
 		if (feature.get('type') == 'PoliticalEEZ') {
 			pattern = makePatternB(colour);
-		} else if (feature.get('type') == 'GADM3') {
+		} else if (feature.get('type') == 'GADM3' || feature.get('type') == 'IHO') {
 			pattern = makePatternH(colour);
 		} else {
 			pattern = makePatternF(colour);

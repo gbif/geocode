@@ -394,11 +394,7 @@
   </select>
 
   <select id="svgContinent" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT continent AS id, ST_AsSVG(geom) AS shape FROM continent WHERE gid_0 != 'CAN'
-    UNION ALL
-    SELECT continent AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.9850921630859, 90)), 4326))) AS shape FROM continent WHERE gid_0 = 'CAN'
-    UNION ALL
-    SELECT continent AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.9850921630859, -90), ST_Point(180, 90)), 4326))) AS shape FROM continent WHERE gid_0 = 'CAN'
+    SELECT continent AS id, ST_AsSVG(ST_Subdivide(geom, 1000000)) AS shape FROM continent
   </select>
 
   <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
