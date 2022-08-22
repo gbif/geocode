@@ -197,7 +197,7 @@ public class BitmapGenerator implements CommandLineRunner {
       hollowSvg.write(SVG_HEADER);
       List<SvgShape> shapes = shapeSupplier.get();
 
-      Stack<String> colours = MakeColours.makeColours(shapes.size());
+      Stack<String> colours = MakeColours.makeColours((int)shapes.stream().map(SvgShape::getId).count());
 
       Map<String, String> knownColours = new HashMap<>();
 

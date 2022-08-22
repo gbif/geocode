@@ -1,6 +1,5 @@
 package org.gbif.geocode.ws.layers;
 
-import org.gbif.common.shaded.com.google.common.base.Strings;
 import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.model.Location;
 
@@ -97,7 +96,7 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     l.setSource(source());
     l.setId(id);
     l.setTitle(title);
-    l.setIsoCountryCode2Digit(Strings.emptyToNull(isoCode));
+    l.setIsoCountryCode2Digit(isoCode);
     l.setDistance(countryValue.getRight());
 
     return Collections.singletonList(l);

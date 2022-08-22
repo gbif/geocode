@@ -425,20 +425,32 @@
     SELECT COALESCE(gid_2, gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm2 WHERE gid_2 IS NOT NULL
   </select>
 
+  <!-- Shapes with too many points (111k is OK, 152k is not) cause an ArrayIndexOutOfBoundsException.
+       SELECT gid_0, gid_1, ST_NPoints(geom) AS points, name_1 FROM gadm1 ORDER BY points DESC LIMIT 10;
+       Split these up. -->
   <select id="svgGadm1" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm1 WHERE gid_1 IS NOT NULL AND fid != 36729
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm1 WHERE gid_1 IS NOT NULL AND gid_1 NOT IN('CAN.8_1', 'GBR.3_1')
   UNION ALL
-    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.9850921630859, 90)), 4326))) AS shape FROM gadm1 WHERE fid = 36729
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.985, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'CAN.8_1'
   UNION ALL
-    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.9850921630859, -90), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE fid = 36729
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.985, -90), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'CAN.8_1'
+  UNION ALL
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, 56.8)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'GBR.3_1'
+  UNION ALL
+    SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, 56.8), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'GBR.3_1'
   </select>
 
+  <!-- GADM0 uses the GADM1 table to avoid many of the shapes being very complex. -->
   <select id="svgGadm0" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT gid_0 AS id, ST_AsSVG(geom) AS shape FROM gadm1 WHERE fid != 36729
+    SELECT gid_0 AS id, ST_AsSVG(geom) AS shape FROM gadm1 WHERE gid_1 NOT IN('CAN.8_1', 'GBR.3_1') OR gid_1 IS NULL
   UNION ALL
-    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.9850921630859, 90)), 4326))) AS shape FROM gadm1 WHERE fid = 36729
+    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(-88.985, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'CAN.8_1'
   UNION ALL
-    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.9850921630859, -90), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE fid = 36729
+    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-88.985, -90), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'CAN.8_1'
+  UNION ALL
+    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, 56.8)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'GBR.3_1'
+  UNION ALL
+    SELECT gid_0 AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, 56.8), ST_Point(180, 90)), 4326))) AS shape FROM gadm1 WHERE gid_1 = 'GBR.3_1'
   </select>
 
   <select id="svgGadm543210" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -8,8 +8,6 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
-import com.google.common.base.Strings;
-
 import au.org.ala.layers.intersect.SimpleShapeFile;
 
 @Component
@@ -55,7 +53,7 @@ public class GadmLayer extends AbstractShapefileLayer {
     String isoCode = simpleShapeFile.getColumnLookup(8)[simpleShapeFile.getColumnIdxs("ISOCOUNTRY")[countryValue.getLeft()]];
 
     for (int i = 0; i < gid.length; i++) {
-      if (!Strings.isNullOrEmpty(gid[i])) {
+      if (!(gid[i] == null || gid[i].length() == 0)) {
         Location l = new Location();
         l.setType(name[i]);
         l.setSource(source());

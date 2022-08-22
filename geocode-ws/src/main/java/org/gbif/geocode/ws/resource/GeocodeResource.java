@@ -1,19 +1,31 @@
 package org.gbif.geocode.ws.resource;
 
+import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.ws.layers.CentroidsLayer;
+import org.gbif.geocode.ws.layers.ContinentLayer;
+import org.gbif.geocode.ws.layers.EezLayer;
+import org.gbif.geocode.ws.layers.GadmLayer;
+import org.gbif.geocode.ws.layers.IhoLayer;
+import org.gbif.geocode.ws.layers.PoliticalEezLayer;
+import org.gbif.geocode.ws.layers.PoliticalLayer;
+import org.gbif.geocode.ws.layers.WgsrpdLayer;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -43,6 +55,8 @@ public class GeocodeResource implements GeocodeService {
   private final GeocodeService shapefileGeocoder;
   private final GeocodeWsStatistics statistics;
 
+  private final List<String> defaultLayers;
+
   private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
@@ -55,6 +69,17 @@ public class GeocodeResource implements GeocodeService {
       new GeocodeBitmapCache(
         myBatisGeocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
     this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
+
+    this.defaultLayers = Arrays.asList(
+      "PoliticalEEZ",
+      "Centroids",
+      "Continent",
+      "GADM",
+      "GADM1",
+      "GADM2",
+      "GADM3",
+      "IHO",
+      "WGSRPD");
   }
 
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,9 +104,10 @@ public class GeocodeResource implements GeocodeService {
       throw new VeryUncertainException("Cannot specify uncertainty in both degrees and metres.");
     }
 
-    // As an optimization, GADM is queried as single layer
-    if (layers != null && !layers.isEmpty()
-      && (layers.contains("GADM0") || layers.contains("GADM1") || layers.contains("GADM2") || layers.contains("GADM3"))) {
+    if (layers == null || layers.isEmpty()) {
+      layers = new ArrayList<>(defaultLayers);
+    } else if (layers.contains("GADM0") || layers.contains("GADM1") || layers.contains("GADM2") || layers.contains("GADM3")) {
+      // As an optimization, GADM is queried as single layer
       layers.add("GADM");
     }
 

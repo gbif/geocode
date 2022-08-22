@@ -15,25 +15,26 @@ public class MakeColours {
 
   public static Stack<String> makeColours(int minimum) {
     System.out.println(minimum + " minimum colours");
-    final double[] saturations, values;
-    final int hues; // Number of sectors in which to divide the colour wheel
+    Set<String> colours = (minimum < 600) ? makeNiceColours(minimum) : makeBoringColours(minimum);
 
-    if (minimum < 600) {
-      saturations = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
-      values = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
-      hues = (int)Math.ceil(1.1 * minimum / 25d);
-
-    } else {
-      saturations = new double[99];
-      values = new double[99];
-      // Zero saturation is greys, and zero value is black. These are reserved for other uses,
-      // so start at 1.
-      for (int d = 0; d < 99; d++) {
-        saturations[d] = (d+1)/100d;
-        values[d] = (d+1)/100d;
-      }
-      hues = Math.max(6, (int)Math.ceil(1.25 * minimum / (99d*99d)));
+    if (colours.size() < minimum) {
+      throw new RuntimeException("Not enough colours were generated, needed "+minimum+" but "+
+        colours.size());
     }
+
+    List<String> colourList = new ArrayList<>();
+    colourList.addAll(colours);
+    Collections.shuffle(colourList, new Random(2345)); // Avoid changes if this is rerun.
+    Stack<String> shuffledColours = new Stack<>();
+    shuffledColours.addAll(colourList);
+    return shuffledColours;
+  }
+
+  public static Set<String> makeNiceColours(int minimum) {
+    double[] saturations = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+    double[] values = new double[]{2/6d, 3/6d, 4/6d, 5/6d, 1.0d};
+    // Number of sectors in which to divide the colour whee
+    int hues = (int)Math.ceil(1.1 * minimum / 25d);
 
     Set<String> colours = new HashSet<>();
 
@@ -50,17 +51,7 @@ public class MakeColours {
       }
     }
 
-    if (colours.size() < minimum) {
-      throw new RuntimeException("Not enough colours were generated, needed "+minimum+" but "+
-        colours.size());
-    }
-
-    List<String> colourList = new ArrayList<>();
-    colourList.addAll(colours);
-    Collections.shuffle(colourList, new Random(2345)); // Avoid changes if this is rerun.
-    Stack<String> shuffledColours = new Stack<>();
-    shuffledColours.addAll(colourList);
-    return shuffledColours;
+    return colours;
   }
 
   /**
@@ -110,5 +101,24 @@ public class MakeColours {
     }
 
     return String.format("#%02x%02x%02x", rr, gg, bb);
+  }
+
+  public static Set<String> makeBoringColours(int minimum) {
+    int step =  0xFFFFFF / minimum - 1;
+
+    Set<String> colours = new HashSet<>();
+
+    for (int c = 0x000030; c < 0xFFFFFF; c += step) {
+      int r = (c & 0xFF0000) >> 16;
+      int g = (c & 0x00FF00) >> 8;
+      int b = (c & 0x0000FF);
+
+      if ((r != g) || (r != b)) {
+        String hex = String.format("#%02x%02x%02x", r, g, b);
+        colours.add(hex);
+      }
+    }
+
+    return colours;
   }
 }

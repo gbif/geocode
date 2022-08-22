@@ -7,6 +7,7 @@ import org.gbif.geocode.ws.resource.exception.OffWorldException;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,12 +44,23 @@ public class GeocodeResourceTest {
     GeocodeService geocoder = mock(GeocodeService.class);
     GeocodeService geocodeService = new GeocodeResource(geocoder, null, statistics, null);
 
+    List<String> defaultLayers = Arrays.asList(
+      "PoliticalEEZ",
+      "Centroids",
+      "Continent",
+      "GADM",
+      "GADM1",
+      "GADM2",
+      "GADM3",
+      "IHO",
+      "WGSRPD");
+
     Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d);
     Location locationTest2 = new Location("test", "political", "source", "Germany", "DE", 0d);
-    when(geocoder.get(10.0d, 53.0d, null, null)).thenReturn(Arrays.asList(locationTest));
-    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null);
+    when(geocoder.get(10.0d, 53.0d, null, null, defaultLayers)).thenReturn(Arrays.asList(locationTest));
+    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null, null);
     verify(statistics).goodRequest();
-    verify(geocoder).get(10.0d, 53.0d, null, null);
+    verify(geocoder).get(10.0d, 53.0d, null, null, defaultLayers);
     assertEquals(1, locations.size());
     assertTrue(locations.contains(locationTest2));
   }

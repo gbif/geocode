@@ -282,22 +282,22 @@ function import_marine_regions_union() {
 function import_gadm() {
 	echo "Downloading GADM dataset"
 
-	# GADM, version 3.6: https://gadm.org/download_world.html
+	# GADM, version 4.1: https://gadm.org/download_world.html
 
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2020/05/gadm36_gpkg.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://geodata.ucdavis.edu/gadm/gadm3.6/gadm36_gpkg.zip
+	curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2022/08/gadm_410-gpkg.zip || \
+		curl -LSs --remote-name --continue-at - --fail https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_410-gpkg.zip
 	mkdir -p gadm
-	unzip -oj gadm36_gpkg.zip -d gadm/
+	unzip -oj gadm_410-gpkg.zip -d gadm/
 
 	echo "Dropping old tables"
-	for i in 0 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i;" | exec_psql; done
+	for i in 0 1 2 3 4 ''; do echo "DROP TABLE IF EXISTS gadm$i CASCADE;" | exec_psql; done
 
 	echo "Importing GADM to PostGIS"
-	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" gadm/gadm36.gpkg
+	ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" gadm/gadm_410.gpkg -nln gadm
 
-	rm gadm36_gpkg.zip gadm/ -Rf
+	rm gadm_410-gpkg.zip gadm/ -Rf
 
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -308,19 +308,19 @@ function import_gadm() {
 	echo "
 		CREATE TABLE gadm4 AS SELECT
 			MIN(fid) AS fid,MIN(uid) AS uid,
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
-			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
-			gid_4,id_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4,validto_4,remarks_4,
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,
+			gid_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,
+			gid_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4,
 			ST_UNION(geom) AS geom
 		FROM gadm
 		GROUP BY
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
-			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
-			gid_4,id_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4,validto_4,remarks_4;" | exec_psql
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,
+			gid_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,
+			gid_4,name_4,varname_4,                 cc_4,type_4,engtype_4,validfr_4;" | exec_psql
 	echo "CREATE INDEX gadm4_geom_geom_idx ON gadm4 USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('gadm4', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm4 SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -329,17 +329,17 @@ function import_gadm() {
 	echo "
 		CREATE TABLE gadm3 AS SELECT
 			MIN(fid) AS fid,MIN(uid) AS uid,
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
-			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3,
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,
+			gid_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,
 			ST_UNION(geom) AS geom
 		FROM gadm4
 		GROUP BY
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
-			gid_3,id_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3,validto_3,remarks_3;" | exec_psql
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,
+			gid_3,name_3,varname_3,nl_name_3,hasc_3,cc_3,type_3,engtype_3,validfr_3;" | exec_psql
 	echo "CREATE INDEX gadm3_geom_geom_idx ON gadm3 USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('gadm3', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm3 SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -348,15 +348,15 @@ function import_gadm() {
 	echo "
 		CREATE TABLE gadm2 AS SELECT
 			MIN(fid) AS fid,MIN(uid) AS uid,
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2,
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,
 			ST_UNION(geom) AS geom
 		FROM gadm3
 		GROUP BY
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
-			gid_2,id_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2,validto_2,remarks_2;" | exec_psql
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
+			gid_2,name_2,varname_2,nl_name_2,hasc_2,cc_2,type_2,engtype_2,validfr_2;" | exec_psql
 	echo "CREATE INDEX gadm2_geom_geom_idx ON gadm2 USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('gadm2', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm2 SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -365,13 +365,13 @@ function import_gadm() {
 	echo "
 		CREATE TABLE gadm1 AS SELECT
 			MIN(fid) AS fid,MIN(uid) AS uid,
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1,
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,
 			ST_UNION(geom) AS geom
 		FROM gadm2
 		GROUP BY
-			gid_0,id_0,name_0,
-			gid_1,id_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1,validto_1,remarks_1;" | exec_psql
+			gid_0,name_0,varname_0,
+			gid_1,name_1,varname_1,nl_name_1,hasc_1,cc_1,type_1,engtype_1,validfr_1;" | exec_psql
 	echo "CREATE INDEX gadm1_geom_geom_idx ON gadm1 USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('gadm1', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm1 SET centroid_geom = ST_Centroid(geom);" | exec_psql
@@ -380,11 +380,11 @@ function import_gadm() {
 	echo "
 		CREATE TABLE gadm0 AS SELECT
 			MIN(fid) AS fid,MIN(uid) AS uid,
-			gid_0,id_0,name_0,
+			gid_0,name_0,varname_0,
 			ST_UNION(geom) AS geom
 		FROM gadm1
 		GROUP BY
-			gid_0,id_0,name_0;" | exec_psql
+			gid_0,name_0,varname_0;" | exec_psql
 	echo "CREATE INDEX gadm0_geom_geom_idx ON gadm0 USING GIST (geom);" | exec_psql
 	echo "SELECT AddGeometryColumn('gadm0', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm0 SET centroid_geom = ST_Centroid(geom);" | exec_psql
