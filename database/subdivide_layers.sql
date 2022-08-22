@@ -103,9 +103,11 @@ CREATE TABLE gadm3_subdivided AS
     WHERE ST_NPoints(geom) <= 1024;
 
 INSERT INTO gadm3_subdivided
-    SELECT fid, uid, gid_0, id_0, name_0, gid_1, id_1, name_1, varname_1, nl_name_1, hasc_1, cc_1, type_1, engtype_1, validfr_1, validto_1,
-           remarks_1, gid_2, id_2, name_2, varname_2, nl_name_2, hasc_2, cc_2, type_2, engtype_2, validfr_2, validto_2, remarks_2, gid_3, id_3, name_3,
-           varname_3, nl_name_3, hasc_3, cc_3, type_3, engtype_3, validfr_3, validto_3, remarks_3, ST_Subdivide(geom, 1024) AS geom
+    SELECT fid, uid,
+           gid_0, name_0, varname_0,
+           gid_1, name_1, varname_1, nl_name_1, hasc_1, cc_1, type_1, engtype_1, validfr_1,
+           gid_2, name_2, varname_2, nl_name_2, hasc_2, cc_2, type_2, engtype_2, validfr_2,
+           gid_3, name_3, varname_3, nl_name_3, hasc_3, cc_3, type_3, engtype_3, validfr_3, ST_Subdivide(geom, 1024) AS geom
       FROM gadm3
      WHERE ST_NPoints(geom) > 1024 AND ST_NPoints(geom) <= 10000;
 
@@ -119,9 +121,11 @@ BEGIN
    LOOP
       RAISE NOTICE 'Processing %', k.fid;
       INSERT INTO gadm3_subdivided
-        SELECT fid, uid, gid_0, id_0, name_0, gid_1, id_1, name_1, varname_1, nl_name_1, hasc_1, cc_1, type_1, engtype_1, validfr_1, validto_1,
-          remarks_1, gid_2, id_2, name_2, varname_2, nl_name_2, hasc_2, cc_2, type_2, engtype_2, validfr_2, validto_2, remarks_2, gid_3, id_3, name_3,
-          varname_3, nl_name_3, hasc_3, cc_3, type_3, engtype_3, validfr_3, validto_3, remarks_3, ST_Subdivide(geom, 1024) AS geom
+        SELECT fid, uid,
+               gid_0, name_0, varname_0,
+               gid_1, name_1, varname_1, nl_name_1, hasc_1, cc_1, type_1, engtype_1, validfr_1,
+               gid_2, name_2, varname_2, nl_name_2, hasc_2, cc_2, type_2, engtype_2, validfr_2,
+               gid_3, name_3, varname_3, nl_name_3, hasc_3, cc_3, type_3, engtype_3, validfr_3, ST_Subdivide(geom, 1024) AS geom
         FROM gadm3
         WHERE fid = k.fid;
       RAISE NOTICE 'Completed %', k.fid;
