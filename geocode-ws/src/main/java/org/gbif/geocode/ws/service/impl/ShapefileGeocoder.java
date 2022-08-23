@@ -40,7 +40,10 @@ public class ShapefileGeocoder implements GeocodeService {
   private static final double DEFAULT_DISTANCE = 0.05d;
 
   public ShapefileGeocoder(@Value("${spring.shapefiles.root}") String root) {
+
     synchronized (this) {
+      LOG.info("Loading shapefiles from {}", root);
+
       String[] columns = new String[]{"id", "name", "isoCountry"};
 
       {
