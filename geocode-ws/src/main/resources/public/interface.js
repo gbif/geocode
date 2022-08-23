@@ -39,6 +39,8 @@ var tileGridBitmapCache = new ol.tilegrid.TileGrid({
 });
 
 var layers = [];
+const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
+const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
 
 String.prototype.hashCode = function() {
 	var hash = 5381;
@@ -417,6 +419,30 @@ layers['centroids'] = new ol.layer.VectorTile({
 	visible: false
 });
 
+layers['occurrences_density'] = new ol.layer.Tile({
+	title: 'Density',
+	source: new ol.source.TileImage({
+		projection: 'EPSG:4326',
+		tileGrid: tileGrid,
+		url: occurrences_density_url,
+		tilePixelRatio: 2,
+		wrapX: false
+	}),
+	visible: false
+});
+
+layers['occurrences_adhoc'] = new ol.layer.Tile({
+	title: 'Ad-hoc',
+	source: new ol.source.TileImage({
+		projection: 'EPSG:4326',
+		tileGrid: tileGrid,
+		url: occurrences_adhoc_url,
+		tilePixelRatio: 2,
+		wrapX: false
+	}),
+	visible: false
+});
+
 var source = new ol.source.Vector({
 	projection: 'EPSG:4326',
 });
@@ -438,6 +464,13 @@ var map = new ol.Map({
 		layers['baselayer'],
 		layers['baselayer-labels'],
 		layers['bitmapCache'],
+		new ol.layer.Group({
+			title: 'Occurrences',
+			layers: [
+				layers['occurrences_adhoc'],
+				layers['occurrences_density']
+			]
+		}),
 		new ol.layer.Group({
 			title: 'Layer',
 			layers: [
@@ -556,3 +589,29 @@ longitude_input.onchange = (function(e) {
 });
 
 document.getElementById('uncertaintyMeters_input').onchange = updateUncertainty;
+
+var occurrences_density_input = document.getElementById('occurrences_density_input');
+occurrences_density_input.onchange = (function(e) {
+  layers['occurrences_density'].setSource(
+    new ol.source.TileImage({
+      projection: 'EPSG:4326',
+      tileGrid: tileGrid,
+      url: occurrences_density_url+'&'+occurrences_density_input.value,
+      tilePixelRatio: 2,
+      wrapX: false
+  }));
+});
+occurrences_density_input.onchange();
+
+var occurrences_adhoc_input = document.getElementById('occurrences_adhoc_input');
+occurrences_adhoc_input.onchange = (function(e) {
+  layers['occurrences_adhoc'].setSource(
+    new ol.source.TileImage({
+      projection: 'EPSG:4326',
+      tileGrid: tileGrid,
+      url: occurrences_adhoc_url+'&'+occurrences_adhoc_input.value,
+      tilePixelRatio: 2,
+      wrapX: false
+  }));
+});
+occurrences_adhoc_input.onchange();
