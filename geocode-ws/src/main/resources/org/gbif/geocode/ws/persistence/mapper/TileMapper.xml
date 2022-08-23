@@ -385,8 +385,9 @@
     SELECT tile AS t FROM tile_cache WHERE layer = #{layer} AND z = #{z} AND x = #{x} AND y = #{y} LIMIT 1;
   </select>
 
+  <!-- The union (name) is required because there are islands etc with the same ISO code as mainland, but different names. -->
   <select id="svgPoliticalEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM political_eez
+    SELECT CONCAT(REGEXP_REPLACE("union", '\W+', '', 'g'), iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM political_eez
   </select>
 
   <select id="svgPolitical" resultType="org.gbif.geocode.ws.model.SvgShape">

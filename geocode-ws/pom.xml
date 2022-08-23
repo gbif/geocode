@@ -264,6 +264,7 @@
         <geocode-ws.db.url>jdbc:postgresql://127.0.0.1:15432/eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
+        <geocode-ws.shapefiles.path>../database/layers/</geocode-ws.shapefiles.path>
       </properties>
     </profile>
 
@@ -273,6 +274,7 @@
         <geocode-ws.db.url>jdbc:postgresql://pg1.gbif-dev.org/dev_eez</geocode-ws.db.url>
         <geocode-ws.db.username>eez</geocode-ws.db.username>
         <geocode-ws.db.password>eez</geocode-ws.db.password>
+        <geocode-ws.shapefiles.path>../database/layers/</geocode-ws.shapefiles.path>
       </properties>
     </profile>
   </profiles>

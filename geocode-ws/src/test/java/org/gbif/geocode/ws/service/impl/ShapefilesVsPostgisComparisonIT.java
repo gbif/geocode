@@ -169,8 +169,8 @@ public class ShapefilesVsPostgisComparisonIT {
 
     layers.clear();
     layers.add("PoliticalEEZ");
-    layers.add("Political");
-    layers.add("EEZ");
+    //layers.add("Political");
+    //layers.add("EEZ");
     layers.add("Continent");
     layers.add("GADM3210");
     layers.add("IHO");

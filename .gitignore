@@ -5,6 +5,7 @@ target/
 geocode-ws/logs
 database/export-complete
 database/import-complete
+database/layers-subdivided
 database/layers
 
 # Package Files #

@@ -27,7 +27,7 @@ public class PoliticalEezLayer extends AbstractShapefileLayer {
 
   @Override
   public String source() {
-    return "http://vliz.be/vmdcdata/marbound/";
+    return "https://www.marineregions.org/";
   }
 
   @Override

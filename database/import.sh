@@ -263,6 +263,11 @@ function import_marine_regions_union() {
 	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter2 IS NULL;" | exec_psql
 	echo "UPDATE political_eez SET iso_ter3 = iso_sov3 WHERE iso_ter3 IS NULL;" | exec_psql
 
+	# Add mrgid_ter1 codes where these are oddly missing
+	echo "UPDATE political_eez SET mrgid_ter1 = 17589 WHERE iso_ter1 = 'MAC' AND mrgid_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political_eez SET mrgid_ter1 = 8759  WHERE iso_ter1 = 'HKG' AND mrgid_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political_eez SET mrgid_ter1 = 48519 WHERE iso_ter1 = 'XKX' AND mrgid_ter1 IS NULL;" | exec_psql
+
 	# Use sovereign codes rather than territory codes for disputed territories
 	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter1 IN ('FLK', 'SGS', 'MYT', 'ESH');" | exec_psql
 
@@ -677,6 +682,7 @@ function align_natural_earth() {
 
 	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
 	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, STRING_AGG(name, ',') FROM political WHERE iso_a3 != '-99' GROUP BY iso_a2, iso_a3);" | exec_psql
+	echo "INSERT INTO iso_map VALUES('XK', 'XKX', 'Kosovo');" | exec_psql
 }
 
 function align_marine_regions() {

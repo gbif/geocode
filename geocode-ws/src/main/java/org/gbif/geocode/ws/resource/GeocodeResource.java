@@ -60,7 +60,7 @@ public class GeocodeResource implements GeocodeService {
   private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
-  public GeocodeResource(GeocodeService shapefileGeocoder, GeocodeService myBatisGeocoder, GeocodeWsStatistics statistics, BuildProperties buildProperties) {
+  public GeocodeResource(GeocodeService shapefileGeocoder, GeocodeService myBatisGeocoder, GeocodeWsStatistics statistics, @Nullable BuildProperties buildProperties) {
     this.statistics = statistics;
     this.shapefileGeocoder =
       new GeocodeBitmapCache(

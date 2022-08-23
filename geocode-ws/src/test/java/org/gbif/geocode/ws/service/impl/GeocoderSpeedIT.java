@@ -45,7 +45,7 @@ public class GeocoderSpeedIT {
   @Test
   @Disabled
   public void speedTestRandomQueries() {
-    // PostGIS speeds (localhost PostGIS)
+    // PostGIS speeds (localhost PostGIS, Matt's desktop)
     // Political:   10000 queries in   8 seconds;   1250 per second
     // EEZ:         10000 queries in  34 seconds;    294 per second
     // GADM:       100000 queries in 112 seconds;    892 per second
@@ -55,12 +55,14 @@ public class GeocoderSpeedIT {
 
     int count = 10_000_000;
     List<String> testLayers = Arrays.asList(
-      "Political",  // Political: 10000000 queries in 15 seconds; 666666.6 per second
-      "EEZ",        // EEZ:       10000000 queries in 17 seconds; 588235.3 per second
-      "GADM",       // GADM:      10000000 queries in 46 seconds; 217391.3 per second
-      "Continent",  // Continent: 10000000 queries in 17 seconds; 588235.3 per second
-      "IHO",        // IHO:       10000000 queries in 16 seconds; 625000.0 per second
-      "WGSRPD");    // WGSRPD:    10000000 queries in 15 seconds; 666666.6 per second
+                      // Speeds on Matt's desktop.
+      "PoliticalEEZ", // PoliticalEEZ: 10000000 queries in 13 seconds; 769230.7 per second
+      "Political",    // Political:    10000000 queries in 13 seconds; 769230.7 per second
+      "EEZ",          // EEZ:          10000000 queries in 15 seconds; 666666.6 per second
+      "GADM",         // GADM:         10000000 queries in 48 seconds; 208333.3 per second
+      "Continent",    // Continent:    10000000 queries in 15 seconds; 666666.6 per second
+      "IHO",          // IHO:          10000000 queries in 15 seconds; 666666.6 per second
+      "WGSRPD");      // WGSRPD:       10000000 queries in 14 seconds; 714285.7 per second
 
     for (String l : testLayers) {
       System.out.println("Testing layer "+l);
