@@ -136,16 +136,17 @@
   <select id="tileGadm5" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        COALESCE(gid_5, gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+        gid_5 AS id,
         'GADM' AS type,
         'http://gadm.org' AS source,
-        COALESCE(name_5, name_4, name_3, name_2, name_1, name_0) AS title,
+        name_5 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom AS geom,
         centroid_geom
       FROM gadm
       LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+        AND gid_5 IS NOT NULL
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -168,16 +169,17 @@
   <select id="tileGadm4" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        COALESCE(gid_4, gid_3, gid_2, gid_1, gid_0) AS id,
+        gid_4 AS id,
         'GADM' AS type,
         'http://gadm.org' AS source,
-        COALESCE(name_4, name_3, name_2, name_1, name_0) AS title,
+        name_4 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom AS geom,
         centroid_geom
       FROM gadm4
       LEFT OUTER JOIN iso_map ON gadm4.gid_0 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+        AND gid_4 IS NOT NULL
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -200,16 +202,17 @@
   <select id="tileGadm3" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        COALESCE(gid_3, gid_2, gid_1, gid_0) AS id,
+        gid_3 AS id,
         'GADM' AS type,
         'http://gadm.org' AS source,
-        COALESCE(name_3, name_2, name_1, name_0) AS title,
+        name_3 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom AS geom,
         centroid_geom
       FROM gadm3
       LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+        AND gid_3 IS NOT NULL
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -232,16 +235,17 @@
   <select id="tileGadm2" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        COALESCE(gid_2, gid_1, gid_0) AS id,
+        gid_2 AS id,
         'GADM' AS type,
         'http://gadm.org' AS source,
-        COALESCE(name_2, name_1, name_0) AS title,
+        name_2 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom AS geom,
         centroid_geom
       FROM gadm2
       LEFT OUTER JOIN iso_map ON gadm2.gid_0 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+        AND gid_2 IS NOT NULL
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
@@ -264,16 +268,17 @@
   <select id="tileGadm1" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        COALESCE(gid_1, gid_0) AS id,
+        gid_1 AS id,
         'GADM' AS type,
         'http://gadm.org' AS source,
-        COALESCE(name_1, name_0) AS title,
+        name_1 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom AS geom,
         centroid_geom
       FROM gadm1
       LEFT OUTER JOIN iso_map ON gadm1.gid_0 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
+        AND gid_1 IS NOT NULL
     ), intersectings AS (
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL

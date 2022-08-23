@@ -11,8 +11,8 @@ services to interpret countries boundaries from geographic coordinates.
 This project contains 3 modules:
   * geocode-api: contains the GeocodeService.get(lat,lon) service and the Location instance returned by it.
   * geocode-ws: RESTful API implementation of the GeocodeService.get(lat,lon) service.
-    This service is accessible at the URL `http://{server}:{httpPort}/reverse`, and a debug interface is present at
-    `http://{server}:{httpPort}/`.
+    This service is accessible at the URL `http://{server}:{httpPort}/geocode/reverse`, and a debug interface is present at
+    `http://{server}:{httpPort}/geocode/debug/map.html`.
   * geocode-ws-client: Java client to access the RESTful service.
 
 There is a supporting module:
@@ -23,16 +23,4 @@ There is a supporting module:
 Execute the Maven command:
 ```
 mvn clean package verify install -P{geocode}
-```
-
-A Maven profile containing the following settings is required:
-```
-<profile>
-  <id>geocode</id>
-  <properties>
-    <geocode-ws.url>jdbc:postgresql://server/postgis_db</geocode-ws.url>
-    <geocode-ws.username>eez</geocode-ws.username>
-    <geocode-ws.password>password</geocode-ws.password>
-  </properties>
-</profile>
 ```
