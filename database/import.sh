@@ -462,6 +462,8 @@ function import_wgsrpd() {
 
 		rm level$i.zip wgsrpd/level$i/ -Rf
 
+		echo "UPDATE wgsrpd_level$i SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
 		echo "SELECT AddGeometryColumn('wgsrpd_level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 		echo "UPDATE wgsrpd_level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
 	done

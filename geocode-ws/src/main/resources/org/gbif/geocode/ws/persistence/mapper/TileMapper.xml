@@ -80,7 +80,7 @@
         NULL AS isoCountryCode2Digit,
         geom,
         centroid_geom
-      FROM continent
+      FROM continent_subdivided
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
@@ -302,7 +302,7 @@
         name AS title,
         geom,
         centroid_geom
-      FROM iho
+      FROM iho_subdivided
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
