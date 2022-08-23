@@ -232,7 +232,7 @@ layers['bitmapCache'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGridBitmapCache,
-		url: './geocode/bitmap',
+		url: '../bitmap',
 		tilePixelRatio: 1,
 		wrapX: false
 	}),
@@ -248,7 +248,7 @@ layers['political_eez'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/political_eez/{z}/{x}/{y}.mvt',
+		url: '../tile/political_eez/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle()
@@ -262,7 +262,7 @@ layers['political'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/political/{z}/{x}/{y}.mvt',
+		url: '../tile/political/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -277,7 +277,7 @@ layers['continent'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/continent/{z}/{x}/{y}.mvt',
+		url: '../tile/continent/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -292,7 +292,7 @@ layers['eez'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/eez/{z}/{x}/{y}.mvt',
+		url: '../tile/eez/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -307,7 +307,7 @@ layers['gadm5'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/gadm5/{z}/{x}/{y}.mvt',
+		url: '../tile/gadm5/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -322,7 +322,7 @@ layers['gadm4'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/gadm4/{z}/{x}/{y}.mvt',
+		url: '../tile/gadm4/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -337,7 +337,7 @@ layers['gadm3'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/gadm3/{z}/{x}/{y}.mvt',
+		url: '../tile/gadm3/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -352,7 +352,7 @@ layers['gadm2'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/gadm2/{z}/{x}/{y}.mvt',
+		url: '../tile/gadm2/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -367,7 +367,7 @@ layers['gadm1'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/gadm1/{z}/{x}/{y}.mvt',
+		url: '../tile/gadm1/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -382,7 +382,7 @@ layers['iho'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/iho/{z}/{x}/{y}.mvt',
+		url: '../tile/iho/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -397,7 +397,7 @@ layers['wgsrpd'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/wgsrpd/{z}/{x}/{y}.mvt',
+		url: '../tile/wgsrpd/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -412,7 +412,7 @@ layers['centroids'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: './tile/centroids/{z}/{x}/{y}.mvt',
+		url: '../tile/centroids/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -545,7 +545,7 @@ function geocode(coordinate) {
 	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
-	var url = "./geocode/reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertaintyDegrees="+uncertaintyDegrees_input.value;
+	var url = "../reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertaintyDegrees="+uncertaintyDegrees_input.value;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {

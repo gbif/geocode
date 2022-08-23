@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Geocoder map</title>
+		<link href="https://tile.gbif.org/ui/ol.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="ol3-layerswitcher-1.1.0.css" type="text/css"/>
+		<script src="https://tile.gbif.org/ui/ol.js"></script>
+		<script src="https://tile.gbif.org/ui/proj4.js"></script>
+		<script src="ol3-layerswitcher-1.1.0.js"></script>
+		<style>
+			html {
+				font-family: sans-serif;
+			}
+			.wrapper {
+				position: absolute;
+				top: 6em;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: lavender;
+			}
+			.map {
+				width: 100%;
+				height: 100%;
+			}
+
+			.ol-popup {
+				position: absolute;
+				background-color: white;
+				-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+				filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+				padding: 15px;
+				border-radius: 10px;
+				border: 1px solid #cccccc;
+				bottom: 12px;
+				left: -50px;
+				min-width: 280px;
+			}
+			.ol-popup:after, .ol-popup:before {
+				top: 100%;
+				border: solid transparent;
+				content: " ";
+				height: 0;
+				width: 0;
+				position: absolute;
+				pointer-events: none;
+			}
+			.ol-popup:after {
+				border-top-color: white;
+				border-width: 10px;
+				left: 48px;
+				margin-left: -10px;
+			}
+			.ol-popup:before {
+				border-top-color: #cccccc;
+				border-width: 11px;
+				left: 48px;
+				margin-left: -11px;
+			}
+			.ol-popup-closer {
+				text-decoration: none;
+				position: absolute;
+				top: 2px;
+				right: 8px;
+			}
+			.ol-popup-closer:after {
+				content: "✖";
+			}
+
+			.ol-scale-line {
+				top: calc(50% - 0.5em);
+				left: calc(50% - 3em);
+				height: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="interface">
+			<fieldset id="query">
+				<legend>Make query</legend>
+				<label><input type="number" name="latitude_input" id="latitude_input" value="56.00">°</label>
+				<label><input type="number" name="longitude_input" id="longitude_input" value="12.00">°</label>
+				<label><input type="number" name="uncertaintyMeters_input" id="uncertaintyMeters_input" value="3112.45346925878">m</label>
+				<label><input type="number" name="uncertaintyDegrees_input" id="uncertaintyDegrees_input" value="0.05" disabled>°</label>
+				—
+				<label>Density filter: <input type="text" name="occurrences_density_input" id="occurrences_density_input" value=""></label>
+				<label>Ad-hoc filter: <input type="text" name="occurrences_adhoc_input" id="occurrences_adhoc_input" value="style=scaled.circles&amp;mode=GEO_CENTROID"></label>
+			</fieldset>
+		</div>
+		<div class="wrapper">
+			<div id="map" class="map"></div>
+			<div id="popup" class="ol-popup">
+				<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+				<div id="popup-content"></div>
+			</div>
+		</div>
+		<script src="interface.js"></script>
+	</body>
+</html>

@@ -16,6 +16,8 @@
     </encoder>
   </appender>
 
+  <logger name="au.org.ala" level="DEBUG"/>
+
   <logger name="org.gbif.geocode" level="DEBUG"/>
   <logger name="org.gbif.geocode.ws.persistence.mapper.TileMapper" level="INFO"/>
 

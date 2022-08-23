@@ -25,7 +25,7 @@ import com.google.common.base.Stopwatch;
  * them.
  */
 @RestController
-@RequestMapping("tile")
+@RequestMapping("geocode/tile")
 @CrossOrigin(
   allowedHeaders = {"authorization", "content-type"},
   exposedHeaders = {
