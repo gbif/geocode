@@ -507,12 +507,11 @@ function updateUncertainty() {
 	uncertaintyDegrees_input.value = uncertaintyMeters_input.value / (111319.491 * Math.cos(latitude_input.value * Math.PI / 180));
 }
 
-var wgs84Sphere = new ol.Sphere(6378137);
 function geocode(coordinate) {
   updateUncertainty();
   var uncertainty = parseFloat(uncertaintyDegrees_input.value);
 	var radius = 110698.10348827201*uncertainty
-	var circle = ol.geom.Polygon.circular(wgs84Sphere, coordinate, radius, 32);
+	var circle = ol.geom.Polygon.circular(coordinate, radius, 32);
 	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
@@ -521,11 +520,11 @@ function geocode(coordinate) {
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			var response = JSON.parse(this.response);
-			var text = response.map(function(x) { return '<li>'+x.title+' ('+x.type+', '+x.id+')</li>'; }).join('');
+			var text = response.map(function(x) { return '<tr><td>'+Number(x.distance).toFixed(3)+'</td><td>'+x.type+'</td><td><code>'+x.isoCountryCode2Digit+'</code></td><td><code>'+x.id+'</code></td><td>'+x.title+'</td></tr>'; }).join('');
 			var template = '{y}N,{x}E';
-			content.innerHTML = '<code>' + ol.coordinate.format(coordinate, template, 5) + '</code>' +
-					'<ul>' + text + '</ul>' +
-					'<a href="' + url + '">⭞</a>';
+			content.innerHTML = '<code>' + ol.coordinate.format(coordinate, template, 5) + '</code> ' +
+					'<a href="' + url + '">⭞</a>' +
+					'<table><tr><th>Dist</th><th>Type</th><th>ISO</th><th>Identifier</th><th>Title</th></tr>' + text + '</table>';
 		}
 	};
 	console.log(url);
@@ -543,7 +542,12 @@ map.on('singleclick', function(evt) {
   geocode(coordinate);
 });
 
-var layerSwitcher = new ol.control.LayerSwitcher();
+var layerSwitcher = new ol.control.LayerSwitcher({
+  activationMode: 'click',
+  startActive: true,
+  tipLabel: 'Layers',
+  groupSelectStyle: 'children'
+});
 map.addControl(layerSwitcher);
 
 var latitude_input = document.getElementById('latitude_input');

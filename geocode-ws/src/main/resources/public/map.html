@@ -3,11 +3,11 @@
 	<head>
 		<meta charset="utf-8"/>
 		<title>Geocoder map</title>
-		<link href="https://tile.gbif.org/ui/ol.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" href="ol3-layerswitcher-1.1.0.css" type="text/css"/>
-		<script src="https://tile.gbif.org/ui/ol.js"></script>
+		<link href="https://tile.gbif.org/ui/ol6/ol.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://tile.gbif.org/ui/ol6/ol6-layerswitcher.css" type="text/css"/>
+		<script src="https://tile.gbif.org/ui/ol6/ol.js"></script>
 		<script src="https://tile.gbif.org/ui/proj4.js"></script>
-		<script src="ol3-layerswitcher-1.1.0.js"></script>
+		<script src="https://tile.gbif.org/ui/ol6/ol6-layerswitcher.js"></script>
 		<style>
 			html {
 				font-family: sans-serif;
@@ -66,6 +66,11 @@
 			}
 			.ol-popup-closer:after {
 				content: "✖";
+			}
+			#popup-content table, #popup-content th, #popup-content td {
+				border-collapse: collapse;
+				border: 1px solid grey;
+				padding: 1px;
 			}
 
 			.ol-scale-line {
