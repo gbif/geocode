@@ -17,6 +17,13 @@ export POSTGRES_PORT=5432
 ./export-shapefiles.sh
 ```
 
+Update these on NFS if they change. Note the dev NFS location is also used by the Jenkins build:
+
+```
+rsync -rptDv --delete layers/ ws.gbif-dev.org:/mnt/auto/maps/geocode/layers/
+rsync -rptDv --delete layers/ ws.gbif.org:/mnt/auto/maps/geocode/layers/
+```
+
 ## Docker build:
 ```
 docker build --build-arg version=0.15 -t gbif/geocode-ws .

@@ -115,6 +115,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <argLine>-Xmx16g</argLine>
+        </configuration>
       </plugin>
     </plugins>
   </build>
