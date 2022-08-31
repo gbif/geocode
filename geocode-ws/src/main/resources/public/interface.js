@@ -135,7 +135,7 @@ function countryStyle() {
 		})});
 
 		var length = 0;
-		var isocode = feature.get('id');
+		var isocode = feature.get('isocountrycode2digit') ? feature.get('isocountrycode2digit') : feature.get('id');
 		var colour = countryColour(isocode);
 		var invertColour = oppositeCountryColour(isocode);
 
