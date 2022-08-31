@@ -2,7 +2,7 @@ package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
-import org.gbif.geocode.ws.layers.EezLayer;
+import org.gbif.geocode.ws.layers.PoliticalLayer;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -77,13 +77,13 @@ public class BitmapFirstGeocoderTest {
     assertTrue(locations2.contains(locationTest2));
   }
 
-  /** Test that EEZ areas are cached (if reasonable). */
+  /** Test that areas are cached (if reasonable). */
   @Test
-  public void testEezRequest() {
+  public void testPoliticalRequest() {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
+        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
 
     // In the Pacific within French Polynesia's EEZ.
     Location locationTest =
@@ -111,7 +111,7 @@ public class BitmapFirstGeocoderTest {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
+        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
 
     Collection<Location> locations = geocoder.get(0d, 0d, null, null);
 
@@ -126,13 +126,13 @@ public class BitmapFirstGeocoderTest {
     MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, EezLayer.class.getResourceAsStream("eez.png"));
+        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
 
-    List<String> eezLayer = Arrays.asList(new String[] {"EEZ"});
+    List<String> politicalLayer = Arrays.asList(new String[] {"Political"});
 
-    Collection<Location> locations = geocoder.get(0d, 0d, null, null, eezLayer);
+    Collection<Location> locations = geocoder.get(0d, 0d, null, null, politicalLayer);
 
-    verify(dbGeocoder, times(1)).get(0d, 0d, null, null, eezLayer);
+    verify(dbGeocoder, times(1)).get(0d, 0d, null, null, politicalLayer);
 
     assertEquals(0, locations.size());
   }

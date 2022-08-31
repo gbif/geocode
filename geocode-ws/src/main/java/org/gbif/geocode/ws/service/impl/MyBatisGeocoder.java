@@ -33,9 +33,7 @@ public class MyBatisGeocoder implements GeocodeService {
   private final List<AbstractBitmapCachedLayer> availableLayers;
   private final List<String> availableLayerNames;
 
-  // The default distance is chosen at ~5km to allow for gaps between land and sea (political and
-  // EEZ)
-  // and to cope with the inaccuracies introduced in the simplified datasets.
+  // The default distance was originally chosen at ~5km to allow for gaps between land and sea in the simplified datasets.
   // 0.05° ~= 5.55 km
   private static final double DEFAULT_DISTANCE = 0.05d;
 

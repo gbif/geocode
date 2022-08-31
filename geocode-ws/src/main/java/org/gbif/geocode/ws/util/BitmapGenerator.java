@@ -115,10 +115,8 @@ public class BitmapGenerator implements CommandLineRunner {
 
     combineAllBitmaps(
         targetDirectory,
-        "politicalEez",
         "political",
         "continent",
-        "eez",
         "gadm0",
         "gadm1",
         "gadm2",
@@ -134,10 +132,8 @@ public class BitmapGenerator implements CommandLineRunner {
   public void generateAllBitmaps(Path targetDirectory) throws Exception {
     ImmutableMap<String, Supplier<List<SvgShape>>> svgSuppliers =
         new ImmutableMap.Builder<String, Supplier<List<SvgShape>>>()
-            .put("politicalEez", tileMapper::svgPoliticalEez)
             .put("political", tileMapper::svgPolitical)
             .put("continent", tileMapper::svgContinent)
-            .put("eez", tileMapper::svgEez)
             .put("gadm0", tileMapper::svgGadm0)
             .put("gadm1", tileMapper::svgGadm1)
             .put("gadm2", tileMapper::svgGadm2)

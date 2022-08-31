@@ -36,6 +36,30 @@ function hide_inserts() {
 	grep -v "INSERT 0 1"
 }
 
+function import_iso_map() {
+	echo "Initial setup"
+
+	echo "Creating PostGIS extension"
+	echo "CREATE EXTENSION IF NOT EXISTS postgis;" | exec_psql
+	echo "CREATE EXTENSION IF NOT EXISTS postgis_topology;" | exec_psql
+
+	echo "Importing ISO alpha code map"
+
+	curl -fSs https://api.gbif.org/v1/enumeration/country | jq -r '.[] | [ .iso2, .iso3, .title ] | @csv' > /tmp/iso_code_map
+
+	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
+	exec_psql <<EOF
+	CREATE TABLE iso_map (
+	    iso2     char(2) NOT NULL,
+	    iso3     char(3) NOT NULL,
+	    title    text    NOT NULL
+	);
+EOF
+
+	echo "\copy iso_map FROM '/tmp/iso_code_map' CSV;" | exec_psql
+	echo "INSERT INTO iso_map VALUES('XK', 'XKX', 'Kosovo');" | exec_psql
+}
+
 function import_centroids() {
 	echo "Importing Centroids dataset"
 
@@ -53,92 +77,6 @@ function import_centroids() {
 	echo
 }
 
-# Note: Natural Earth replaced with the Marine Regions Countries Union polygons.
-function import_natural_earth() {
-	echo "Downloading Natural Earth dataset"
-
-	# Download the [1:10m Cultural Vectors, Admin 0 - Countries file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-countries/)
-	# and the [1:10m Cultural Vectors, Admin 0 - Details map units file](http://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/).
-	# This is version 4.1.0.
-
-	mkdir -p /var/tmp/import
-	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_countries.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_countries.zip
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_map_units.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_map_units.zip
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/ne_10m_admin_0_map_subunits.zip || \
-		curl -LSs --remote-name --continue-at - --fail https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_admin_0_map_subunits.zip
-	mkdir -p ne
-	unzip -oj ne_10m_admin_0_countries.zip -d ne/
-	unzip -oj ne_10m_admin_0_map_units.zip -d ne/
-	unzip -oj ne_10m_admin_0_map_subunits.zip -d ne/
-	#unzip -oj ne_10m_admin_1_states_provinces.zip -d ne/
-
-	echo "Creating PostGIS extension"
-	echo "CREATE EXTENSION IF NOT EXISTS postgis;" | exec_psql
-	echo "CREATE EXTENSION IF NOT EXISTS postgis_topology;" | exec_psql
-
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne/ne_10m_admin_0_countries.shp public.political | wrap_drop_geometry_commands > ne/political.sql
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne/ne_10m_admin_0_map_units.shp public.political_map_units | wrap_drop_geometry_commands > ne/political_map_units.sql
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne/ne_10m_admin_0_map_subunits.shp public.political_map_subunits | wrap_drop_geometry_commands > ne/political_map_subunits.sql
-	#shp2pgsql -d -D -s 4326 -i -I -W UTF-8 ne/ne_10m_admin_1_states_provinces.shp public.political_states_provinces | wrap_drop_geometry_commands > ne/political_states_provinces.sql
-
-	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS political;" | exec_psql
-	echo "DROP TABLE IF EXISTS political_map_units;" | exec_psql
-	echo "DROP TABLE IF EXISTS political_map_subunits;" | exec_psql
-	echo "DROP TABLE IF EXISTS political_states_provinces;" | exec_psql
-
-	echo "Importing Natural Earth to PostGIS"
-	exec_psql_file ne/political.sql
-	exec_psql_file ne/political_map_units.sql
-	exec_psql_file ne/political_map_subunits.sql
-	#exec_psql_file ne/political_states_provinces.sql
-
-	rm ne_10m_admin_0_countries.zip ne_10m_admin_0_map_units.zip ne_10m_admin_0_map_subunits.zip ne/ -Rf
-
-	echo "SELECT AddGeometryColumn('political', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
-
-	echo "CREATE INDEX political_iso_a3 ON political (iso_a3);" | exec_psql
-
-	echo "Natural Earth import complete"
-	echo
-}
-
-# Note: Marine Regions replaced with the Marine Regions Countries Union polygons.
-function import_marine_regions() {
-	echo "Downloading Marine Regions dataset"
-
-	# EEZ (we're currently on version 10):
-	# Download the Low res version from here: http://www.marineregions.org/downloads.php
-
-	mkdir -p /var/tmp/import
-	cd /var/tmp/import
-	curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2019/04/World_EEZ_v10_20180221.zip
-	mkdir -p eez
-	unzip -oj World_EEZ_v10_20180221.zip -d eez/
-
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 eez/eez_v10.shp public.eez | wrap_drop_geometry_commands > eez/eez.sql
-
-	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS eez;" | exec_psql
-
-	echo "Importing Marine Regions to PostGIS"
-	exec_psql_file eez/eez.sql
-
-	rm World_EEZ_v10_20180221.zip eez/ -Rf
-
-	echo "SELECT AddGeometryColumn('eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
-
-	echo "CREATE INDEX eez_iso_3digit ON eez (iso_ter1);" | exec_psql
-
-	echo "Marine Regions import complete"
-	echo
-}
-
 # Within a bounding box, to mr1 add osmu and remove osmd. To mr2, remove osmu and add osmd.
 function use_osm_border_instead() {
 	bbox=$1
@@ -150,16 +88,16 @@ function use_osm_border_instead() {
 	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;$bbox') AS geom)," \
 		"mru AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmu')," \
 		"mrd AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmd')" \
-		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(ST_UNION(political_eez.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr1;" | exec_psql
+		"UPDATE political SET geom = ST_Multi(ST_Difference(ST_UNION(political.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr1;" | exec_psql
 
 	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;$bbox') AS geom)," \
 		"mru AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmd')," \
 		"mrd AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '$osmu')" \
-		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(ST_UNION(political_eez.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr2;" | exec_psql
+		"UPDATE political SET geom = ST_Multi(ST_Difference(ST_UNION(political.geom, mru.geom), mrd.geom)) FROM mru, mrd WHERE mrgid_eez = $mr2;" | exec_psql
 }
 
-function import_marine_regions_union() {
-	echo "Downloading Marine Regions Land Union dataset"
+function import_political() {
+	echo "Downloading Political (Marine Regions Land Union) dataset"
 
 	# EEZ + land union (we're currently on version 3, which uses EEZ version 11):
 	# Download from here: http://www.marineregions.org/downloads.php
@@ -167,23 +105,23 @@ function import_marine_regions_union() {
 	mkdir -p /var/tmp/import
 	cd /var/tmp/import
 	curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2022/05/EEZ_land_union_v3_202003.zip
-	mkdir -p political_eez
-	unzip -oj EEZ_land_union_v3_202003.zip -d political_eez/
+	mkdir -p political
+	unzip -oj EEZ_land_union_v3_202003.zip -d political/
 
-	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 political_eez/EEZ_Land_v3_202030.shp public.political_eez | wrap_drop_geometry_commands > political_eez/political_eez.sql
+	shp2pgsql -d -D -s 4326 -i -I -W UTF-8 political/EEZ_Land_v3_202030.shp public.political | wrap_drop_geometry_commands > political/political.sql
 
 	echo "Dropping old tables"
-	echo "DROP TABLE IF EXISTS political_eez;" | exec_psql
+	echo "DROP TABLE IF EXISTS political;" | exec_psql
 
 	echo "Importing Marine Regions to PostGIS"
-	exec_psql_file political_eez/political_eez.sql
+	exec_psql_file political/political.sql
 
-	rm EEZ_land_union_v3_202003.zip political_eez/ -Rf
+	rm EEZ_land_union_v3_202003.zip political/ -Rf
 
 	echo "DROP TABLE IF EXISTS osm;" | exec_psql
 
 	cd $START_DIR/osm
-	for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188; do
+	for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188 62269 36989 1650407; do
 		[[ -f $id.xml ]] || curl -Ssfo $id.xml https://www.openstreetmap.org/api/0.6/relation/$id/full
 		ogr2ogr -append -f PostgreSQL "$PGCONN dbname=dev_eez" $id.xml -nln osm -lco GEOMETRY_NAME=geom multipolygons
 	done
@@ -200,86 +138,144 @@ function import_marine_regions_union() {
 
 	# Missing Bouvet Island waters: 260 https://www.openstreetmap.org/relation/2425963
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2425963')" \
-		"UPDATE political_eez SET geom = osm.geom FROM osm WHERE iso_ter1 = 'BVT';" | exec_psql
+		"UPDATE political SET geom = osm.geom FROM osm WHERE iso_ter1 = 'BVT';" | exec_psql
 
 	# China / Taiwan: remove Fukien Province from China and add to Taiwan
 	# 8486 / 8321 / https://www.openstreetmap.org/relation/3777250
 	# https://github.com/gbif/geocode/issues/2
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '3777250')" \
-		"UPDATE political_eez SET geom = ST_Difference(political_eez.geom, osm.geom) FROM osm WHERE mrgid_eez = '8486';" | exec_psql
+		"UPDATE political SET geom = ST_Difference(political.geom, osm.geom) FROM osm WHERE mrgid_eez = '8486';" | exec_psql
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '3777250')" \
-		"UPDATE political_eez SET geom = ST_Union(political_eez.geom, osm.geom) FROM osm WHERE mrgid_eez = '8321';" | exec_psql
+		"UPDATE political SET geom = ST_Union(political.geom, osm.geom) FROM osm WHERE mrgid_eez = '8321';" | exec_psql
 
 	# Serbia / Kosovo
 	# SRB / XKX / https://www.openstreetmap.org/relation/2088990
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2088990')," \
-		"xkx AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'SRB')" \
-		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Kosovo', 'Kosovo', 'XKX', 'XKX', ST_Multi(geom) FROM xkx;" | exec_psql
+		"xkx AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'SRB')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Kosovo', 'Kosovo', 'XKX', 'XKX', ST_Multi(geom) FROM xkx;" | exec_psql
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '2088990')" \
-		"UPDATE political_eez SET geom = ST_Difference(political_eez.geom, osm.geom) FROM osm WHERE iso_ter1 = 'SRB';" | exec_psql
+		"UPDATE political SET geom = ST_Difference(political.geom, osm.geom) FROM osm WHERE iso_ter1 = 'SRB';" | exec_psql
 
 	# China / Hong Kong
 	# CHN / HKG / https://www.openstreetmap.org/relation/913110
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '913110')," \
-		"hkg AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'CHN')" \
-		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Hong Kong', 'Hong Kong', 'HKG', 'HKG', ST_Multi(geom) FROM hkg;" | exec_psql
+		"hkg AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'CHN')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Hong Kong', 'Hong Kong', 'HKG', 'HKG', ST_Multi(geom) FROM hkg;" | exec_psql
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '913110')" \
-		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
-	echo "DELETE FROM political_eez WHERE iso_ter1 = 'HKG' AND ST_NPoints(geom) = 0;" | exec_psql
+		"UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
+	echo "DELETE FROM political WHERE iso_ter1 = 'HKG' AND ST_NPoints(geom) = 0;" | exec_psql
 
 	# China / Macao
 	# CHN / MAC / https://www.openstreetmap.org/relation/1867188
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1867188')," \
-		"mac AS (SELECT ST_Intersection(osm.geom, political_eez.geom) AS geom FROM political_eez, osm WHERE iso_ter1 = 'CHN')" \
-		"INSERT INTO political_eez (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Macao', 'Macao', 'MAC', 'MAC', ST_Multi(geom) FROM mac;" | exec_psql
+		"mac AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'CHN')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Macao', 'Macao', 'MAC', 'MAC', ST_Multi(geom) FROM mac;" | exec_psql
 	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1867188')" \
-		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
-	echo "DELETE FROM political_eez WHERE iso_ter1 = 'MAC' AND ST_NPoints(geom) = 0;" | exec_psql
+		"UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'CHN';" | exec_psql
+	echo "DELETE FROM political WHERE iso_ter1 = 'MAC' AND ST_NPoints(geom) = 0;" | exec_psql
 
 	# Netherlands / Belgium water bit
 	# NLD / BEL / https://www.openstreetmap.org/relation/52411
 	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((4.15 51.008,4.15 51.408,4.439 51.408,4.439 51.008,4.15 51.008))') AS geom)," \
 		"osm AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '52411')" \
-		"UPDATE political_eez SET geom = ST_Union(political_eez.geom, osm.geom) FROM osm WHERE iso_ter1 = 'BEL';" | exec_psql
+		"UPDATE political SET geom = ST_Union(political.geom, osm.geom) FROM osm WHERE iso_ter1 = 'BEL';" | exec_psql
 	echo "WITH bbox AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON((4.15 51.008,4.15 51.408,4.439 51.408,4.439 51.008,4.15 51.008))') AS geom)," \
 		"osm AS (SELECT ST_Intersection(osm.geom, bbox.geom) AS geom FROM bbox, osm WHERE osm_id = '52411')" \
-		"UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'NLD';" | exec_psql
+		"UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'NLD';" | exec_psql
+
+	# United Kingdom / Isle of Man
+	# GRB / IMN / https://www.openstreetmap.org/relation/62269/full
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '62269')," \
+		"imn AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'GBR')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Isle of Man', 'Isle of Man', 'IMN', 'IMN', ST_Multi(geom) FROM imn WHERE NOT ST_IsEmpty(geom);" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '62269')" \
+		"UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, osm.geom)) FROM osm WHERE iso_ter1 = 'GBR';" | exec_psql
+
+	# Italy / Vatican City
+	# ITA / VCT / https://www.openstreetmap.org/relation/36989
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '36989')," \
+		"vct AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'ITA')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Vatican City', 'Vatican City', 'VCT', 'VCT', ST_Multi(geom) FROM vct;" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '36989')" \
+		"UPDATE political SET geom = ST_Difference(political.geom, osm.geom) FROM osm WHERE iso_ter1 = 'ITA';" | exec_psql
+
+	# Finland / Åland Islands
+	# FIN / ALA / https://www.openstreetmap.org/relation/1650407
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1650407')," \
+		"ala AS (SELECT ST_Intersection(osm.geom, political.geom) AS geom FROM political, osm WHERE iso_ter1 = 'FIN')" \
+		"INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Åland Islands', 'Åland Islands', 'ALA', 'ALA', ST_Multi(geom) FROM ala;" | exec_psql
+	echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1650407')" \
+		"UPDATE political SET geom = ST_Difference(political.geom, osm.geom) FROM osm WHERE iso_ter1 = 'FIN';" | exec_psql
 
 	# Remove Antarctica EEZ, based on advice from VLIZ etc (emails with Tim Hirsch, 2019-02-19).
-	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Atlantic Ocean';" | exec_psql
-	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Southern Ocean';" | exec_psql
-	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Pacific Ocean';" | exec_psql
-	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(political_eez.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Indian Ocean';" | exec_psql
-	echo "UPDATE political_eez SET geom = ST_Multi(ST_Difference(geom, ST_MakeEnvelope(-67.0, -60.1, -35.0, -59.9, 4326))) WHERE iso_ter1 = 'ATA';" | exec_psql
+	echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Atlantic Ocean';" | exec_psql
+	echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Southern Ocean';" | exec_psql
+	echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Pacific Ocean';" | exec_psql
+	echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Indian Ocean';" | exec_psql
+	echo "UPDATE political SET geom = ST_Multi(ST_Difference(geom, ST_MakeEnvelope(-67.0, -60.1, -35.0, -59.9, 4326))) WHERE iso_ter1 = 'ATA';" | exec_psql
+	# And add the sliver that's missing from the bottom
+	echo "UPDATE political SET geom = ST_Multi(ST_Union(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326))) WHERE iso_ter1 = 'ATA';" | exec_psql
 
 	# Remove Overlapping Claim South China Sea, MR DB doesn't mark a sovereign claim here (only case of this).
-	echo "DELETE from political_eez WHERE mrgid_eez = 49003;" | exec_psql
+	echo "DELETE from political WHERE mrgid_eez = 49003;" | exec_psql
 
 	# Delete the Joint Regime Areas that completely overlap an ordinary EEZ.
-	echo "DELETE FROM political_eez WHERE mrgid_eez IN(48961, 21795, 48970, 48968, 50167, 48974, 48969, 48973, 48975, 48976, 48962, 48964, 48966, 48967);" | exec_psql
+	echo "DELETE FROM political WHERE mrgid_eez IN(48961, 21795, 48970, 48968, 50167, 48974, 48969, 48973, 48975, 48976, 48962, 48964, 48966, 48967);" | exec_psql
 
 	# Add ISO codes where they are missing
-	echo "UPDATE political_eez SET iso_ter1 = iso_sov1 WHERE iso_ter1 IS NULL;" | exec_psql
-	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter2 IS NULL;" | exec_psql
-	echo "UPDATE political_eez SET iso_ter3 = iso_sov3 WHERE iso_ter3 IS NULL;" | exec_psql
+	echo "UPDATE political SET iso_ter1 = iso_sov1 WHERE iso_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political SET iso_ter2 = iso_sov2 WHERE iso_ter2 IS NULL;" | exec_psql
+	echo "UPDATE political SET iso_ter3 = iso_sov3 WHERE iso_ter3 IS NULL;" | exec_psql
 
 	# Add mrgid_ter1 codes where these are oddly missing
-	echo "UPDATE political_eez SET mrgid_ter1 = 17589 WHERE iso_ter1 = 'MAC' AND mrgid_ter1 IS NULL;" | exec_psql
-	echo "UPDATE political_eez SET mrgid_ter1 = 8759  WHERE iso_ter1 = 'HKG' AND mrgid_ter1 IS NULL;" | exec_psql
-	echo "UPDATE political_eez SET mrgid_ter1 = 48519 WHERE iso_ter1 = 'XKX' AND mrgid_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political SET mrgid_ter1 = 17589 WHERE iso_ter1 = 'MAC' AND mrgid_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political SET mrgid_ter1 = 8759  WHERE iso_ter1 = 'HKG' AND mrgid_ter1 IS NULL;" | exec_psql
+	echo "UPDATE political SET mrgid_ter1 = 48519 WHERE iso_ter1 = 'XKX' AND mrgid_ter1 IS NULL;" | exec_psql
+
+	# Set ISO code for Chagos Archiplago, consistent with ISO 3166-1.
+	echo "UPDATE political SET iso_ter1 = 'IOT', iso_ter2 = 'MUS' WHERE mrgid_eez = 62589;" | exec_psql
 
 	# Use sovereign codes rather than territory codes for disputed territories
-	echo "UPDATE political_eez SET iso_ter2 = iso_sov2 WHERE iso_ter1 IN ('FLK', 'SGS', 'MYT', 'ESH');" | exec_psql
+	echo "UPDATE political SET iso_ter2 = iso_sov2 WHERE iso_ter1 IN ('FLK', 'SGS', 'MYT', 'ESH');" | exec_psql
 
 	# France considers the Tromelin Island part of the French Southern and Antarctic Lands
-	echo "UPDATE political_eez SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48946;" | exec_psql
+	echo "UPDATE political SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48946;" | exec_psql
 	# And the Matthew and Hunter Islands part of New Caledonia
-	echo "UPDATE political_eez SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48948;" | exec_psql
+	echo "UPDATE political SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48948;" | exec_psql
 
-	echo "SELECT AddGeometryColumn('political_eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
-	echo "UPDATE political_eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
+	# Note the areas having overlapping claims of some form, particularly these which include land:
+	#
+	# SELECT DISTINCT "union", iso_ter1, iso_ter2, iso_ter3 FROM political, esri_countries WHERE iso_ter2 IS NOT NULL AND political.geom && esri_countries.geom AND ST_Intersects(political.geom, esri_countries.geom);
+	#                            union                           │ iso_ter1 │ iso_ter2 │ iso_ter3
+	# ───────────────────────────────────────────────────────────┼──────────┼──────────┼──────────
+	#  Abu musa, Greater and Lesser Tunb                         │ ARE      │ IRN      │ ␀
+	#  Alhucemas Islands                                         │ ESP      │ MAR      │ ␀
+	#  Ceuta                                                     │ ESP      │ MAR      │ ␀
+	#  Chafarinas Islands                                        │ ESP      │ MAR      │ ␀
+	#  Doumeira Islands                                          │ ERI      │ DJI      │ ␀
+	#  Falkland Islands                                          │ FLK      │ ARG      │ ␀
+	#  Gibraltar                                                 │ GIB      │ ESP      │ ␀
+	#  Glorioso Islands                                          │ MDG      │ ATF      │ ␀
+	#  Hala'ib Triangle                                          │ SDN      │ EGY      │ ␀
+	#  Kuril Islands                                             │ JPN      │ RUS      │ ␀
+	#  Matthew and Hunter Islands                                │ ATF      │ VUT      │ ␀
+	#  Mayotte                                                   │ MYT      │ COM      │ ␀
+	#  Melilla                                                   │ ESP      │ MAR      │ ␀
+	#  Navassa Island                                            │ HTI      │ USA      │ JAM
+	#  Overlapping claim: Kenya / Somalia                        │ KEN      │ SOM      │ ␀
+	#  Palestine                                                 │ PSE      │ ISR      │ ␀
+	#  Perejil Island                                            │ ESP      │ MAR      │ ␀
+	#  Peñón de Vélez de la Gomera                               │ ESP      │ MAR      │ ␀
+	#  Protected Zone established under the Torres Strait Treaty │ PNG      │ AUS      │ ␀
+	#  Senkaku Islands                                           │ TWN      │ JPN      │ CHN
+	#  South Georgia and the South Sandwich Islands              │ SGS      │ ARG      │ ␀
+	#  Tromelin Island                                           │ ATF      │ MDG      │ MUS
+	#  Western Sahara                                            │ ESH      │ MAR      │ ␀
 
-	echo "CREATE INDEX political_eez_iso_3digit ON political_eez (iso_ter1);" | exec_psql
+	echo "SELECT AddGeometryColumn('political', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+	echo "UPDATE political SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	echo "CREATE INDEX political_eez_iso_3digit ON political (iso_ter1);" | exec_psql
 
 	echo "Marine Regions Land Union import complete"
 	echo
@@ -644,83 +640,6 @@ function import_continents() {
 	echo
 }
 
-function align_natural_earth() {
-	# Move Crimea to Ukraine
-	# 1. Add Crimea to Ukraine
-	echo "UPDATE political SET geom = ST_Union(geom, (SELECT geom FROM political_map_subunits WHERE subunit = 'Crimea')) WHERE sovereignt = 'Ukraine';" | exec_psql;
-	# 2. Assemble a Russia without Crimea from the three other parts
-	echo "UPDATE political SET geom =                (SELECT geom FROM political_map_subunits WHERE gid =  52)  WHERE sovereignt = 'Russia';" | exec_psql;
-	echo "UPDATE political SET geom = ST_Union(geom, (SELECT geom FROM political_map_subunits WHERE gid =  57)) WHERE sovereignt = 'Russia';" | exec_psql;
-	echo "UPDATE political SET geom = ST_Union(geom, (SELECT geom FROM political_map_subunits WHERE gid = 156)) WHERE sovereignt = 'Russia';" | exec_psql;
-
-	# Import Svalbard, Jan Mayen and Bouvet Island, which are missing from a supposedly-with-territories Norway.
-	#
-	# Also import Australian territories as pieces, otherwise Christmas Island is joined to the Cocos & Keeling Islands without either having an ISO code.
-	#
-	# And the Netherlands, for Aruba (AW), Curaçao (CW), Bonaire, Sint Eustatius, and Saba (BQ), Sint Maarten (SX).
-	#
-	# Import France, so the overseas territories retain their ISO codes.
-	echo "DROP TABLE IF EXISTS splitup;" | exec_psql
-	echo "DELETE FROM political WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'New Zealand');" | exec_psql
-	echo "CREATE TABLE splitup AS SELECT * FROM political_map_units WHERE sovereignt IN('Norway', 'Australia', 'Netherlands', 'France', 'New Zealand');" | exec_psql
-	echo "UPDATE splitup SET gid = gid + (SELECT MAX(gid) FROM political);" | exec_psql
-	echo "UPDATE splitup SET iso_a2 = 'SJ', iso_a3 = 'SJM' WHERE geounit = 'Jan Mayen';" | exec_psql
-	echo "UPDATE splitup SET iso_a2 = 'NL', iso_a3 = 'NLD' WHERE geounit = 'Netherlands';" | exec_psql
-	echo "UPDATE splitup SET iso_a2 = 'FR', iso_a3 = 'FRA' WHERE geounit = 'Clipperton Island';" | exec_psql
-	echo "SELECT sovereignt, admin, geounit, iso_a2 FROM splitup ORDER BY sovereignt, admin, geounit;" | exec_psql
-	echo "ALTER TABLE political ALTER COLUMN featurecla TYPE CHARACTER VARYING(16);" | exec_psql
-	echo "INSERT INTO political (SELECT * FROM splitup);" | exec_psql
-	echo "DROP TABLE splitup;" | exec_psql
-
-	# Change Guantanamo, Northern Cyprus, Baikonur, Somaliland, Kosovo:
-	# SELECT * FROM political WHERE adm0_a3 IN('USG','CNM','CYN','ESB','WSB','FRA','KAB','SAH','SOL');
-	echo "UPDATE political SET iso_a2 = 'CU', name = 'Cuba' WHERE adm0_a3 = 'USG';" | exec_psql
-	echo "UPDATE political SET iso_a2 = 'CY', name = 'Cyprus' WHERE adm0_a3 IN('CNM','CYN','ESB','WSB');" | exec_psql
-	echo "UPDATE political SET iso_a2 = 'KZ', name = 'Kazakhstan' WHERE adm0_a3 = 'KAB';" | exec_psql
-	echo "UPDATE political SET iso_a2 = 'SO', name = 'Somalia' WHERE adm0_a3 = 'SOL';" | exec_psql
-	echo "UPDATE political SET iso_a2 = 'ZZ' WHERE iso_a2 = '-99';" | exec_psql
-
-	echo "DROP TABLE IF EXISTS iso_map;" | exec_psql
-	echo "CREATE TABLE iso_map AS (SELECT iso_a2 AS iso2, iso_a3 AS iso3, STRING_AGG(name, ',') FROM political WHERE iso_a3 != '-99' GROUP BY iso_a2, iso_a3);" | exec_psql
-	echo "INSERT INTO iso_map VALUES('XK', 'XKX', 'Kosovo');" | exec_psql
-}
-
-function align_marine_regions() {
-	# Ascension Island no longer has its own code
-	echo "UPDATE eez SET iso_ter1 = 'SHN' WHERE iso_ter1 = 'ASC';" | exec_psql
-	# Clipperton Island doesn't have its own code
-	echo "UPDATE eez SET iso_ter1 = 'FRA' WHERE iso_ter1 = 'CPT';" | exec_psql
-	# Tristan da Cunha no longer has its own code
-	echo "UPDATE eez SET iso_ter1 = 'SHN' WHERE iso_ter1 = 'TAA';" | exec_psql
-	# Consistent with land in Natural Earth, except for a tiny sliver
-	# TODO: Is this reasonable, or should we change the Natural Earth data instead?
-	#       It's not clear.  Leaving as is for the moment, although note that ISO-3166
-	#       defines region codes MA-10, MA-11 and MA-12, provinces in Western Sahara.
-	#echo "UPDATE eez SET iso_ter1 = 'MAR' WHERE iso_ter1 = 'ESH';" | exec_psql
-
-	# Remove Antarctica EEZ, based on advice from VLIZ etc.
-	echo "DELETE FROM eez WHERE iso_ter1 = 'ATA';" | exec_psql
-
-	# Remove Overlapping Claim South China Sea, MR DB doesn't mark a sovereign claim here (only case of this).
-	echo "DELETE from eez WHERE mrgid = 49003;" | exec_psql
-
-	# Delete the Joint Regime Areas that completely overlap an ordinary EEZ.
-	echo "DELETE FROM eez WHERE mrgid IN(48961, 21795, 48970, 48968, 50167, 48974, 48969, 48973, 48975, 48976, 48962, 48964, 48966, 48967);" | exec_psql
-
-	# France considers the Glorioso Islands part of the French Southern and Antarctic Lands
-	# http://www.outre-mer.gouv.fr/terres-australes-et-antarctiques-francaises-les-taaf
-	echo "UPDATE eez SET iso_ter2 = 'ATF' WHERE geoname = 'Overlapping claim Glorioso Islands: France / Madagascar';" | exec_psql
-
-	# Other observations:
-	# - MRGID 50167 has the name "Joint regime area Croatia / Slovenia", but only Croatia is in the record, "ter2" is empty.
-	#   http://www.marineregions.org/eezdetails.php?mrgid=50167&zone=eez
-	#   In any case, it was deleted above.
-
-	# - MRGID 5692 has the name "Slovenian Exclusive Economic Zone", but has a duplicate "ter2" of Slovenia.
-	#   http://www.marineregions.org/eezdetails.php?mrgid=5692&zone=eez
-	#   This doesn't matter for our processing.
-}
-
 function create_cache() {
 
 	exec_psql <<EOF
@@ -749,14 +668,11 @@ if [[ -e import-complete ]]; then
 	echo "Data already imported"
 else
 	echo "Importing data"
+	import_iso_map
 	create_cache
 	import_centroids
-	import_natural_earth
-	align_natural_earth
-	import_marine_regions
-	align_marine_regions
 	import_iho
-	import_marine_regions_union
+	import_political
 	import_gadm
 	import_wgsrpd
 	import_continents

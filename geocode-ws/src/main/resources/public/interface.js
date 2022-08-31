@@ -39,6 +39,8 @@ var tileGridBitmapCache = new ol.tilegrid.TileGrid({
 });
 
 var layers = [];
+//const urlBase = 'https://api.gbif-dev.org/v1/geocode';
+const urlBase = '..';
 const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
 const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
 
@@ -137,7 +139,7 @@ function countryStyle() {
 		var colour = countryColour(isocode);
 		var invertColour = oppositeCountryColour(isocode);
 
-		if (feature.get('type') == 'PoliticalEEZ') {
+		if (feature.get('type') == 'Political') {
 			pattern = makePatternB(colour);
 		} else if (feature.get('type') == 'GADM3' || feature.get('type') == 'IHO') {
 			pattern = makePatternH(colour);
@@ -232,26 +234,12 @@ layers['bitmapCache'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGridBitmapCache,
-		url: '../bitmap',
+		url: urlBase + '/bitmap',
 		tilePixelRatio: 1,
 		wrapX: false
 	}),
 	opacity: 0.5,
 	visible: false
-});
-
-layers['political_eez'] = new ol.layer.VectorTile({
-	title: 'PoliticalEEZ',
-	renderMode: 'image',
-	source: new ol.source.VectorTile({
-		projection: 'EPSG:4326',
-		format: new ol.format.MVT(),
-		tileGrid: tileGrid,
-		tilePixelRatio: 8,
-		url: '../tile/political_eez/{z}/{x}/{y}.mvt',
-		wrapX: false,
-	}),
-	style: countryStyle()
 });
 
 layers['political'] = new ol.layer.VectorTile({
@@ -262,11 +250,11 @@ layers['political'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/political/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/political/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
-	visible: false
+	visible: true
 });
 
 layers['continent'] = new ol.layer.VectorTile({
@@ -277,22 +265,7 @@ layers['continent'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/continent/{z}/{x}/{y}.mvt',
-		wrapX: false,
-	}),
-	style: countryStyle(),
-	visible: false
-});
-
-layers['eez'] = new ol.layer.VectorTile({
-	title: 'EEZ',
-	renderMode: 'image',
-	source: new ol.source.VectorTile({
-		projection: 'EPSG:4326',
-		format: new ol.format.MVT(),
-		tileGrid: tileGrid,
-		tilePixelRatio: 8,
-		url: '../tile/eez/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/continent/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -307,7 +280,7 @@ layers['gadm5'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/gadm5/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/gadm5/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -322,7 +295,7 @@ layers['gadm4'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/gadm4/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/gadm4/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -337,7 +310,7 @@ layers['gadm3'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/gadm3/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/gadm3/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -352,7 +325,7 @@ layers['gadm2'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/gadm2/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/gadm2/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -367,7 +340,7 @@ layers['gadm1'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/gadm1/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/gadm1/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -382,7 +355,7 @@ layers['iho'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/iho/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/iho/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -397,7 +370,7 @@ layers['wgsrpd'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/wgsrpd/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/wgsrpd/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -412,7 +385,7 @@ layers['centroids'] = new ol.layer.VectorTile({
 		format: new ol.format.MVT(),
 		tileGrid: tileGrid,
 		tilePixelRatio: 8,
-		url: '../tile/centroids/{z}/{x}/{y}.mvt',
+		url: urlBase + '/tile/centroids/{z}/{x}/{y}.mvt',
 		wrapX: false,
 	}),
 	style: countryStyle(),
@@ -482,10 +455,8 @@ var map = new ol.Map({
 				layers['gadm3'],
 				layers['gadm2'],
 				layers['gadm1'],
-				layers['eez'],
 				layers['continent'],
-				layers['political'],
-				layers['political_eez']
+				layers['political']
 			]
 		}),
 		vector
@@ -545,7 +516,7 @@ function geocode(coordinate) {
 	source.addFeature(new ol.Feature(circle));
 
 	var template = 'lat={y}&lng={x}';
-	var url = "../reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertaintyDegrees="+uncertaintyDegrees_input.value;
+	var url = urlBase + "/reverse?"+ol.coordinate.format(coordinate, template, 5)+"&uncertaintyDegrees="+uncertaintyDegrees_input.value;
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {

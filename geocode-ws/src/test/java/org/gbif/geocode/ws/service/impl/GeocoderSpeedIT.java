@@ -46,8 +46,8 @@ public class GeocoderSpeedIT {
   @Disabled
   public void speedTestRandomQueries() {
     // PostGIS speeds (localhost PostGIS, Matt's desktop)
-    // Political:   10000 queries in   8 seconds;   1250 per second
-    // EEZ:         10000 queries in  34 seconds;    294 per second
+    // Political:   10000 queries in   8 seconds;   1250 per second (obsolete layer)
+    // EEZ:         10000 queries in  34 seconds;    294 per second (obsolete layer)
     // GADM:       100000 queries in 112 seconds;    892 per second
     // Continent:  100000 queries in  10 seconds;  10000 per second
     // IHO:        100000 queries in  74 seconds;   1351 per second
@@ -56,9 +56,9 @@ public class GeocoderSpeedIT {
     int count = 10_000_000;
     List<String> testLayers = Arrays.asList(
                       // Speeds on Matt's desktop.
-      "PoliticalEEZ", // PoliticalEEZ: 10000000 queries in 13 seconds; 769230.7 per second
       "Political",    // Political:    10000000 queries in 13 seconds; 769230.7 per second
-      "EEZ",          // EEZ:          10000000 queries in 15 seconds; 666666.6 per second
+      //"OldPolitical",  OldPolitical: 10000000 queries in 13 seconds; 769230.7 per second
+      //"OldEEZ",        OldEEZ:       10000000 queries in 15 seconds; 666666.6 per second
       "GADM",         // GADM:         10000000 queries in 48 seconds; 208333.3 per second
       "Continent",    // Continent:    10000000 queries in 15 seconds; 666666.6 per second
       "IHO",          // IHO:          10000000 queries in 15 seconds; 666666.6 per second

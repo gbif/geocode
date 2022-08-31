@@ -67,7 +67,7 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
         boolean additionalHit = false;
         for (Location e : locations) {
           // We may get multiple results for a MultiPolygon; return only the nearest hit.
-          // We may also get multiple genuine results, e.g. for GADM and EEZ.
+          // We may also get multiple genuine results, e.g. for GADM and Political.
           if (Objects.equals(e.getId(), l.getId())
             && Objects.equals(e.getIsoCountryCode2Digit(), l.getIsoCountryCode2Digit())) {
             additionalHit = true;

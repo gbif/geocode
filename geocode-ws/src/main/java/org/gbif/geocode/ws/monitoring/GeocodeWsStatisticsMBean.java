@@ -15,8 +15,6 @@ public interface GeocodeWsStatisticsMBean {
 
   long getTotalPoliticalHits();
 
-  long getTotalEezHits();
-
   long getTotalNoResults();
 
   long getWithin5KmHits();

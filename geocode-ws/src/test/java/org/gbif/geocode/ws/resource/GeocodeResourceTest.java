@@ -45,7 +45,7 @@ public class GeocodeResourceTest {
     GeocodeService geocodeService = new GeocodeResource(geocoder, null, statistics, null);
 
     List<String> defaultLayers = Arrays.asList(
-      "PoliticalEEZ",
+      "Political",
       "Centroids",
       "Continent",
       "GADM",

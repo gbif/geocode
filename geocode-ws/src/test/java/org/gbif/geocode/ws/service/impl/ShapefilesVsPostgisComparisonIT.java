@@ -113,7 +113,6 @@ public class ShapefilesVsPostgisComparisonIT {
   public void compareVariousQueries() {
     layers.clear();
     layers.add("Political");
-    layers.add("EEZ");
 
     List<double[]> points = new ArrayList<>();
     points.add(new double[]{1.041618756336291, 140.76331408205158});
@@ -168,9 +167,7 @@ public class ShapefilesVsPostgisComparisonIT {
     int count = 10_000;
 
     layers.clear();
-    layers.add("PoliticalEEZ");
-    //layers.add("Political");
-    //layers.add("EEZ");
+    layers.add("Political");
     layers.add("Continent");
     layers.add("GADM3210");
     layers.add("IHO");

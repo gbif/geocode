@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.8 (426543 spike-07.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <node id="247643921" visible="true" version="3" changeset="2012818" timestamp="2009-08-02T12:11:29Z" user="Daeron" uid="38239" lat="59.4576178" lon="20.3839584">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="126"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247670033" visible="true" version="3" changeset="2012818" timestamp="2009-08-02T12:11:27Z" user="Daeron" uid="38239" lat="59.4660819" lon="20.2843364">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="127"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247670034" visible="true" version="3" changeset="2012818" timestamp="2009-08-02T12:11:27Z" user="Daeron" uid="38239" lat="59.5911113" lon="19.9945088">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="128"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247671059" visible="true" version="5" changeset="13957310" timestamp="2012-11-21T11:20:21Z" user="KonTur" uid="43262" lat="59.5950633" lon="19.9406444">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="129"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247671060" visible="true" version="5" changeset="13957310" timestamp="2012-11-21T11:20:21Z" user="KonTur" uid="43262" lat="59.7916833" lon="19.6582690">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="130"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247671061" visible="true" version="4" changeset="3428148" timestamp="2009-12-22T15:43:30Z" user="Markus Olsson" uid="202335" lat="60.1916902" lon="19.0832098">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="131"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247671062" visible="true" version="6" changeset="3428148" timestamp="2009-12-22T15:43:30Z" user="Markus Olsson" uid="202335" lat="60.2352424" lon="19.1027050">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="132"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247673123" visible="true" version="4" changeset="2012818" timestamp="2009-08-02T12:11:26Z" user="Daeron" uid="38239" lat="60.3749161" lon="19.1611728">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="134"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247673124" visible="true" version="4" changeset="2012818" timestamp="2009-08-02T12:11:26Z" user="Daeron" uid="38239" lat="60.6115101" lon="19.2202109">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="135"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247676760" visible="true" version="6" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.6144588" lon="19.2337471">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="136"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247678587" visible="true" version="13" changeset="2012818" timestamp="2009-08-02T12:11:27Z" user="Daeron" uid="38239" lat="60.6943753" lon="19.6355526">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="138"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="247678588" visible="true" version="12" changeset="2012818" timestamp="2009-08-02T12:11:28Z" user="Daeron" uid="38239" lat="60.7275545" lon="20.0251664">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="139"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="249423791" visible="true" version="29" changeset="124508545" timestamp="2022-08-05T07:20:10Z" user="LakatosVL" uid="8775772" lat="60.1024230" lon="19.9412600">
+  <tag k="alt_name" v="Maarianhamina"/>
+  <tag k="name" v="Mariehamn"/>
+  <tag k="name:et" v="Maarianhamina"/>
+  <tag k="name:fi" v="Maarianhamina"/>
+  <tag k="name:is" v="Maríuhöfn"/>
+  <tag k="name:la" v="Portus Mariae"/>
+  <tag k="name:lt" v="Marianhamina"/>
+  <tag k="name:mk" v="Мариехамн"/>
+  <tag k="name:ru" v="Мариехамн"/>
+  <tag k="name:sv" v="Mariehamn"/>
+  <tag k="name:zh" v="瑪麗港"/>
+  <tag k="place" v="town"/>
+  <tag k="population" v="11709"/>
+  <tag k="population:date" v="2021-01"/>
+  <tag k="source:population" v="Tilastokeskus"/>
+  <tag k="website" v="https://www.mariehamn.ax/"/>
+  <tag k="wikidata" v="Q48329"/>
+  <tag k="wikipedia" v="en:Mariehamn"/>
+ </node>
+ <node id="283416903" visible="true" version="6" changeset="72552829" timestamp="2019-07-23T11:27:32Z" user="tesp" uid="5441080" lat="60.3013760" lon="19.1323777"/>
+ <node id="283581116" visible="true" version="6" changeset="2051390" timestamp="2009-08-06T00:26:29Z" user="Daeron" uid="38239" lat="60.3017263" lon="19.1325068"/>
+ <node id="283581499" visible="true" version="6" changeset="72140106" timestamp="2019-07-11T14:52:20Z" user="Essin" uid="438299" lat="60.3006824" lon="19.1310734"/>
+ <node id="283581500" visible="true" version="6" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3013735" lon="19.1315618"/>
+ <node id="283581502" visible="true" version="5" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3010314" lon="19.1336774"/>
+ <node id="283581503" visible="true" version="7" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3012504" lon="19.1323314"/>
+ <node id="283581581" visible="true" version="5" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3005146" lon="19.1311211"/>
+ <node id="283581582" visible="true" version="5" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3005219" lon="19.1328743"/>
+ <node id="283581598" visible="true" version="4" changeset="24866187" timestamp="2014-08-19T18:04:35Z" user="pkoby" uid="999995" lat="60.3007014" lon="19.1321005"/>
+ <node id="313547032" visible="true" version="4" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.7165812" lon="19.8947807"/>
+ <node id="313547033" visible="true" version="5" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.7620138" lon="20.1061431"/>
+ <node id="313547034" visible="true" version="4" changeset="12864129" timestamp="2012-08-26T10:07:43Z" user="Pikari" uid="137246" lat="60.8025689" lon="20.2018026"/>
+ <node id="313547035" visible="true" version="4" changeset="12864129" timestamp="2012-08-26T10:07:43Z" user="Pikari" uid="137246" lat="60.8440587" lon="20.3001002"/>
+ <node id="313547036" visible="true" version="4" changeset="12864129" timestamp="2012-08-26T10:07:43Z" user="Pikari" uid="137246" lat="60.8766500" lon="20.3775366"/>
+ <node id="313547189" visible="true" version="4" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.7083873" lon="19.7978092"/>
+ <node id="342466955" visible="true" version="1" changeset="236334" timestamp="2009-02-07T00:12:07Z" user="Daeron" uid="38239" lat="59.4973827" lon="20.2118795"/>
+ <node id="342466960" visible="true" version="1" changeset="236334" timestamp="2009-02-07T00:12:07Z" user="Daeron" uid="38239" lat="59.5286546" lon="20.1394226"/>
+ <node id="342466965" visible="true" version="1" changeset="236334" timestamp="2009-02-07T00:12:07Z" user="Daeron" uid="38239" lat="59.5598974" lon="20.0669657"/>
+ <node id="342466971" visible="true" version="2" changeset="3428148" timestamp="2009-12-22T15:43:28Z" user="Markus Olsson" uid="202335" lat="59.6344787" lon="19.8841854"/>
+ <node id="342466975" visible="true" version="2" changeset="3428148" timestamp="2009-12-22T15:43:28Z" user="Markus Olsson" uid="202335" lat="59.6738513" lon="19.8277147"/>
+ <node id="342466981" visible="true" version="2" changeset="3428148" timestamp="2009-12-22T15:43:28Z" user="Markus Olsson" uid="202335" lat="59.7131777" lon="19.7712441"/>
+ <node id="342466986" visible="true" version="2" changeset="3428148" timestamp="2009-12-22T15:43:29Z" user="Markus Olsson" uid="202335" lat="59.7524580" lon="19.7147734"/>
+ <node id="342466991" visible="true" version="3" changeset="3428148" timestamp="2009-12-22T15:43:29Z" user="Markus Olsson" uid="202335" lat="59.8419566" lon="19.5864162"/>
+ <node id="342466996" visible="true" version="3" changeset="3428148" timestamp="2009-12-22T15:43:29Z" user="Markus Olsson" uid="202335" lat="59.8921452" lon="19.5145296"/>
+ <node id="342467003" visible="true" version="4" changeset="13955394" timestamp="2012-11-21T08:39:50Z" user="KonTur" uid="43262" lat="59.9563910" lon="19.4234234"/>
+ <node id="342467011" visible="true" version="4" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="59.9927103" lon="19.3716341"/>
+ <node id="342467019" visible="true" version="5" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.0248582" lon="19.3252340"/>
+ <node id="342467026" visible="true" version="4" changeset="13955394" timestamp="2012-11-21T08:39:50Z" user="KonTur" uid="43262" lat="60.0806421" lon="19.2447863"/>
+ <node id="342467031" visible="true" version="3" changeset="3428148" timestamp="2009-12-22T15:43:30Z" user="Markus Olsson" uid="202335" lat="60.1419546" lon="19.1550964"/>
+ <node id="342468777" visible="true" version="4" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.2367044" lon="19.1049066"/>
+ <node id="358318859" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:48Z" user="alv" uid="4660" lat="59.4546854" lon="20.3339060"/>
+ <node id="358318861" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:48Z" user="alv" uid="4660" lat="59.4587339" lon="20.3069034"/>
+ <node id="358318862" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:48Z" user="alv" uid="4660" lat="59.4545230" lon="20.3598353"/>
+ <node id="358318863" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:48Z" user="alv" uid="4660" lat="59.4562679" lon="20.3198411"/>
+ <node id="358318864" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:48Z" user="alv" uid="4660" lat="59.4541578" lon="20.3471496"/>
+ <node id="358318865" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:49Z" user="alv" uid="4660" lat="59.4620801" lon="20.2949231"/>
+ <node id="358318867" visible="true" version="1" changeset="775619" timestamp="2009-03-10T08:35:49Z" user="alv" uid="4660" lat="59.4557342" lon="20.3724113"/>
+ <node id="358326344" visible="true" version="2" changeset="2012818" timestamp="2009-08-02T12:11:27Z" user="Daeron" uid="38239" lat="60.6811389" lon="19.5455668">
+  <tag k="description" v="Suomen aluemeren ulkorajan sijainnin ilmaiseva piste."/>
+  <tag k="note" v="This point should not be moved by hand. It represents a corner of sea border as defined in the official list of corners, valid for 1995 to 2024."/>
+  <tag k="ref" v="137"/>
+  <tag k="source" v="law"/>
+  <tag k="source:url" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </node>
+ <node id="358326345" visible="true" version="3" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.6129110" lon="19.2266918"/>
+ <node id="358326882" visible="true" version="3" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.6896550" lon="19.5940557"/>
+ <node id="454188107" visible="true" version="2" changeset="18778237" timestamp="2013-11-08T08:37:11Z" user="Pikari" uid="137246" lat="60.6860791" lon="19.5709930"/>
+ <node id="454188108" visible="true" version="1" changeset="2012286" timestamp="2009-08-02T11:22:53Z" user="Daeron" uid="38239" lat="60.4342265" lon="19.1759323"/>
+ <node id="454188110" visible="true" version="1" changeset="2012286" timestamp="2009-08-02T11:22:53Z" user="Daeron" uid="38239" lat="60.4934289" lon="19.1906919"/>
+ <node id="454188113" visible="true" version="1" changeset="2012286" timestamp="2009-08-02T11:22:53Z" user="Daeron" uid="38239" lat="60.5525234" lon="19.2054514"/>
+ <node id="506518431" visible="true" version="19" changeset="102344997" timestamp="2021-04-05T15:46:07Z" user="GBAB" uid="3335899" lat="60.2166218" lon="19.9438638">
+  <tag k="is_in" v="Finland"/>
+  <tag k="is_in:continent" v="Europe"/>
+  <tag k="ISO3166-1" v="AX"/>
+  <tag k="ISO3166-1:alpha2" v="AX"/>
+  <tag k="ISO3166-1:alpha3" v="ALA"/>
+  <tag k="ISO3166-1:numeric" v="248"/>
+  <tag k="name" v="Åland"/>
+  <tag k="name:de" v="Åland"/>
+  <tag k="name:en" v="Åland Islands"/>
+  <tag k="name:et" v="Ahvenamaa"/>
+  <tag k="name:fi" v="Ahvenanmaa"/>
+  <tag k="name:fr" v="Åland"/>
+  <tag k="name:hr" v="Ålandsko otočje"/>
+  <tag k="name:hu" v="Åland-szigetek"/>
+  <tag k="name:is" v="Álandseyjar"/>
+  <tag k="name:it" v="Isole Åland"/>
+  <tag k="name:ru" v="Аландские острова"/>
+  <tag k="name:sl" v="Ålandsko otočje"/>
+  <tag k="name:sv" v="Åland"/>
+  <tag k="name:uz" v="Aland orollari"/>
+  <tag k="note" v="According to wiki Tag:place=country, all places with an ISO 3166-1 should/could be mapped as a country."/>
+  <tag k="official_name" v="Landskapet Åland"/>
+  <tag k="official_name:de" v="Landschaft Åland"/>
+  <tag k="official_name:en" v="Region of Åland"/>
+  <tag k="official_name:fi" v="Ahvenanmaan maakunta"/>
+  <tag k="official_name:fr" v="État libre associé d'Åland"/>
+  <tag k="place" v="county"/>
+  <tag k="population" v="27734"/>
+  <tag k="source:population" v="2009-12-31 from wikipedia:de"/>
+  <tag k="wikidata" v="Q5689"/>
+  <tag k="wikipedia" v="de:Åland"/>
+ </node>
+ <node id="653303756" visible="true" version="1" changeset="3971593" timestamp="2010-02-25T13:35:06Z" user="Damouns" uid="13442" lat="60.5169897" lon="19.1965732"/>
+ <node id="1883180650" visible="true" version="2" changeset="107031857" timestamp="2021-06-27T11:09:54Z" user="gadacz" uid="121453" lat="59.4726540" lon="20.8131520"/>
+ <node id="1883213304" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:53Z" user="Pikari" uid="137246" lat="60.0411961" lon="21.1329769"/>
+ <node id="1883213305" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:53Z" user="Pikari" uid="137246" lat="59.6919788" lon="21.2405442"/>
+ <node id="1883213308" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:53Z" user="Pikari" uid="137246" lat="59.9379727" lon="21.2305417"/>
+ <node id="1883213316" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="60.0774513" lon="21.1149417"/>
+ <node id="1883213319" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="60.0526329" lon="21.1304298"/>
+ <node id="1883213320" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="59.9206828" lon="21.2685743"/>
+ <node id="1883213321" visible="true" version="2" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.8141952" lon="21.2966303"/>
+ <node id="1883213323" visible="true" version="2" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.7618949" lon="21.2627767"/>
+ <node id="1883213325" visible="true" version="2" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.7893983" lon="21.2805698"/>
+ <node id="1883213328" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="59.6370274" lon="21.2231291"/>
+ <node id="1883213330" visible="true" version="2" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.8514936" lon="21.3218702"/>
+ <node id="1883213331" visible="true" version="2" changeset="12863735" timestamp="2012-08-26T09:18:20Z" user="Pikari" uid="137246" lat="60.1039591" lon="21.0630067"/>
+ <node id="1883213332" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="59.9501608" lon="21.1713636"/>
+ <node id="1883213333" visible="true" version="2" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.8855663" lon="21.3456452"/>
+ <node id="1883213334" visible="true" version="2" changeset="117215238" timestamp="2022-02-09T18:49:39Z" user="Aki_Suokas" uid="3488423" lat="59.9871246" lon="21.1435700"/>
+ <node id="1883213335" visible="true" version="1" changeset="12860972" timestamp="2012-08-25T22:42:54Z" user="Pikari" uid="137246" lat="59.7223944" lon="21.2502409"/>
+ <node id="1883505442" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:01Z" user="Pikari" uid="137246" lat="60.3213518" lon="21.1105794"/>
+ <node id="1883505469" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:02Z" user="Pikari" uid="137246" lat="60.1955708" lon="21.0514828"/>
+ <node id="1883505494" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:03Z" user="Pikari" uid="137246" lat="60.1239251" lon="21.0238303"/>
+ <node id="1883505497" visible="true" version="2" changeset="81929083" timestamp="2020-03-08T17:29:21Z" user="trebornilis" uid="3263300" lat="60.3677233" lon="21.1175459"/>
+ <node id="1883505538" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:04Z" user="Pikari" uid="137246" lat="60.2525595" lon="21.0956727"/>
+ <node id="1883505546" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:04Z" user="Pikari" uid="137246" lat="60.3838264" lon="21.1122252"/>
+ <node id="1883505569" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:05Z" user="Pikari" uid="137246" lat="60.3990249" lon="21.1155425"/>
+ <node id="1883505618" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:07Z" user="Pikari" uid="137246" lat="60.2018915" lon="21.0845040"/>
+ <node id="1883505857" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:11Z" user="Pikari" uid="137246" lat="60.2652039" lon="21.0910078"/>
+ <node id="1883505876" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:11Z" user="Pikari" uid="137246" lat="60.3041623" lon="21.1045820"/>
+ <node id="1883505920" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:12Z" user="Pikari" uid="137246" lat="60.3294148" lon="21.1134976"/>
+ <node id="1883506065" visible="true" version="1" changeset="12863735" timestamp="2012-08-26T09:18:15Z" user="Pikari" uid="137246" lat="60.1787696" lon="21.0449575"/>
+ <node id="1883532810" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:16Z" user="Pikari" uid="137246" lat="60.6753484" lon="21.0164688"/>
+ <node id="1883532811" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:16Z" user="Pikari" uid="137246" lat="60.5878616" lon="21.1080695"/>
+ <node id="1883532812" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:16Z" user="Pikari" uid="137246" lat="60.7191193" lon="20.8252810"/>
+ <node id="1883532813" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.4986680" lon="21.1513357"/>
+ <node id="1883532814" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.8292060" lon="20.4870180"/>
+ <node id="1883532818" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.4309097" lon="21.1224998"/>
+ <node id="1883532820" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.7926233" lon="20.5711320"/>
+ <node id="1883532827" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.7128806" lon="20.9699615"/>
+ <node id="1883532828" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.5814193" lon="21.1137343"/>
+ <node id="1883532830" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.7159633" lon="20.8992306"/>
+ <node id="1883532831" visible="true" version="2" changeset="18781887" timestamp="2013-11-08T13:17:30Z" user="Pikari" uid="137246" lat="60.5382831" lon="21.1462191">
+  <tag k="name" v="Skiftet"/>
+  <tag k="name:fi" v="Kihti"/>
+  <tag k="name:sv" v="Skiftet"/>
+  <tag k="natural" v="fjard"/>
+  <tag k="source" v="MML 2012"/>
+ </node>
+ <node id="1883532832" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.6387498" lon="21.0617939"/>
+ <node id="1883532833" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.8547748" lon="20.4280523"/>
+ <node id="1883532834" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.5474077" lon="21.1438223"/>
+ <node id="1883532835" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.4940040" lon="21.1482554"/>
+ <node id="1883532836" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.6971095" lon="20.9895330"/>
+ <node id="1883532837" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:17Z" user="Pikari" uid="137246" lat="60.7230903" lon="20.7300025"/>
+ <node id="1883532838" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.5917498" lon="21.1046213"/>
+ <node id="1883532839" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.7544252" lon="20.6586064"/>
+ <node id="1883532840" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.6504954" lon="21.0472670"/>
+ <node id="1883532841" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.4589113" lon="21.1286431"/>
+ <node id="1883532842" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.7340992" lon="20.7049142"/>
+ <node id="1883532843" visible="true" version="2" changeset="72134442" timestamp="2019-07-11T12:48:59Z" user="tesp" uid="5441080" lat="60.7210596" lon="20.7788340"/>
+ <node id="1883532844" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.5138356" lon="21.1497489"/>
+ <node id="1883532845" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T09:55:18Z" user="Pikari" uid="137246" lat="60.5579378" lon="21.1343873"/>
+ <node id="1883541914" visible="true" version="1" changeset="12864129" timestamp="2012-08-26T10:07:42Z" user="Pikari" uid="137246" lat="60.8614488" lon="20.3413847"/>
+ <node id="2024464922" visible="true" version="3" changeset="18781887" timestamp="2013-11-08T13:17:31Z" user="Pikari" uid="137246" lat="60.6658111" lon="19.4732807"/>
+ <node id="2524017188" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:09Z" user="Pikari" uid="137246" lat="60.6838014" lon="19.5588652"/>
+ <node id="2524017191" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:09Z" user="Pikari" uid="137246" lat="60.3451968" lon="19.1464251"/>
+ <node id="2524017192" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.6879322" lon="19.5825458"/>
+ <node id="2524017193" visible="true" version="2" changeset="24866187" timestamp="2014-08-19T18:04:34Z" user="pkoby" uid="999995" lat="60.3004491" lon="19.1333444"/>
+ <node id="2524017194" visible="true" version="2" changeset="24866187" timestamp="2014-08-19T18:04:34Z" user="pkoby" uid="999995" lat="60.3011867" lon="19.1309301"/>
+ <node id="2524017196" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.6924553" lon="19.6162687"/>
+ <node id="2524017197" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.6911592" lon="19.6058660"/>
+ <node id="2524017198" visible="true" version="1" changeset="18778237" timestamp="2013-11-08T08:37:10Z" user="Pikari" uid="137246" lat="60.3716747" lon="19.1549159"/>
+ <node id="2524242309" visible="true" version="1" changeset="18781887" timestamp="2013-11-08T13:17:30Z" user="Pikari" uid="137246" lat="60.6935030" lon="19.6262095"/>
+ <node id="2584955291" visible="true" version="3" changeset="21211134" timestamp="2014-03-20T14:48:01Z" user="jordgubbe" uid="145884" lat="60.3003660" lon="19.1319704"/>
+ <node id="2728720003" visible="true" version="2" changeset="21211134" timestamp="2014-03-20T14:48:01Z" user="jordgubbe" uid="145884" lat="60.3003170" lon="19.1319485"/>
+ <node id="3028087402" visible="true" version="2" changeset="72552829" timestamp="2019-07-23T11:27:32Z" user="tesp" uid="5441080" lat="60.3004671" lon="19.1320096"/>
+ <node id="6640260654" visible="true" version="1" changeset="72552829" timestamp="2019-07-23T11:27:32Z" user="tesp" uid="5441080" lat="60.2650042" lon="19.1169304"/>
+ <node id="6777993203" visible="true" version="1" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767" lat="60.3006045" lon="19.1315924"/>
+ <node id="6777993204" visible="true" version="1" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767" lat="60.3005879" lon="19.1315055"/>
+ <node id="7658014939" visible="true" version="1" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.8553352" lon="21.3245477"/>
+ <node id="7658014940" visible="true" version="1" changeset="87218536" timestamp="2020-06-27T06:03:20Z" user="Aki_Suokas" uid="3488423" lat="59.8302341" lon="21.3070534"/>
+ <node id="8404966529" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4600574" lon="20.3016639"/>
+ <node id="8404966530" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4641746" lon="20.2889918"/>
+ <node id="8404966531" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4572917" lon="20.3136192"/>
+ <node id="8404966532" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4553841" lon="20.3261763"/>
+ <node id="8404966533" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4543007" lon="20.3397726"/>
+ <node id="8404966534" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4542120" lon="20.3531439"/>
+ <node id="8404966535" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4549658" lon="20.3658069"/>
+ <node id="8404966536" visible="true" version="1" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849" lat="59.4565670" lon="20.3782707"/>
+ <way id="22975890" visible="true" version="9" changeset="98911547" timestamp="2021-02-08T12:55:41Z" user="hanzlan" uid="629849">
+  <nd ref="247643921"/>
+  <nd ref="8404966536"/>
+  <nd ref="358318867"/>
+  <nd ref="8404966535"/>
+  <nd ref="358318862"/>
+  <nd ref="8404966534"/>
+  <nd ref="358318864"/>
+  <nd ref="8404966533"/>
+  <nd ref="358318859"/>
+  <nd ref="8404966532"/>
+  <nd ref="358318863"/>
+  <nd ref="8404966531"/>
+  <nd ref="358318861"/>
+  <nd ref="8404966529"/>
+  <nd ref="358318865"/>
+  <nd ref="8404966530"/>
+  <nd ref="247670033"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="note" v="Approximation of an arch with a radius of 3 nautical miles; such is the border segment in the law. Endpoints exactly as defined."/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="22976097" visible="true" version="16" changeset="14807444" timestamp="2013-01-27T14:07:38Z" user="Verdy_p" uid="90780">
+  <nd ref="247670033"/>
+  <nd ref="342466955"/>
+  <nd ref="342466960"/>
+  <nd ref="342466965"/>
+  <nd ref="247670034"/>
+  <nd ref="247671059"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="22976444" visible="true" version="21" changeset="20050162" timestamp="2014-01-17T13:05:57Z" user="woodpeck_repair" uid="145231">
+  <nd ref="247678587"/>
+  <nd ref="313547189"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="31976152" visible="true" version="7" changeset="20050162" timestamp="2014-01-17T13:25:31Z" user="woodpeck_repair" uid="145231">
+  <nd ref="247673124"/>
+  <nd ref="358326345"/>
+  <nd ref="247676760"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="note" v="Approximation of an arch with a radius of 12 nautical miles; such is the border segment in the law. Endpoints exactly as defined."/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="31976365" visible="true" version="7" changeset="20050162" timestamp="2014-01-17T13:25:32Z" user="woodpeck_repair" uid="145231">
+  <nd ref="247676760"/>
+  <nd ref="2024464922"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="31976366" visible="true" version="10" changeset="20050162" timestamp="2014-01-17T13:25:32Z" user="woodpeck_repair" uid="145231">
+  <nd ref="358326344"/>
+  <nd ref="2524017188"/>
+  <nd ref="454188107"/>
+  <nd ref="2524017192"/>
+  <nd ref="358326882"/>
+  <nd ref="2524017197"/>
+  <nd ref="2524017196"/>
+  <nd ref="2524242309"/>
+  <nd ref="247678587"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="note" v="Approximation of an arch with a radius of 12 nautical miles; such is the border segment in the law. Endpoints exactly as defined."/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="38605175" visible="true" version="8" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="342467026"/>
+  <nd ref="342467031"/>
+  <nd ref="247671061"/>
+  <nd ref="247671062"/>
+  <nd ref="342468777"/>
+  <nd ref="6640260654"/>
+  <nd ref="2728720003"/>
+  <nd ref="2584955291"/>
+  <nd ref="3028087402"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="45670458" visible="true" version="5" changeset="13957310" timestamp="2012-11-21T11:20:19Z" user="KonTur" uid="43262">
+  <nd ref="247671059"/>
+  <nd ref="342466971"/>
+  <nd ref="342466975"/>
+  <nd ref="342466981"/>
+  <nd ref="342466986"/>
+  <nd ref="247671060"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="49204460" visible="true" version="5" changeset="75319146" timestamp="2019-10-05T13:56:08Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="283581499"/>
+  <nd ref="2524017194"/>
+  <nd ref="283581500"/>
+  <nd ref="283581582"/>
+  <nd ref="2524017193"/>
+  <nd ref="283581502"/>
+  <nd ref="283581503"/>
+  <nd ref="283416903"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="51204339" visible="true" version="4" changeset="20050162" timestamp="2014-01-17T14:19:00Z" user="woodpeck_repair" uid="145231">
+  <nd ref="653303756"/>
+  <nd ref="454188113"/>
+  <nd ref="247673124"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="61684173" visible="true" version="3" changeset="18778237" timestamp="2013-11-08T08:37:18Z" user="Pikari" uid="137246">
+  <nd ref="283581116"/>
+  <nd ref="2524017191"/>
+  <nd ref="2524017198"/>
+  <nd ref="247673123"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law;MML 2012"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="120290283" visible="true" version="6" changeset="107031857" timestamp="2021-06-27T11:09:54Z" user="gadacz" uid="121453">
+  <nd ref="1883180650"/>
+  <nd ref="247643921"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="177916619" visible="true" version="6" changeset="107031857" timestamp="2021-06-27T11:09:54Z" user="gadacz" uid="121453">
+  <nd ref="1883180650"/>
+  <nd ref="1883213328"/>
+  <nd ref="1883213305"/>
+  <nd ref="1883213335"/>
+  <nd ref="1883213323"/>
+  <nd ref="1883213325"/>
+  <nd ref="1883213321"/>
+  <nd ref="7658014940"/>
+  <nd ref="1883213330"/>
+  <nd ref="7658014939"/>
+  <nd ref="1883213333"/>
+  <nd ref="1883213320"/>
+  <nd ref="1883213308"/>
+  <nd ref="1883213332"/>
+  <nd ref="1883213334"/>
+  <nd ref="1883213304"/>
+  <nd ref="1883213319"/>
+  <nd ref="1883213316"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <way id="177921323" visible="true" version="3" changeset="13198560" timestamp="2012-09-21T17:33:36Z" user="ajashton" uid="135329">
+  <nd ref="1883213331"/>
+  <nd ref="1883505494"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+ </way>
+ <way id="177951087" visible="true" version="2" changeset="13198560" timestamp="2012-09-21T17:33:37Z" user="ajashton" uid="135329">
+  <nd ref="1883505494"/>
+  <nd ref="1883506065"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+ </way>
+ <way id="177951088" visible="true" version="5" changeset="81929083" timestamp="2020-03-08T17:29:21Z" user="trebornilis" uid="3263300">
+  <nd ref="1883506065"/>
+  <nd ref="1883505469"/>
+  <nd ref="1883505618"/>
+  <nd ref="1883505538"/>
+  <nd ref="1883505857"/>
+  <nd ref="1883505876"/>
+  <nd ref="1883505442"/>
+  <nd ref="1883505920"/>
+  <nd ref="1883505497"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <way id="177954588" visible="true" version="2" changeset="13198560" timestamp="2012-09-21T17:33:37Z" user="ajashton" uid="135329">
+  <nd ref="1883532843"/>
+  <nd ref="1883532837"/>
+  <nd ref="1883532842"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+ </way>
+ <way id="177954589" visible="true" version="3" changeset="13198560" timestamp="2012-09-21T17:33:37Z" user="ajashton" uid="135329">
+  <nd ref="1883532813"/>
+  <nd ref="1883532844"/>
+  <nd ref="1883532831"/>
+  <nd ref="1883532834"/>
+  <nd ref="1883532845"/>
+  <nd ref="1883532828"/>
+  <nd ref="1883532811"/>
+  <nd ref="1883532838"/>
+  <nd ref="1883532832"/>
+  <nd ref="1883532840"/>
+  <nd ref="1883532810"/>
+  <nd ref="1883532836"/>
+  <nd ref="1883532827"/>
+  <nd ref="1883532830"/>
+  <nd ref="1883532812"/>
+  <nd ref="1883532843"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <way id="177954591" visible="true" version="3" changeset="13198560" timestamp="2012-09-21T17:33:37Z" user="ajashton" uid="135329">
+  <nd ref="1883532842"/>
+  <nd ref="1883532839"/>
+  <nd ref="1883532820"/>
+  <nd ref="1883532814"/>
+  <nd ref="1883532833"/>
+  <nd ref="313547036"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <way id="177955575" visible="true" version="4" changeset="20050162" timestamp="2014-01-17T15:55:12Z" user="woodpeck_repair" uid="145231">
+  <nd ref="313547034"/>
+  <nd ref="313547035"/>
+  <nd ref="1883541914"/>
+  <nd ref="313547036"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883711" visible="true" version="4" changeset="20050162" timestamp="2014-01-17T16:04:19Z" user="woodpeck_repair" uid="145231">
+  <nd ref="313547033"/>
+  <nd ref="313547034"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883712" visible="true" version="1" changeset="13955394" timestamp="2012-11-21T08:39:35Z" user="KonTur" uid="43262">
+  <nd ref="342467019"/>
+  <nd ref="342467026"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883713" visible="true" version="4" changeset="20050162" timestamp="2014-01-17T16:04:19Z" user="woodpeck_repair" uid="145231">
+  <nd ref="2024464922"/>
+  <nd ref="358326344"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883714" visible="true" version="1" changeset="13955394" timestamp="2012-11-21T08:39:35Z" user="KonTur" uid="43262">
+  <nd ref="342467003"/>
+  <nd ref="342467011"/>
+  <nd ref="342467019"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883716" visible="true" version="4" changeset="20050162" timestamp="2014-01-17T16:04:19Z" user="woodpeck_repair" uid="145231">
+  <nd ref="313547189"/>
+  <nd ref="313547032"/>
+  <nd ref="247678588"/>
+  <nd ref="313547033"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191883717" visible="true" version="1" changeset="13955394" timestamp="2012-11-21T08:39:36Z" user="KonTur" uid="43262">
+  <nd ref="247673123"/>
+  <nd ref="454188108"/>
+  <nd ref="454188110"/>
+  <nd ref="653303756"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="right:country" v="Suomi"/>
+  <tag k="right:country:en" v="Finland"/>
+  <tag k="right:country:fi" v="Suomi"/>
+  <tag k="right:country:sv" v="Finland"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="191903335" visible="true" version="1" changeset="13957310" timestamp="2012-11-21T11:20:04Z" user="KonTur" uid="43262">
+  <nd ref="247671060"/>
+  <nd ref="342466991"/>
+  <nd ref="342466996"/>
+  <nd ref="342467003"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="border_type" v="territorial"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="722582744" visible="true" version="1" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="3028087402"/>
+  <nd ref="283581598"/>
+  <nd ref="6777993203"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="722582745" visible="true" version="1" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6777993203"/>
+  <nd ref="6777993204"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="722582746" visible="true" version="1" changeset="74189520" timestamp="2019-09-06T18:36:52Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="6777993204"/>
+  <nd ref="283581581"/>
+  <nd ref="283581499"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="731902151" visible="true" version="1" changeset="75319146" timestamp="2019-10-05T13:56:08Z" user="Василь Бойчук" uid="8407767">
+  <nd ref="283416903"/>
+  <nd ref="283581116"/>
+  <tag k="admin_level" v="2"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="law"/>
+  <tag k="source_ref" v="http://www.finlex.fi/fi/laki/alkup/1995/19950993"/>
+ </way>
+ <way id="779271865" visible="true" version="1" changeset="81919659" timestamp="2020-03-08T10:45:08Z" user="trebornilis" uid="3263300">
+  <nd ref="1883213316"/>
+  <nd ref="1883213331"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <way id="779352584" visible="true" version="1" changeset="81929083" timestamp="2020-03-08T17:29:21Z" user="trebornilis" uid="3263300">
+  <nd ref="1883505497"/>
+  <nd ref="1883505546"/>
+  <nd ref="1883505569"/>
+  <nd ref="1883532818"/>
+  <nd ref="1883532841"/>
+  <nd ref="1883532835"/>
+  <nd ref="1883532813"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="maritime" v="yes"/>
+  <tag k="source" v="MML 2012"/>
+ </way>
+ <relation id="1650407" visible="true" version="45" changeset="124359004" timestamp="2022-08-01T18:03:09Z" user="Sledge92" uid="11809657">
+  <member type="node" ref="249423791" role="admin_centre"/>
+  <member type="node" ref="506518431" role="label"/>
+  <member type="way" ref="31976152" role="outer"/>
+  <member type="way" ref="51204339" role="outer"/>
+  <member type="way" ref="191883717" role="outer"/>
+  <member type="way" ref="61684173" role="outer"/>
+  <member type="way" ref="731902151" role="outer"/>
+  <member type="way" ref="49204460" role="outer"/>
+  <member type="way" ref="722582746" role="outer"/>
+  <member type="way" ref="722582745" role="outer"/>
+  <member type="way" ref="722582744" role="outer"/>
+  <member type="way" ref="38605175" role="outer"/>
+  <member type="way" ref="191883712" role="outer"/>
+  <member type="way" ref="191883714" role="outer"/>
+  <member type="way" ref="191903335" role="outer"/>
+  <member type="way" ref="45670458" role="outer"/>
+  <member type="way" ref="22976097" role="outer"/>
+  <member type="way" ref="22975890" role="outer"/>
+  <member type="way" ref="120290283" role="outer"/>
+  <member type="way" ref="177916619" role="outer"/>
+  <member type="way" ref="779271865" role="outer"/>
+  <member type="way" ref="177921323" role="outer"/>
+  <member type="way" ref="177951087" role="outer"/>
+  <member type="way" ref="177951088" role="outer"/>
+  <member type="way" ref="779352584" role="outer"/>
+  <member type="way" ref="177954589" role="outer"/>
+  <member type="way" ref="177954588" role="outer"/>
+  <member type="way" ref="177954591" role="outer"/>
+  <member type="way" ref="177955575" role="outer"/>
+  <member type="way" ref="191883711" role="outer"/>
+  <member type="way" ref="191883716" role="outer"/>
+  <member type="way" ref="22976444" role="outer"/>
+  <member type="way" ref="31976366" role="outer"/>
+  <member type="way" ref="191883713" role="outer"/>
+  <member type="way" ref="31976365" role="outer"/>
+  <member type="relation" ref="2375171" role="subarea"/>
+  <tag k="admin_level" v="3"/>
+  <tag k="alt_name:fr" v="État libre associé d'Åland"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="int_name" v="Åland"/>
+  <tag k="ISO3166-1" v="AX"/>
+  <tag k="ISO3166-1:alpha2" v="AX"/>
+  <tag k="ISO3166-1:alpha3" v="ALA"/>
+  <tag k="ISO3166-1:numeric" v="248"/>
+  <tag k="name" v="Åland"/>
+  <tag k="name:cs" v="Ålandy"/>
+  <tag k="name:en" v="Åland Islands"/>
+  <tag k="name:eo" v="Alando"/>
+  <tag k="name:fi" v="Ahvenanmaa"/>
+  <tag k="name:fr" v="Åland"/>
+  <tag k="name:hr" v="Ålandsko Otočje"/>
+  <tag k="name:hu" v="Åland-szigetek"/>
+  <tag k="name:io" v="Alando"/>
+  <tag k="name:mk" v="Оланд"/>
+  <tag k="name:nl" v="Ålandseilanden"/>
+  <tag k="name:pl" v="Wyspy Alandzkie"/>
+  <tag k="name:ru" v="Аландские острова"/>
+  <tag k="name:sk" v="Alandy"/>
+  <tag k="name:sv" v="Åland"/>
+  <tag k="name:uz" v="Aland orollari"/>
+  <tag k="note" v="NUTS level 1 = admin_level 3, Provinsen Åland has never been in official use"/>
+  <tag k="official_name" v="Landskapet Åland"/>
+  <tag k="official_name:eo" v="Provinco Alando"/>
+  <tag k="official_name:fi" v="Ahvenanmaan maakunta"/>
+  <tag k="official_name:fr" v="province d'Åland"/>
+  <tag k="old_name" v="Aland"/>
+  <tag k="ref:nuts" v="FI2"/>
+  <tag k="ref:nuts:1" v="FI2"/>
+  <tag k="start_date:old_name" v="before 1532"/>
+  <tag k="timezone" v="Europe/Mariehamn"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q5689"/>
+  <tag k="wikipedia" v="en:Åland Islands"/>
+ </relation>
+ <relation id="2375171" visible="true" version="28" changeset="124361029" timestamp="2022-08-01T19:05:38Z" user="Sledge92" uid="11809657">
+  <member type="node" ref="249423791" role="admin_centre"/>
+  <member type="way" ref="31976152" role="outer"/>
+  <member type="way" ref="51204339" role="outer"/>
+  <member type="way" ref="191883717" role="outer"/>
+  <member type="way" ref="61684173" role="outer"/>
+  <member type="way" ref="731902151" role="outer"/>
+  <member type="way" ref="49204460" role="outer"/>
+  <member type="way" ref="722582746" role="outer"/>
+  <member type="way" ref="722582745" role="outer"/>
+  <member type="way" ref="722582744" role="outer"/>
+  <member type="way" ref="38605175" role="outer"/>
+  <member type="way" ref="191883712" role="outer"/>
+  <member type="way" ref="191883714" role="outer"/>
+  <member type="way" ref="191903335" role="outer"/>
+  <member type="way" ref="45670458" role="outer"/>
+  <member type="way" ref="22976097" role="outer"/>
+  <member type="way" ref="22975890" role="outer"/>
+  <member type="way" ref="120290283" role="outer"/>
+  <member type="way" ref="177916619" role="outer"/>
+  <member type="way" ref="779271865" role="outer"/>
+  <member type="way" ref="177921323" role="outer"/>
+  <member type="way" ref="177951087" role="outer"/>
+  <member type="way" ref="177951088" role="outer"/>
+  <member type="way" ref="779352584" role="outer"/>
+  <member type="way" ref="177954589" role="outer"/>
+  <member type="way" ref="177954588" role="outer"/>
+  <member type="way" ref="177954591" role="outer"/>
+  <member type="way" ref="177955575" role="outer"/>
+  <member type="way" ref="191883711" role="outer"/>
+  <member type="way" ref="191883716" role="outer"/>
+  <member type="way" ref="22976444" role="outer"/>
+  <member type="way" ref="31976366" role="outer"/>
+  <member type="way" ref="191883713" role="outer"/>
+  <member type="way" ref="31976365" role="outer"/>
+  <member type="relation" ref="6437791" role="subarea"/>
+  <tag k="admin_level" v="6"/>
+  <tag k="boundary" v="administrative"/>
+  <tag k="ISO3166-2" v="FI-01"/>
+  <tag k="name" v="Landskapet Åland"/>
+  <tag k="name:cs" v="Ålandy"/>
+  <tag k="name:de" v="Åland-Inseln"/>
+  <tag k="name:en" v="Åland Islands"/>
+  <tag k="name:fi" v="Ahvenanmaan maakunta"/>
+  <tag k="name:hu" v="Åland-szigetek"/>
+  <tag k="name:ru" v="Аландские острова"/>
+  <tag k="name:sv" v="Landskapet Åland"/>
+  <tag k="ref" v="FI200"/>
+  <tag k="type" v="boundary"/>
+  <tag k="wikidata" v="Q5689"/>
+  <tag k="wikipedia" v="sv:Åland"/>
+ </relation>
+</osm>

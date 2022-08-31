@@ -6,50 +6,19 @@
     <result property="t" column="t" javaType="_byte[]" jdbcType="BINARY"/>
   </resultMap>
 
-  <!-- Tiles from the public.eez table -->
-  <select id="tilePoliticalEez" resultMap="tileMap">
-    WITH overlappings AS (
-      SELECT
-        'http://marineregions.org/mrgid/' || political_eez.mrgid_eez AS id,
-        'PoliticalEEZ' AS type,
-        'http://marineregions.org' AS source,
-        political_eez.union AS title,
-        iso_map.iso2 AS isoCountryCode2Digit,
-        geom,
-        centroid_geom
-      FROM political_eez
-      LEFT OUTER JOIN iso_map ON political_eez.iso_ter1 = iso_map.iso3
-      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
-    ), intersectings AS (
-      SELECT * FROM overlappings
-      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
-    )
-    SELECT ST_ASMVT(tile, 'political_eez', 4096, 'mvtgeometry') AS t
-    FROM (
-      SELECT
-        id, type, source, title, isoCountryCode2Digit,
-        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-      UNION ALL
-      SELECT
-        id, type, source, title, isoCountryCode2Digit,
-        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-    ) AS tile;
-  </select>
-
   <!-- Tiles from the public.political table -->
   <select id="tilePolitical" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
-        iso_a2 AS id,
+        'http://marineregions.org/mrgid/' || political.mrgid_eez AS id,
         'Political' AS type,
-        'http://www.naturalearthdata.com' AS source,
-        name AS title,
-        iso_a2 AS isoCountryCode2Digit,
+        'http://marineregions.org' AS source,
+        political.union AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
         geom,
         centroid_geom
       FROM political
+      LEFT OUTER JOIN iso_map ON political.iso_ter1 = iso_map.iso3
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
       SELECT * FROM overlappings
@@ -87,38 +56,6 @@
       WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
     )
     SELECT ST_ASMVT(tile, 'continent', 4096, 'mvtgeometry') AS t
-    FROM (
-      SELECT
-        id, type, source, title, isoCountryCode2Digit,
-        ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-      UNION ALL
-      SELECT
-        id, type, source, title, isoCountryCode2Digit,
-        ST_AsMVTGeom(centroid_geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) AS mvtgeometry
-      FROM intersectings
-    ) AS tile;
-  </select>
-
-  <!-- Tiles from the public.eez table -->
-  <select id="tileEez" resultMap="tileMap">
-    WITH overlappings AS (
-      SELECT
-        'http://marineregions.org/mrgid/' || eez.mrgid AS id,
-        'EEZ' AS type,
-        'http://marineregions.org' AS source,
-        eez.geoname AS title,
-        iso_map.iso2 AS isoCountryCode2Digit,
-        geom,
-        centroid_geom
-      FROM eez
-      LEFT OUTER JOIN iso_map ON eez.iso_ter1 = iso_map.iso3
-      WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
-    ), intersectings AS (
-      SELECT * FROM overlappings
-      WHERE ST_AsMVTGeom(geom,ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})),4096,0,true) IS NOT NULL
-    )
-    SELECT ST_ASMVT(tile, 'eez', 4096, 'mvtgeometry') AS t
     FROM (
       SELECT
         id, type, source, title, isoCountryCode2Digit,
@@ -391,24 +328,12 @@
   </select>
 
   <!-- The union (name) is required because there are islands etc with the same ISO code as mainland, but different names. -->
-  <select id="svgPoliticalEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT CONCAT(REGEXP_REPLACE("union", '\W+', '', 'g'), iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM political_eez
-  </select>
-
   <select id="svgPolitical" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT iso_a2 AS id, ST_AsSVG(geom) AS shape FROM political
+    SELECT CONCAT(REGEXP_REPLACE("union", '\W+', '', 'g'), iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM political
   </select>
 
   <select id="svgContinent" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT continent AS id, ST_AsSVG(ST_Subdivide(geom, 1000000)) AS shape FROM continent
-  </select>
-
-  <select id="svgEez" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(geom) AS shape FROM eez WHERE mrgid != 8492
-  UNION ALL
-    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(120, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
-  UNION ALL
-    SELECT CONCAT(iso_ter1, iso_ter2, iso_ter3) AS id, ST_AsSVG(ST_Intersection(geom, ST_SetSRID(ST_MakeBox2D(ST_Point(120, -90), ST_Point(180, 90)), 4326))) AS shape FROM eez WHERE mrgid = 8492
   </select>
 
   <select id="svgGadm5" resultType="org.gbif.geocode.ws.model.SvgShape">

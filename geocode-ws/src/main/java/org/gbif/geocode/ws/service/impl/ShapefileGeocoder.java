@@ -5,10 +5,8 @@ import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.layers.AbstractShapefileLayer;
 import org.gbif.geocode.ws.layers.CentroidsLayer;
 import org.gbif.geocode.ws.layers.ContinentLayer;
-import org.gbif.geocode.ws.layers.EezLayer;
 import org.gbif.geocode.ws.layers.GadmLayer;
 import org.gbif.geocode.ws.layers.IhoLayer;
-import org.gbif.geocode.ws.layers.PoliticalEezLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
@@ -47,19 +45,9 @@ public class ShapefileGeocoder implements GeocodeService {
       String[] columns = new String[]{"id", "name", "isoCountry"};
 
       {
-        SimpleShapeFile politicalEez = new SimpleShapeFile(root + "political_eez_subdivided", columns);
-        PoliticalEezLayer politicalEezLayer = new PoliticalEezLayer(politicalEez);
-        layers.put(politicalEezLayer.name(), politicalEezLayer);
-      }
-      {
         SimpleShapeFile political = new SimpleShapeFile(root + "political_subdivided", columns);
         PoliticalLayer politicalLayer = new PoliticalLayer(political);
         layers.put(politicalLayer.name(), politicalLayer);
-      }
-      {
-        SimpleShapeFile eez = new SimpleShapeFile(root + "eez_subdivided", columns);
-        EezLayer eezLayer = new EezLayer(eez);
-        layers.put(eezLayer.name(), eezLayer);
       }
       {
         SimpleShapeFile continent = new SimpleShapeFile(root + "continents_subdivided", columns);

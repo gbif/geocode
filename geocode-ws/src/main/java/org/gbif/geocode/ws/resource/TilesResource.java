@@ -67,20 +67,12 @@ public class TilesResource {
     Stopwatch sw = Stopwatch.createStarted();
 
     switch (layer) {
-      case "political_eez":
-        tile = tileMapper.tilePoliticalEez(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
-        break;
-
       case "political":
         tile = tileMapper.tilePolitical(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
       case "continent":
         tile = tileMapper.tileContinent(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
-        break;
-
-      case "eez":
-        tile = tileMapper.tileEez(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
         break;
 
       case "gadm5":

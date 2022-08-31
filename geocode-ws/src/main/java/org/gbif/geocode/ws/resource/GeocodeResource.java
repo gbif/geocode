@@ -1,17 +1,8 @@
 package org.gbif.geocode.ws.resource;
 
-import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.ws.layers.CentroidsLayer;
-import org.gbif.geocode.ws.layers.ContinentLayer;
-import org.gbif.geocode.ws.layers.EezLayer;
-import org.gbif.geocode.ws.layers.GadmLayer;
-import org.gbif.geocode.ws.layers.IhoLayer;
-import org.gbif.geocode.ws.layers.PoliticalEezLayer;
-import org.gbif.geocode.ws.layers.PoliticalLayer;
-import org.gbif.geocode.ws.layers.WgsrpdLayer;
 import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
@@ -25,7 +16,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -71,7 +61,7 @@ public class GeocodeResource implements GeocodeService {
     this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
 
     this.defaultLayers = Arrays.asList(
-      "PoliticalEEZ",
+      "Political",
       "Centroids",
       "Continent",
       "GADM",

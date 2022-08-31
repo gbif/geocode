@@ -32,27 +32,11 @@ function export_centroids() {
 	echo
 }
 
-function export_natural_earth() {
-	echo "Exporting Natural Earth to shapefile"
-	exec_pgsql2shp layers/political_subdivided "SELECT iso_a2 AS id, name AS name, iso_a2 AS isoCountryCode2Digit, geom FROM political_subdivided"
+function export_political() {
+	echo "Exporting Political to shapefile"
+	exec_pgsql2shp layers/political_subdivided "SELECT COALESCE(mrgid_eez, mrgid_ter1) AS id, \"union\" AS name, CONCAT_WS(' ', im1.iso2, im2.iso2, im3.iso2) AS isoCountryCode2Digit, geom FROM political_subdivided eez LEFT OUTER JOIN iso_map im1 ON eez.iso_ter1 = im1.iso3 LEFT OUTER JOIN iso_map im2 ON eez.iso_ter2 = im2.iso3 LEFT OUTER JOIN iso_map im3 ON eez.iso_ter3 = im3.iso3"
 
-	echo "Natural Earth shapefile export complete"
-	echo
-}
-
-function export_marine_regions() {
-	echo "Exporting Marine Regions to shapefile"
-	exec_pgsql2shp layers/eez_subdivided "SELECT mrgid AS id, geoname AS name, CONCAT_WS(' ', im1.iso2, im2.iso2, im3.iso2) AS isoCountryCode2Digit, geom FROM eez_subdivided eez LEFT OUTER JOIN iso_map im1 ON eez.iso_ter1 = im1.iso3 LEFT OUTER JOIN iso_map im2 ON eez.iso_ter2 = im2.iso3 LEFT OUTER JOIN iso_map im3 ON eez.iso_ter3 = im3.iso3"
-
-	echo "Marine Regions shapefile export complete"
-	echo
-}
-
-function export_marine_regions_union() {
-	echo "Exporting Marine Regions Land Union to shapefile"
-	exec_pgsql2shp layers/political_eez_subdivided "SELECT COALESCE(mrgid_eez, mrgid_ter1) AS id, \"union\" AS name, CONCAT_WS(' ', im1.iso2, im2.iso2, im3.iso2) AS isoCountryCode2Digit, geom FROM political_eez_subdivided eez LEFT OUTER JOIN iso_map im1 ON eez.iso_ter1 = im1.iso3 LEFT OUTER JOIN iso_map im2 ON eez.iso_ter2 = im2.iso3 LEFT OUTER JOIN iso_map im3 ON eez.iso_ter3 = im3.iso3"
-
-	echo "Marine Regions Land Union shapefile export complete"
+	echo "Political shapefile export complete"
 	echo
 }
 
@@ -110,9 +94,7 @@ else
 	echo "Exporting data"
 	mkdir -p layers
 	export_centroids
-	export_natural_earth
-	export_marine_regions
-	export_marine_regions_union
+	export_political
 	export_gadm
 	export_iho
 	export_wgsrpd

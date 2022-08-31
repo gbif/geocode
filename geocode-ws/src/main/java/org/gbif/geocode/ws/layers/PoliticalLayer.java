@@ -1,17 +1,24 @@
 package org.gbif.geocode.ws.layers;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import org.gbif.geocode.api.model.Location;
+
 import org.springframework.stereotype.Component;
 
 import au.org.ala.layers.intersect.SimpleShapeFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class PoliticalLayer extends AbstractShapefileLayer {
   public PoliticalLayer() {
-    super(PoliticalLayer.class.getResourceAsStream("political.png"));
+    super(PoliticalLayer.class.getResourceAsStream("political.png"), 3);
   }
 
   public PoliticalLayer(SimpleShapeFile simpleShapeFile) {
-    super(simpleShapeFile, PoliticalLayer.class.getResourceAsStream("political.png"));
+    super(simpleShapeFile, PoliticalLayer.class.getResourceAsStream("political.png"), 3);
   }
 
   @Override
@@ -21,6 +28,30 @@ public class PoliticalLayer extends AbstractShapefileLayer {
 
   @Override
   public String source() {
-    return "http://www.naturalearthdata.com/";
+    return "https://www.marineregions.org/";
+  }
+
+  @Override
+  public List<Location> resultToLocation(Pair<Integer, Double> countryValue) {
+    List<Location> locations = new ArrayList<>();
+
+    String id = idColumnLookup[idColumnIndex[countryValue.getLeft()]];
+    String title = titleColumnLookup[titleColumnIndex[countryValue.getLeft()]];
+    String isoCode = isoCodeColumnLookup[isoCodeColumnIndex[countryValue.getLeft()]];
+
+    String[] iso = isoCode.split(" ");
+
+    for (String i : iso) {
+      Location l = new Location();
+      l.setType(name());
+      l.setSource(source());
+      l.setId("http://marineregions.org/mrgid/" + id);
+      l.setTitle(title);
+      l.setIsoCountryCode2Digit(i);
+      l.setDistance(countryValue.getRight());
+      locations.add(l);
+    }
+
+    return locations;
   }
 }
