@@ -43,7 +43,7 @@ public class GeocodeResourceIT {
     Collection<Location> result =
         geocodeClient.get(51d, 18d, 0.1d, null, Collections.singletonList("Political"));
     assertEquals(1, result.size());
-    assertEquals("PL", result.iterator().next().getId());
+    assertEquals("PL", result.iterator().next().getIsoCountryCode2Digit());
   }
 
   @Test
