@@ -14,6 +14,9 @@
     </encoder>
   </appender>
 
+  <logger name="au.org.ala" level="INFO"/>
+  <logger name="org.gbif.geocode" level="INFO"/>
+
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
   </root>

@@ -10,3 +10,5 @@ spring:
       minimumIdle: 0
   liquibase:
     enabled: false
+  shapefiles:
+    root: /usr/src/app/layers/

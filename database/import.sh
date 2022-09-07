@@ -123,7 +123,7 @@ function import_political() {
 	cd $START_DIR/osm
 	for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188 62269 36989 1650407; do
 		[[ -f $id.xml ]] || curl -Ssfo $id.xml https://www.openstreetmap.org/api/0.6/relation/$id/full
-		ogr2ogr -append -f PostgreSQL "$PGCONN dbname=dev_eez" $id.xml -nln osm -lco GEOMETRY_NAME=geom multipolygons
+		ogr2ogr -append -f PostgreSQL "$PGCONN dbname=$POSTGRES_DB" $id.xml -nln osm -lco GEOMETRY_NAME=geom multipolygons
 	done
 
 	# Morocco 8367 https://www.openstreetmap.org/relation/13407035
@@ -307,8 +307,8 @@ function import_gadm() {
 	echo "UPDATE gadm SET name_0 = 'Falkland Islands (Malvinas)' WHERE gid_0 = 'FLK';" | exec_psql
 	echo "UPDATE gadm SET gid_1 = 'UKR.11_1', name_1 = 'Kiev City', varname_1 = 'Kyiv', nl_name_1 = 'Київ', hasc_1 = 'UA.KC', type_1 = 'Independent City', engtype_1 = 'Independent City', validfr_1 = '~1955', gid_2 = 'UKR.11.1_1', name_2 = 'Darnyts''kyi', varname_2 = 'Darnytskyi', hasc_2 = 'UA.KC.DA', type_2 = 'Raion', engtype_2 = 'Raion', validfr_2 = 'Unknown' WHERE fid = 328778;" | exec_psql
 
-	for i in \
-		gid_0 name_0 varname_0 \
+	nullif="gid_0 = NULLIF(gid_0, '')"
+	for i in  name_0 varname_0 \
 		gid_1 name_1 varname_1 nl_name_1 iso_1 hasc_1 cc_1 type_1 engtype_1 validfr_1 \
 		gid_2 name_2 varname_2 nl_name_2 hasc_2 cc_2 type_2 engtype_2 validfr_2 \
 		gid_3 name_3 varname_3 nl_name_3 hasc_3 cc_3 type_3 engtype_3 validfr_3 \
@@ -316,9 +316,10 @@ function import_gadm() {
 		gid_5 name_5 cc_5 type_5 engtype_5 \
 		governedby sovereign disputedby region varregion country continent subcont
 	do
-		echo "Setting '' to NULL for $i column"
-		echo "UPDATE gadm SET $i = NULL WHERE $i = '';" | exec_psql
+		nullif="$nullif, $i = NULLIF($i, '')"
 	done
+	echo "Setting '' to NULL in gadm table"
+	echo "UPDATE gadm SET $nullif;" | exec_psql
 
 	echo "Creating gadm4 table"
 	echo "
@@ -610,24 +611,25 @@ function import_continents() {
 	done
 
 	# Bottom bit of Antarctica is missing
-	echo "INSERT INTO continent_step1 (continent, gid_0, geom) SELECT 'ANTARCTICA', 'ANT-89-90', ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326);" | exec_psql
+	echo "INSERT INTO continent_step1 (continent, gid_0, geom) SELECT 'ANTARCTICA', 'ANT-89-90', ST_Multi(ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326));" | exec_psql
 
 	echo "Deleting empty geometries"
 	echo "DELETE FROM continent_step1 WHERE ST_IsEmpty(geom) OR ST_Area(geom) = 0;" | exec_psql
 
 	echo "Calculating union of continent parts"
 	# https://gis.stackexchange.com/questions/431664/deleting-small-holes-in-polygons-specifying-the-size-with-postgis
-	echo "
-		CREATE OR REPLACE FUNCTION ST_RemoveHolesInPolygonsByArea(geom GEOMETRY, area real)
-		RETURNS GEOMETRY AS
-		$BODY$
-		WITH tbla AS (SELECT ST_Dump(geom))
-        SELECT ST_Collect(ARRAY(SELECT ST_MakePolygon(ST_ExteriorRing(geom),
-               ARRAY(SELECT ST_ExteriorRing(rings.geom) FROM ST_DumpRings(geom) AS rings
-               WHERE rings.path[1]>0 AND ST_Area(rings.geom)>=area))
-               FROM ST_Dump(geom))) AS geom FROM tbla;
-		$BODY$
-		LANGUAGE SQL;" | exec_psql
+	exec_psql <<EOF
+	CREATE OR REPLACE FUNCTION ST_RemoveHolesInPolygonsByArea(geom GEOMETRY, area real)
+	RETURNS GEOMETRY AS
+	\$BODY\$
+	WITH tbla AS (SELECT ST_Dump(geom))
+    SELECT ST_Collect(ARRAY(SELECT ST_MakePolygon(ST_ExteriorRing(geom),
+        ARRAY(SELECT ST_ExteriorRing(rings.geom) FROM ST_DumpRings(geom) AS rings
+        WHERE rings.path[1]>0 AND ST_Area(rings.geom)>=area))
+        FROM ST_Dump(geom))) AS geom FROM tbla;
+	\$BODY\$
+	LANGUAGE SQL;
+EOF
 	echo "DROP TABLE IF EXISTS continent;" | exec_psql
 	echo "CREATE TABLE continent AS SELECT continent, ST_RemoveHolesInPolygonsByArea(ST_Union(geom), 0.0001) AS geom FROM continent_step1 GROUP BY continent;" | exec_psql
 
@@ -675,6 +677,7 @@ else
 	import_political
 	import_gadm
 	import_wgsrpd
+	import_esri_countries
 	import_continents
 	create_combined_function
 	touch import-complete

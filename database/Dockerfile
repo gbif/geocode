@@ -1,15 +1,16 @@
 # gbif/geocode-ws
 #
 # Image contains PostgreSQL, PostGIS, and the GBIF reverse geocoding borders
-# from Natural Earth (Public Domain), Marine Regions (CC-BY), GADM, SeaVox, IHO, WGSRPD.
+# from Marine Regions, OpenStreetMap, GADM, IHO, WGSRPD.
 
-FROM postgis/postgis:12-master
+FROM postgis/postgis:14-master
 
 ARG version
 
 RUN apt-get -qq -y update \
     && apt-get -qq -y --no-install-recommends install \
         curl \
+        jq \
         openjdk-11-jdk-headless \
         supervisor \
         unzip \
@@ -23,15 +24,17 @@ ENV POSTGRES_USER=eez
 ENV POSTGRES_HOST_AUTH_METHOD=trust
 
 # Scripts to load the database
-COPY all_layer_function.sql coordinatecleaner_centroids.sql geolocate_centroids.sql /docker-entrypoint-initdb.d/
+COPY all_layer_function.sql coordinatecleaner_centroids.sql geolocate_centroids.sql subdivide_layers.sql /docker-entrypoint-initdb.d/
 
 # The PostgreSQL Docker startup will load these.
 COPY import.sh /docker-entrypoint-initdb.d/90_import_boundary_data.sh
+COPY export-shapefiles.sh /docker-entrypoint-initdb.d/91_export_shapefile_data.sh
+COPY osm /osm
 # This shuts down PostgreSQL and exits with an error, which is a small hack to end the following RUN.
-COPY docker_exit.sh /docker-entrypoint-initdb.d/91_exit.sh
+COPY docker_exit.sh /docker-entrypoint-initdb.d/99_exit.sh
 
 RUN /usr/local/bin/docker-entrypoint.sh postgres || \
-    rm -f /docker-entrypoint-initdb.d/90_import_boundary_data.sh /docker-entrypoint-initdb.d/91_exit.sh
+    rm -f /docker-entrypoint-initdb.d/90_import_boundary_data.sh /docker-entrypoint-initdb.d/91_export_shapefile_data.sh /docker-entrypoint-initdb.d/99_exit.sh
 
 #################################
 # The database is now prepared. #
@@ -42,7 +45,8 @@ RUN /usr/local/bin/docker-entrypoint.sh postgres || \
 RUN mkdir -p /usr/src/app/conf
 WORKDIR /usr/src/app
 
-COPY docker_application.properties /usr/src/app/application.properties
+COPY docker_application.yml /usr/src/app/application.yml
+COPY docker_bootstrap.yml /usr/src/app/bootstrap.yml
 COPY docker_logback.xml /usr/src/app/conf/logback.xml
 COPY docker_supervisord.conf /etc/supervisord.conf
 
