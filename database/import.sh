@@ -665,6 +665,10 @@ function create_combined_function() {
 	exec_psql_file $SCRIPT_DIR/all_layer_function.sql
 }
 
+function create_gadm_indices() {
+	cd $START_DIR
+	exec_psql_file $SCRIPT_DIR/gadm_indices.sql
+}
 
 if [[ -e import-complete ]]; then
 	echo "Data already imported"
@@ -676,6 +680,7 @@ else
 	import_iho
 	import_political
 	import_gadm
+	create_gadm_indices
 	import_wgsrpd
 	import_esri_countries
 	import_continents

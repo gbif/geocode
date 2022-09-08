@@ -45,7 +45,7 @@
       <property name="query" value="#{query}"/>
     </include>
     WHERE parent_gid = #{gid}
-    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> gid
   </select>
 
   <select id="listLevel0" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
@@ -58,7 +58,7 @@
       <property name="query" value="#{query}"/>
     </include>
     WHERE gadm_level = '0'
-    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> gid
   </select>
 
   <select id="listLevel1" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
@@ -71,7 +71,7 @@
       <property name="query" value="#{query}"/>
     </include>
     WHERE gadm_level = '1' AND top_levels[1] = UPPER(#{gid0})
-    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> gid
   </select>
 
   <select id="listLevel2" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
@@ -84,7 +84,7 @@
       <property name="query" value="#{query}"/>
     </include>
     WHERE gadm_level = '2' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1})
-    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> gid
   </select>
 
   <select id="listLevel3" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
@@ -97,7 +97,7 @@
       <property name="query" value="#{query}"/>
     </include>
     WHERE gadm_level = '3' AND top_levels[1] = UPPER(#{gid0}) AND top_levels[2] = UPPER(#{gid1}) AND top_levels[3] = UPPER(#{gid2})
-    ORDER BY <if test="query != null" >ft_rank DESC, </if> id
+    ORDER BY <if test="query != null" >ft_rank DESC, </if> gid
   </select>
 
   <select id="search" resultType="GadmRegion" resultMap="GADM_REGION_MAP">
@@ -117,7 +117,7 @@
         AND top_levels[gadm_level] = #{parentId}
       </if>
     </where>
-    ORDER BY gadm_level<if test="query != null" >, ft_rank DESC </if>, id
+    ORDER BY gadm_level<if test="query != null" >, ft_rank DESC </if>, gid
     <if test="page != null" >
       LIMIT #{page.limit} OFFSET #{page.offset}
     </if>

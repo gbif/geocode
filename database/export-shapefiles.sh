@@ -85,7 +85,7 @@ if [[ -e layers-subdivided ]]; then
 else
 	echo "Subdividing layers"
 	subdivide_layers
-	touch layers-subdivided
+	[[ -w . ]] && touch layers-subdivided
 fi
 
 if [[ -e export-complete ]]; then
@@ -99,5 +99,5 @@ else
 	export_iho
 	export_wgsrpd
 	export_continents
-	touch export-complete
+	[[ -w . ]] && touch export-complete
 fi
