@@ -10,6 +10,7 @@ import org.gbif.geocode.ws.layers.IhoLayer;
 import org.gbif.geocode.ws.layers.PoliticalLayer;
 import org.gbif.geocode.ws.layers.WgsrpdLayer;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,43 +38,40 @@ public class ShapefileGeocoder implements GeocodeService {
 
   private static final double DEFAULT_DISTANCE = 0.05d;
 
-  public ShapefileGeocoder(@Value("${spring.shapefiles.root}") String root) {
+  public ShapefileGeocoder(@Value("${spring.shapefiles.root}") String root, @Value("${spring.shapefiles.enabled}") List<String> enabled) {
 
     synchronized (this) {
-      LOG.info("Loading shapefiles from {}", root);
+      LOG.info("Loading shapefiles {} from {}", enabled, root);
 
       String[] columns = new String[]{"id", "name", "isoCountry"};
 
-      {
-        SimpleShapeFile political = new SimpleShapeFile(root + "political_subdivided", columns);
-        PoliticalLayer politicalLayer = new PoliticalLayer(political);
-        layers.put(politicalLayer.name(), politicalLayer);
+      Class<AbstractShapefileLayer>[] availableLayers = new Class[]{
+        PoliticalLayer.class,
+        ContinentLayer.class,
+        CentroidsLayer.class,
+        IhoLayer.class,
+        WgsrpdLayer.class,
+        GadmLayer.class
+      };
+
+      for (Class class_ : availableLayers) {
+        String name = class_.getSimpleName();
+
+        if (enabled == null || enabled.isEmpty() || enabled.contains(name)) {
+          try {
+            Constructor<AbstractShapefileLayer> c = class_.getDeclaredConstructor(String.class);
+            AbstractShapefileLayer layer = c.newInstance(new Object[]{root});
+            layers.put(layer.name(), layer);
+          } catch (Exception e) {
+            throw new RuntimeException("Error loading layer "+name+" from "+root);
+          }
+        } else {
+          LOG.info("Not loading {}, because it is not enabled in the configuration.", name);
+        }
       }
-      {
-        SimpleShapeFile continent = new SimpleShapeFile(root + "continents_subdivided", columns);
-        ContinentLayer continentLayer = new ContinentLayer(continent);
-        layers.put(continentLayer.name(), continentLayer);
-      }
-      {
-        SimpleShapeFile centroids = new SimpleShapeFile(root + "centroids", columns);
-        CentroidsLayer centroidsLayer = new CentroidsLayer(centroids);
-        layers.put(centroidsLayer.name(), centroidsLayer);
-      }
-      {
-        SimpleShapeFile iho = new SimpleShapeFile(root + "iho_subdivided", columns);
-        IhoLayer ihoLayer = new IhoLayer(iho);
-        layers.put(ihoLayer.name(), ihoLayer);
-      }
-      {
-        SimpleShapeFile wgsrpd = new SimpleShapeFile(root + "wgsrpd_subdivided", columns);
-        WgsrpdLayer wgsrpdLayer = new WgsrpdLayer(wgsrpd);
-        layers.put(wgsrpdLayer.name(), wgsrpdLayer);
-      }
-      {
-        String[] gadmColumns = new String[]{"gid_0", "gid_1", "gid_2", "gid_3", "name_0", "name_1", "name_2", "name_3", "isoCountry"};
-        SimpleShapeFile gadm3210 = new SimpleShapeFile(root + "gadm_subdivided", gadmColumns);
-        GadmLayer gadmLayer = new GadmLayer(gadm3210);
-        layers.put(gadmLayer.name(), gadmLayer);
+
+      if (layers.isEmpty()) {
+        throw new RuntimeException("No layers loaded!  Couldn't load any shapefile layers from «"+root+"»");
       }
 
       LOG.info("Available layers are {}", layers.keySet());

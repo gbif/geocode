@@ -26,6 +26,10 @@ public class GadmLayer extends AbstractShapefileLayer {
     name[3] = "GADM3";
   }
 
+  public GadmLayer(String root) {
+    this(new SimpleShapeFile(root + "gadm_subdivided", new String[]{"gid_0", "gid_1", "gid_2", "gid_3", "name_0", "name_1", "name_2", "name_3", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "GADM";

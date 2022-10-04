@@ -21,6 +21,10 @@ public class PoliticalLayer extends AbstractShapefileLayer {
     super(simpleShapeFile, PoliticalLayer.class.getResourceAsStream("political.png"), 3);
   }
 
+  public PoliticalLayer(String root) {
+    this(new SimpleShapeFile(root + "political_subdivided", new String[]{"id", "name", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "Political";

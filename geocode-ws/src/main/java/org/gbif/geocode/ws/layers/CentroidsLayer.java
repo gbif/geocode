@@ -14,6 +14,10 @@ public class CentroidsLayer extends AbstractShapefileLayer {
     super(simpleShapeFile, CentroidsLayer.class.getResourceAsStream("centroids.png"));
   }
 
+  public CentroidsLayer(String root) {
+    this(new SimpleShapeFile(root + "centroids", new String[]{"id", "name", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "Centroids";

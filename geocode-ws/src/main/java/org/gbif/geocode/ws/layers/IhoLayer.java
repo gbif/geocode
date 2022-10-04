@@ -14,6 +14,10 @@ public class IhoLayer extends AbstractShapefileLayer {
     super(simpleShapeFile, IhoLayer.class.getResourceAsStream("iho.png"));
   }
 
+  public IhoLayer(String root) {
+    this(new SimpleShapeFile(root + "iho_subdivided", new String[]{"id", "name", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "IHO";

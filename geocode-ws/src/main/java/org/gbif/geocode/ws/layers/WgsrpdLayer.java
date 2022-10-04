@@ -14,6 +14,10 @@ public class WgsrpdLayer extends AbstractShapefileLayer {
     super(simpleShapeFile, WgsrpdLayer.class.getResourceAsStream("wgsrpd.png"));
   }
 
+  public WgsrpdLayer(String root) {
+    this(new SimpleShapeFile(root + "wgsrpd_subdivided", new String[]{"id", "name", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "WGSRPD";

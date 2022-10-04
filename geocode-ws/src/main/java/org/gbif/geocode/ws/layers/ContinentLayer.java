@@ -14,6 +14,10 @@ public class ContinentLayer extends AbstractShapefileLayer {
     super(simpleShapeFile, ContinentLayer.class.getResourceAsStream("continent.png"));
   }
 
+  public ContinentLayer(String root) {
+    this(new SimpleShapeFile(root + "continents_subdivided", new String[]{"id", "name", "isoCountry"}));
+  }
+
   @Override
   public String name() {
     return "Continent";
