@@ -1,5 +1,7 @@
 proj4.defs('EPSG:4326', "+proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees");
 
+var pixel_ratio = parseInt(window.devicePixelRatio) || 1;
+
 var extent = 180.0;
 var tile_size = 512;
 /*
@@ -41,8 +43,10 @@ var tileGridBitmapCache = new ol.tilegrid.TileGrid({
 var layers = [];
 //const urlBase = 'https://api.gbif-dev.org/v1/geocode';
 const urlBase = '..';
-const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
-const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@2x.png?srs=EPSG%3A4326';
+const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
+const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
+
+var labels_input = document.getElementById('labels_input');
 
 String.prototype.hashCode = function() {
 	var hash = 5381;
@@ -84,6 +88,20 @@ function makePatternF(colour) {
 }
 
 function makePatternB(colour) {
+	var cnv = document.createElement('canvas');
+	var ctx = cnv.getContext('2d');
+	cnv.width = 8;
+	cnv.height = 8;
+	ctx.fillStyle = colour;
+
+	for(var i = 0; i < cnv.width; i += 1) {
+		ctx.fillRect(i, i, 1, 1);
+	}
+
+	return ctx.createPattern(cnv, 'repeat');
+}
+
+function makePatternBBlob(colour) {
 	var cnv = document.createElement('canvas');
 	var ctx = cnv.getContext('2d');
 	cnv.width = 14;
@@ -136,10 +154,17 @@ function countryStyle() {
 
 		var length = 0;
 		var isocode = feature.get('isocountrycode2digit') ? feature.get('isocountrycode2digit') : feature.get('id');
+		if (feature.get('type').startsWith('GADM')) {
+			isocode = feature.get('id');
+		}
 		var colour = countryColour(isocode);
 		var invertColour = oppositeCountryColour(isocode);
 
+		console.log(feature.get('type'));
+
 		if (feature.get('type') == 'Political') {
+			pattern = makePatternBBlob(colour);
+		} else if (feature.get('type') == 'WGSRPD') {
 			pattern = makePatternB(colour);
 		} else if (feature.get('type') == 'GADM3' || feature.get('type') == 'IHO') {
 			pattern = makePatternH(colour);
@@ -151,9 +176,9 @@ function countryStyle() {
 			var featureFill = new ol.style.Fill({color: colour});
 
 			text.getText().setFill(featureFill);
-			if (window.location.hash !== '') {
+			if (labels_input.checked) {
 				text.getText().setText(stringDivider(feature.get('title'), 16, '\n'));
-				text.getText().getStroke().setColor(invertColour);
+				text.getText().getStroke(); // .setColor(invertColour);
 				styles[length++] = text;
 			}
 
@@ -210,8 +235,8 @@ layers['baselayer'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
-		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=gbif-light',
-		tilePixelRatio: 2,
+		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@{r}x.png?style=gbif-middle'.replace('{r}', pixel_ratio),
+		tilePixelRatio: pixel_ratio,
 		wrapX: false
 	}),
 });
@@ -222,8 +247,17 @@ layers['baselayer-labels'] = new ol.layer.Tile({
 	source: new ol.source.TileImage({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
-		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@2x.png?style=gbif-natural-en',
-		tilePixelRatio: 2,
+		url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@{r}x.png?style=gbif-natural-en'.replace('{r}', pixel_ratio),
+		tilePixelRatio: pixel_ratio,
+		wrapX: false
+	}),
+	visible: false
+});
+
+layers['baselayer-osm'] = new ol.layer.Tile({
+	title: 'OpenStreetMap',
+	type: 'Base',
+	source: new ol.source.OSM({
 		wrapX: false
 	}),
 	visible: false
@@ -398,7 +432,7 @@ layers['occurrences_density'] = new ol.layer.Tile({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
 		url: occurrences_density_url,
-		tilePixelRatio: 2,
+		tilePixelRatio: pixel_ratio,
 		wrapX: false
 	}),
 	visible: false
@@ -410,7 +444,7 @@ layers['occurrences_adhoc'] = new ol.layer.Tile({
 		projection: 'EPSG:4326',
 		tileGrid: tileGrid,
 		url: occurrences_adhoc_url,
-		tilePixelRatio: 2,
+		tilePixelRatio: pixel_ratio,
 		wrapX: false
 	}),
 	visible: false
@@ -434,9 +468,15 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
 	layers: [
-		layers['baselayer'],
-		layers['baselayer-labels'],
 		layers['bitmapCache'],
+		new ol.layer.Group({
+			title: 'Base',
+			layers: [
+				layers['baselayer-osm'],
+				layers['baselayer'],
+				layers['baselayer-labels']
+			]
+		}),
 		new ol.layer.Group({
 			title: 'Occurrences',
 			layers: [
@@ -572,7 +612,7 @@ occurrences_density_input.onchange = (function(e) {
       projection: 'EPSG:4326',
       tileGrid: tileGrid,
       url: occurrences_density_url+'&'+occurrences_density_input.value,
-      tilePixelRatio: 2,
+      tilePixelRatio: pixel_ratio,
       wrapX: false
   }));
 });
@@ -585,7 +625,7 @@ occurrences_adhoc_input.onchange = (function(e) {
       projection: 'EPSG:4326',
       tileGrid: tileGrid,
       url: occurrences_adhoc_url+'&'+occurrences_adhoc_input.value,
-      tilePixelRatio: 2,
+      tilePixelRatio: pixel_ratio,
       wrapX: false
   }));
 });

@@ -120,6 +120,7 @@ function import_political() {
 
 	echo "DROP TABLE IF EXISTS osm;" | exec_psql
 
+	echo "Importing OSM from $START_DIR/osm"
 	cd $START_DIR/osm
 	for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188 62269 36989 1650407; do
 		[[ -f $id.xml ]] || curl -Ssfo $id.xml https://www.openstreetmap.org/api/0.6/relation/$id/full
@@ -303,9 +304,46 @@ function import_gadm() {
 
 	echo "SELECT AddGeometryColumn('gadm', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
 	echo "UPDATE gadm SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+	# GBIF policy
 	echo "UPDATE gadm SET name_0 = 'Chinese Taipei' WHERE gid_0 = 'TWN';" | exec_psql
 	echo "UPDATE gadm SET name_0 = 'Falkland Islands (Malvinas)' WHERE gid_0 = 'FLK';" | exec_psql
+
+	# UKR.11.1_1 "Darnyts'kyi" (part of Kyiv) is missing vs GADM 3.
 	echo "UPDATE gadm SET gid_1 = 'UKR.11_1', name_1 = 'Kiev City', varname_1 = 'Kyiv', nl_name_1 = 'Київ', hasc_1 = 'UA.KC', type_1 = 'Independent City', engtype_1 = 'Independent City', validfr_1 = '~1955', gid_2 = 'UKR.11.1_1', name_2 = 'Darnyts''kyi', varname_2 = 'Darnytskyi', hasc_2 = 'UA.KC.DA', type_2 = 'Raion', engtype_2 = 'Raion', validfr_2 = 'Unknown' WHERE fid = 328778;" | exec_psql
+
+	# MHL.19_1 is a duplicate id, used for both Kili/Bikini/Ejit and Rongelap.
+	echo "UPDATE gadm SET gid_1 = 'MHL.24_1' WHERE gid_1 = 'MHL.19_1' AND name_1 = 'Kili / Bikini / Ejit';" | exec_psql
+
+	# Several gid_2 and gid_3 values for Indonesia do not include a _1 or similar version
+	echo "UPDATE gadm SET gid_2 = CONCAT(gid_2, '_1') WHERE gid_2 !~ '^.*_[0-9]$' AND gid_0 = 'IDN';" | exec_psql
+	echo "UPDATE gadm SET gid_3 = CONCAT(gid_3, '_1') WHERE gid_3 !~ '^.*_[0-9]$' AND gid_0 = 'IDN';" | exec_psql
+
+	# BEN.7_1 "Kouffo" contains level 2 regions marked as part of BEN.9_1
+	echo "UPDATE gadm SET gid_2 = 'BEN.7.3_1', gid_3 = REPLACE(gid_3, 'BEN.9.6', 'BEN.7.3') WHERE gid_1 = 'BEN.7_1' AND name_2 = 'Dogbo';" | exec_psql
+	echo "UPDATE gadm SET gid_2 = 'BEN.7.6_1', gid_3 = REPLACE(gid_3, 'BEN.9.6', 'BEN.7.6') WHERE gid_1 = 'BEN.7_1' AND name_2 = 'Toviklin';" | exec_psql
+
+	# Similar error for BLR.7_1→BLR.5.11_1 Minsk
+	echo "UPDATE gadm SET gid_2 = 'BLR.7.0_1' WHERE gid_2 = 'BLR.5.11_1' AND name_2 = 'Minsk';" | exec_psql
+
+	# And TON.5_1→TON.4.0_1
+	echo "UPDATE gadm SET gid_2 = 'TON.5.0_1' WHERE gid_2 = 'TON.4.0_1' AND name_1 = 'Vava''u';" | exec_psql
+
+	# Sanity checks. These could be written as assertions:
+	#   DO $$ BEGIN ASSERT (SELECT COUNT(*) FROM gadm WHERE gid_0 !~ '^...$') = 0, 'Bad gid_0 values.'; END; $$;
+	# but they are not, as there are outstanding errors in GADM.
+	#
+	# gid_0 correct form: SELECT gid_0 FROM gadm WHERE gid_0 !~ '^...$';
+	# gid_1 correct form: SELECT * FROM gadm WHERE gid_1 !~ '^.*_[0-9]$';
+	# gid_2 correct form: SELECT * FROM gadm WHERE gid_2 !~ '^.*_[0-9]$';
+	# gid_3 correct form: SELECT * FROM gadm WHERE gid_3 !~ '^.*_[0-9]$';
+	# gid_4 correct form: SELECT * FROM gadm WHERE gid_4 !~ '^.*_[0-9]$';
+	# gid_5 correct form: SELECT * FROM gadm WHERE gid_5 !~ '^.*_[0-9]$';
+
+	# Britain is too much of a mess to fix.
+	# SELECT DISTINCT g1.gid_0, g1.gid_1, g1.gid_2, g1.gid_3, g1.name_1, g1.name_2, g1.name_3 FROM gadm g1 INNER JOIN gadm g2 ON g1.gid_2 = g2.gid_2
+	#   WHERE g1.name_2 != g2.name_2 AND g1.gid_2 IS NOT NULL ORDER BY g1.gid_0, g1.gid_1, g1.gid_2, g1.gid_3;
+	# Currently shows lots of Britain and a few more.
 
 	nullif="gid_0 = NULLIF(gid_0, '')"
 	for i in  name_0 varname_0 \

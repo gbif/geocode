@@ -12,13 +12,11 @@
 			html {
 				font-family: sans-serif;
 			}
-			.wrapper {
-				position: absolute;
-				top: 6em;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: lavender;
+			body {
+				display: grid;
+				grid-template-rows: 6em 1fr;
+				height: 100vh;
+				margin: 0;
 			}
 			.map {
 				width: 100%;
@@ -91,6 +89,8 @@
 				—
 				<label>Density filter: <input type="text" name="occurrences_density_input" id="occurrences_density_input" value=""></label>
 				<label>Ad-hoc filter: <input type="text" name="occurrences_adhoc_input" id="occurrences_adhoc_input" value="style=scaled.circles&amp;mode=GEO_CENTROID"></label>
+				—
+				<label>Labels: <input type="checkbox" name="labels_input" id="labels_input"></label>
 			</fieldset>
 		</div>
 		<div class="wrapper">

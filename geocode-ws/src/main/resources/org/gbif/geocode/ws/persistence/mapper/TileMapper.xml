@@ -74,7 +74,7 @@
     WITH overlappings AS (
       SELECT
         gid_5 AS id,
-        'GADM' AS type,
+        'GADM5' AS type,
         'http://gadm.org' AS source,
         name_5 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
@@ -107,7 +107,7 @@
     WITH overlappings AS (
       SELECT
         gid_4 AS id,
-        'GADM' AS type,
+        'GADM4' AS type,
         'http://gadm.org' AS source,
         name_4 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
@@ -140,7 +140,7 @@
     WITH overlappings AS (
       SELECT
         gid_3 AS id,
-        'GADM' AS type,
+        'GADM3' AS type,
         'http://gadm.org' AS source,
         name_3 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
@@ -173,7 +173,7 @@
     WITH overlappings AS (
       SELECT
         gid_2 AS id,
-        'GADM' AS type,
+        'GADM2' AS type,
         'http://gadm.org' AS source,
         name_2 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
@@ -206,7 +206,7 @@
     WITH overlappings AS (
       SELECT
         gid_1 AS id,
-        'GADM' AS type,
+        'GADM1' AS type,
         'http://gadm.org' AS source,
         name_1 AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
