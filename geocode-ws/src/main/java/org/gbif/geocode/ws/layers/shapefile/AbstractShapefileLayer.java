@@ -1,4 +1,4 @@
-package org.gbif.geocode.ws.layers;
+package org.gbif.geocode.ws.layers.shapefile;
 
 import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.model.Location;
@@ -33,19 +33,6 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
   int[] titleColumnIndex;
   int[] isoCodeColumnIndex;
 
-  public AbstractShapefileLayer(InputStream bitmap) {
-    this(bitmap, 1);
-  }
-
-  AbstractShapefileLayer(InputStream bitmap, int maxLocations) {
-    super(bitmap, maxLocations);
-    this.simpleShapeFile = null;
-  }
-
-  AbstractShapefileLayer(SimpleShapeFile simpleShapeFile, InputStream bitmap) {
-    this(simpleShapeFile, bitmap, 1);
-  }
-
   AbstractShapefileLayer(SimpleShapeFile simpleShapeFile, InputStream bitmap, int maxLocations) {
     super(bitmap, maxLocations);
     this.simpleShapeFile = simpleShapeFile;
@@ -57,11 +44,14 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     isoCodeColumnIndex = simpleShapeFile.getColumnIdxs("ISOCOUNTRY");
   }
 
-  public List<Location> convertResultToLocation(List<ImmutablePair<Integer, Double>> countryValues) {
+  /**
+   * Convert the shapefile query result into Locations.
+   */
+  List<Location> convertResultToLocation(List<ImmutablePair<Integer, Double>> countryValues, double latitude) {
     List<Location> locations = new ArrayList<>();
 
     for (Pair<Integer, Double> countryValue : countryValues) {
-      List<Location> ls = resultToLocation(countryValue);
+      List<Location> ls = resultToLocation(countryValue, latitude);
 
       for (Location l : ls) {
         boolean additionalHit = false;
@@ -86,7 +76,12 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     return locations;
   }
 
-  public List<Location> resultToLocation(Pair<Integer, Double> countryValue) {
+  /**
+   * Convert a single shapefile result into a Location.
+   *
+   * Non-trivial layers will need to override this.
+   */
+  List<Location> resultToLocation(Pair<Integer, Double> countryValue, double latitude) {
     String id = idColumnLookup[idColumnIndex[countryValue.getLeft()]];
     String title = titleColumnLookup[titleColumnIndex[countryValue.getLeft()]];
     String isoCode = isoCodeColumnLookup[isoCodeColumnIndex[countryValue.getLeft()]];
@@ -98,13 +93,18 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     l.setTitle(title);
     l.setIsoCountryCode2Digit(isoCode);
     l.setDistance(countryValue.getRight());
+    l.calculateDistanceMetersFromLatitude(latitude);
 
     return Collections.singletonList(l);
   }
 
-  public List<Location> lookup(double latitude, double longitude, double uncertainty) {
+  /**
+   * Query the shapefile.
+   */
+  @Override
+  protected List<Location> queryDatasource(double latitude, double longitude, double uncertainty) {
     List<ImmutablePair<Integer, Double>> intersections = simpleShapeFile.intersectInt(longitude, latitude, uncertainty);
-    List<Location> locations = convertResultToLocation(intersections);
+    List<Location> locations = convertResultToLocation(intersections, latitude);
 
     if ((++queries % 10_000) == 0) {
       LOG.info("{} did {} shapefile queries.", name(), queries);

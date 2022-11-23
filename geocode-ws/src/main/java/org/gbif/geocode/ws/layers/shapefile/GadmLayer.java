@@ -1,33 +1,26 @@
-package org.gbif.geocode.ws.layers;
+package org.gbif.geocode.ws.layers.shapefile;
 
 import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.ws.layers.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Component;
 
 import au.org.ala.layers.intersect.SimpleShapeFile;
 
-@Component
 public class GadmLayer extends AbstractShapefileLayer {
-  String[] name = new String[4];
+  final String[] name = new String[4];
 
-  public GadmLayer() {
-    super(GadmLayer.class.getResourceAsStream("gadm3210.png"), 4);
-  }
-
-  public GadmLayer(SimpleShapeFile simpleShapeFile) {
-    super(simpleShapeFile, GadmLayer.class.getResourceAsStream("gadm3210.png"), 4);
+  public GadmLayer(String root) {
+    super(new SimpleShapeFile(root + "gadm_subdivided", new String[]{"gid_0", "gid_1", "gid_2", "gid_3", "name_0", "name_1", "name_2", "name_3", "isoCountry"}),
+      Bitmap.class.getResourceAsStream("gadm3210.png"),
+      4);
     name[0] = "GADM0";
     name[1] = "GADM1";
     name[2] = "GADM2";
     name[3] = "GADM3";
-  }
-
-  public GadmLayer(String root) {
-    this(new SimpleShapeFile(root + "gadm_subdivided", new String[]{"gid_0", "gid_1", "gid_2", "gid_3", "name_0", "name_1", "name_2", "name_3", "isoCountry"}));
   }
 
   @Override
@@ -41,7 +34,7 @@ public class GadmLayer extends AbstractShapefileLayer {
   }
 
   @Override
-  public List<Location> resultToLocation(Pair<Integer, Double> countryValue) {
+  public List<Location> resultToLocation(Pair<Integer, Double> countryValue, double latitude) {
     List<Location> locations = new ArrayList<>();
 
     String[] gid = new String[4];
@@ -65,6 +58,7 @@ public class GadmLayer extends AbstractShapefileLayer {
         l.setTitle(title[i]);
         l.setIsoCountryCode2Digit(isoCode);
         l.setDistance(countryValue.getRight());
+        l.calculateDistanceMetersFromLatitude(latitude);
         locations.add(l);
       }
     }

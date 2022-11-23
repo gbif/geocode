@@ -1,6 +1,7 @@
 package org.gbif.geocode.ws.persistence.mapper;
 
 import org.gbif.geocode.api.model.Location;
+import org.gbif.geocode.ws.layers.jts.PointLocation;
 
 import java.util.List;
 
@@ -11,8 +12,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LocationMapper {
   List<Location> queryLayers(
-      @Param("lng") double point,
-      @Param("lat") double latitude,
-      @Param("distance") double distance,
-      @Param("layers") List<String> layers);
+    @Param("lng") double point,
+    @Param("lat") double latitude,
+    @Param("distance") double distance,
+    @Param("layers") List<String> layers);
+
+  List<Location> queryLayer(
+    @Param("lng") double point,
+    @Param("lat") double latitude,
+    @Param("distance") double distance,
+    @Param("layer") String layer);
+
+  List<PointLocation> fetchPointLocations();
 }

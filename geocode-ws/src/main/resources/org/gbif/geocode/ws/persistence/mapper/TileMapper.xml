@@ -409,6 +409,6 @@
   </select>
 
   <select id="svgCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT type || id AS id, ST_AsSVG(ST_Buffer(geom, 0.05, 'quad_segs=4')) AS shape FROM centroids
+    SELECT type || id AS id, ST_AsSVG(ST_Buffer(geom::geography, 5000, 'quad_segs=4')) AS shape FROM centroids
   </select>
 </mapper>

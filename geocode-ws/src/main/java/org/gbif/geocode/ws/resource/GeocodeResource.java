@@ -3,7 +3,6 @@ package org.gbif.geocode.ws.resource;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
-import org.gbif.geocode.ws.monitoring.GeocodeWsStatistics;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
@@ -40,24 +39,17 @@ import com.google.common.io.ByteStreams;
       "Access-Control-Allow-Headers"
     })
 public class GeocodeResource implements GeocodeService {
-
-  private final GeocodeService myBatisGeocoder;
-  private final GeocodeService shapefileGeocoder;
-  private final GeocodeWsStatistics statistics;
+  private final GeocodeService geocoderService;
 
   private final List<String> defaultLayers;
 
-  private static final String ALL_LAYER_CACHE_BITMAP = "cache-bitmap.png";
+  private static final String DEFAULT_LAYERS_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
-  public GeocodeResource(GeocodeService shapefileGeocoder, GeocodeService myBatisGeocoder, GeocodeWsStatistics statistics, @Nullable BuildProperties buildProperties) {
-    this.statistics = statistics;
-    this.shapefileGeocoder =
-      new GeocodeBitmapCache(
-        shapefileGeocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
-    this.myBatisGeocoder =
-      new GeocodeBitmapCache(
-        myBatisGeocoder, this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+  public GeocodeResource(GeocodeService geocoderService,
+                         @Nullable BuildProperties buildProperties) {
+    this.geocoderService = new GeocodeBitmapCache(
+        geocoderService, this.getClass().getResourceAsStream(DEFAULT_LAYERS_CACHE_BITMAP));
     this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
 
     this.defaultLayers = Arrays.asList(
@@ -73,15 +65,15 @@ public class GeocodeResource implements GeocodeService {
   }
 
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Override
   public List<Location> get(
-      @RequestParam(value = "lat", required = false) Double latitude,
-      @RequestParam(value = "lng", required = false) Double longitude,
+      @RequestParam(value = "lat") Double latitude,
+      @RequestParam(value = "lng") Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
           Double uncertaintyDegrees,
       @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
           Double uncertaintyMeters,
-      @Nullable @RequestParam(value = "layer", required = false) List<String> layers,
-      @Nullable @RequestParam(value = "backend", required = false) String backend) {
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers) {
     if (latitude == null
         || longitude == null
         || latitude < -90
@@ -101,18 +93,7 @@ public class GeocodeResource implements GeocodeService {
       layers.add("GADM");
     }
 
-    statistics.goodRequest();
-    if ("postgis".equals(backend)) {
-      return myBatisGeocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
-    } else {
-      return shapefileGeocoder.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
-    }
-  }
-
-  @Override
-  public List<Location> get(Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters,
-    List<String> layers) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers, null);
+    return geocoderService.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
   }
 
   @Override
@@ -140,7 +121,7 @@ public class GeocodeResource implements GeocodeService {
   @Override
   public byte[] bitmap() {
     try {
-      return ByteStreams.toByteArray(this.getClass().getResourceAsStream(ALL_LAYER_CACHE_BITMAP));
+      return ByteStreams.toByteArray(this.getClass().getResourceAsStream(DEFAULT_LAYERS_CACHE_BITMAP));
     } catch (IOException e) {
       return null;
     }

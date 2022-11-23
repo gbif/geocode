@@ -58,12 +58,14 @@ public class Location implements Serializable, Comparable<Location> {
    */
   private Double distance;
 
+  private Double distanceMeters;
+
   public Location() {
     // For mybatis & jackson
   }
 
   public Location(
-    String id, String type, String source, String title, String isoCountryCode2Digit, Double distance
+    String id, String type, String source, String title, String isoCountryCode2Digit, Double distance, Double distanceMeters
   ) {
     this.id = id;
     this.type = type;
@@ -71,6 +73,7 @@ public class Location implements Serializable, Comparable<Location> {
     this.title = title;
     this.isoCountryCode2Digit = isoCountryCode2Digit;
     this.distance = distance;
+    this.distanceMeters = distanceMeters;
   }
 
   public String getIsoCountryCode2Digit() {
@@ -121,6 +124,22 @@ public class Location implements Serializable, Comparable<Location> {
     this.distance = distance;
   }
 
+  public Double getDistanceMeters() {
+    return distanceMeters;
+  }
+
+  public void setDistanceMeters(Double distanceMeters) {
+    this.distanceMeters = distanceMeters;
+  }
+
+  public void calculateDistanceMetersFromLatitude(double latitude) {
+    this.distanceMeters = 111_319.491 * distance * Math.cos(Math.toRadians(latitude));
+  }
+
+  public void calculateDistanceDegreesFromMeters(double latitude) {
+    this.distance = distanceMeters / (111_319.491 * Math.cos(Math.toRadians(latitude)));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -131,7 +150,8 @@ public class Location implements Serializable, Comparable<Location> {
       Objects.equals(source, location.source) &&
       Objects.equals(title, location.title) &&
       Objects.equals(isoCountryCode2Digit, location.isoCountryCode2Digit) &&
-      Objects.equals(distance, location.distance);
+      Objects.equals(distance, location.distance) &&
+      Objects.equals(distanceMeters, location.distanceMeters);
   }
 
   @Override
@@ -148,6 +168,7 @@ public class Location implements Serializable, Comparable<Location> {
       ", title='" + title + '\'' +
       ", isoCountryCode2Digit='" + isoCountryCode2Digit + '\'' +
       ", distance=" + distance +
+      ", distanceMeters=" + distanceMeters +
       '}';
   }
 

@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(value = "classpath:application-test.properties", properties = "spring.shapefiles.enabled=PoliticalLayer, IhoLayer")
+@TestPropertySource(value = "classpath:application-test.properties",
+  properties = {"spring.shapefiles.enabled=PoliticalLayer, IhoLayer", "spring.defaultLayers=Political, IHO"})
 public class GeocodeResourceIT {
 
   private final GeocodeService geocodeClient;

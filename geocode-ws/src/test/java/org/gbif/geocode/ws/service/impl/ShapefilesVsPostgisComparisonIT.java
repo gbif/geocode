@@ -15,50 +15,40 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import au.org.ala.layers.intersect.ComplexRegion;
-
 /**
  * Compare results (accuracy) between PostGIS and ShapeFile geocoders.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = GeocoderIntegrationTestsConfiguration.class)
 @TestPropertySource(value = "classpath:application-test.properties")
-@Disabled
 public class ShapefilesVsPostgisComparisonIT {
-  final MyBatisGeocoder myBatisGeocoder;
-  final ShapefileGeocoder shapefileGeocoder;
+  final GeocodeServiceImpl geocoderService;
 
-  List<String> layers = new ArrayList<>();
+  List<String> sfLayers = new ArrayList<>();
+  List<String> pgLayers = new ArrayList<>();
   int i = 0;
 
   @Autowired
-  public ShapefilesVsPostgisComparisonIT(MyBatisGeocoder myBatisGeocoder, ShapefileGeocoder shapefileGeocoder) {
-    this.myBatisGeocoder = myBatisGeocoder;
-    this.shapefileGeocoder = shapefileGeocoder;
+  public ShapefilesVsPostgisComparisonIT(GeocodeServiceImpl geocoderService) {
+    this.geocoderService = geocoderService;
   }
 
   @Test
   public void compareVariousPoliticalQueries() {
-    layers.clear();
-    layers.add("Political");
+    sfLayers.clear();
+    sfLayers.add("Political");
+    pgLayers.clear();
+    pgLayers.add("PG_Political");
 
     List<double[]> points = new ArrayList<>();
+
+    // Land
     points.add(new double[]{-26.867118294961116, 32.130339342292245}); // Just outside MZ
     points.add(new double[]{-28.73952617955809, 28.278228795828138}); // Just inside Lesotho
     points.add(new double[]{-23.26833477330808, 33.53656009465627}); // Middle of Mozambique
     points.add(new double[]{60.2954261485896, 25.525862842197768}); // Finland
 
-    for (double[] point : points) {
-      check(point[0], point[1], false);
-    }
-  }
-
-  @Test
-  public void compareVariousEezQueries() {
-    layers.clear();
-    layers.add("EEZ");
-
-    List<double[]> points = new ArrayList<>();
+    // EEZ
     points.add(new double[]{-53.37113659640561, -73.32594171138219}); // Chile EEZ (I think)
     points.add(new double[]{-51.524367727596626, -57.16043853997107}); // FK/AR EEZ
     points.add(new double[]{14.142595200379944, -77.29781383340294}); // CO/JM EEZ
@@ -77,8 +67,10 @@ public class ShapefilesVsPostgisComparisonIT {
   @Test
   @Disabled // The data is fine, except the IDs etc are different.
   public void compareVariousCentroidsQueries() {
-    layers.clear();
-    layers.add("Centroids");
+    sfLayers.clear();
+    sfLayers.add("Centroids");
+    pgLayers.clear();
+    pgLayers.add("PG_Centroids");
 
     List<double[]> points = new ArrayList<>();
     points.add(new double[]{1.59435, 10.49347}); // Equatorial Guinea centroid
@@ -90,8 +82,10 @@ public class ShapefilesVsPostgisComparisonIT {
 
   @Test
   public void compareVariousGadmQueries() {
-    layers.clear();
-    layers.add("GADM");
+    sfLayers.clear();
+    sfLayers.add("GADM");
+    pgLayers.clear();
+    pgLayers.add("PG_GADM");
 
     List<double[]> points = new ArrayList<>();
     points.add(new double[]{-20.87899757475735,-62.752318771018494});
@@ -113,8 +107,10 @@ public class ShapefilesVsPostgisComparisonIT {
 
   @Test
   public void compareVariousQueries() {
-    layers.clear();
-    layers.add("Political");
+    sfLayers.clear();
+    sfLayers.add("Political");
+    pgLayers.clear();
+    pgLayers.add("PG_Political");
 
     List<double[]> points = new ArrayList<>();
     points.add(new double[]{1.041618756336291, 140.76331408205158});
@@ -168,12 +164,18 @@ public class ShapefilesVsPostgisComparisonIT {
   public void compareRandomQueries() {
     int count = 10_000;
 
-    layers.clear();
-    layers.add("Political");
-    layers.add("Continent");
-    layers.add("GADM3210");
-    layers.add("IHO");
-    layers.add("WGSRPD");
+    sfLayers.clear();
+    sfLayers.add("Political");
+    sfLayers.add("Continent");
+    sfLayers.add("GADM3210");
+    sfLayers.add("IHO");
+    sfLayers.add("WGSRPD");
+    pgLayers.clear();
+    pgLayers.add("PG_Political");
+    pgLayers.add("PG_Continent");
+    pgLayers.add("PG_GADM3210");
+    pgLayers.add("PG_IHO");
+    pgLayers.add("PG_WGSRPD");
 
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
@@ -188,8 +190,8 @@ public class ShapefilesVsPostgisComparisonIT {
 
     boolean fail = false;
 
-    List<Location> p = myBatisGeocoder.get(latitude, longitude, 0.05, null, layers).stream().sorted().collect(Collectors.toList());
-    List<Location> s = shapefileGeocoder.get(latitude, longitude, 0.05, null, layers).stream().distinct().sorted().collect(Collectors.toList());
+    List<Location> p = geocoderService.get(latitude, longitude, 0.05, null, pgLayers).stream().sorted().collect(Collectors.toList());
+    List<Location> s = geocoderService.get(latitude, longitude, 0.05, null, sfLayers).stream().sorted().collect(Collectors.toList());
 
     if (debug) {
       if (p.size() == s.size()) {

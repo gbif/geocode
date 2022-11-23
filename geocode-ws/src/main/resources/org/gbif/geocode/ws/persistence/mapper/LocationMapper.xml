@@ -7,4 +7,14 @@
     FROM query_layers(#{lng}, #{lat}, #{distance}, <foreach item="item" collection="layers" open="ARRAY[" separator="," close="]">#{item}</foreach>);
   </select>
 
+  <select id="queryLayer" resultType="Location">
+    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance
+    FROM query_layers(#{lng}, #{lat}, #{distance}, ARRAY[#{layer}]);
+  </select>
+
+  <select id="fetchPointLocations" resultType="PointLocation">
+    SELECT ST_X(geom) AS longitude, ST_Y(geom) AS latitude, id, isoCountryCode2Digit
+    FROM centroids;
+  </select>
+
 </mapper>

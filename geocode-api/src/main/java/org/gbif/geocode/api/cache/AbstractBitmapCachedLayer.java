@@ -1,6 +1,5 @@
 package org.gbif.geocode.api.cache;
 
-import org.gbif.common.shaded.com.google.common.base.Stopwatch;
 import org.gbif.geocode.api.model.Location;
 
 import java.awt.image.BufferedImage;
@@ -10,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -37,6 +35,8 @@ public abstract class AbstractBitmapCachedLayer {
   private final Map<Integer, List<Location>> colourKey = new HashMap<>();
   public long queries = 0, border = 0, empty = 0, miss = 0, hit = 0;
 
+  private static final double BITMAP_UNCERTAINTY_DEGREES = 0.05d;
+
   public AbstractBitmapCachedLayer(InputStream bitmap) {
     this(bitmap, 1);
   }
@@ -52,15 +52,43 @@ public abstract class AbstractBitmapCachedLayer {
     }
   }
 
+  /**
+   * Layer name, used in API responses and logging.
+   */
   public abstract String name();
 
+  /**
+   * Layer source (e.g. a URL), used in API responses.
+   */
   public abstract String source();
+
+  /**
+   * Query the layer, using the bitmap cache first if the uncertainty allows it.
+   */
+  public final List<Location> query(double latitude, double longitude, double uncertaintyDegrees) {
+    List<Location> found = null;
+    if (uncertaintyDegrees <= BITMAP_UNCERTAINTY_DEGREES) { // TODO per layer
+      found = checkBitmap(latitude, longitude);
+    }
+
+    if (found == null) {
+      found = queryDatasource(latitude, longitude, uncertaintyDegrees);
+      putBitmap(latitude, longitude, found);
+    }
+
+    return found;
+  }
+
+  /**
+   * Query the underlying datasource (PostGIS, shapefile etc).
+   */
+  protected abstract List<Location> queryDatasource(double latitude, double longitude, double uncertainty);
 
   /**
    * Check the colour of a pixel from the map image to determine the country.
    * @return Locations or null if the bitmap can't answer.
    */
-  public List<Location> checkBitmap(double lat, double lng) {
+  List<Location> checkBitmap(double lat, double lng) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round((lng + 180d) / 360d * (imgWidth - 1)));
@@ -106,9 +134,9 @@ public abstract class AbstractBitmapCachedLayer {
   }
 
   /**
-   * Store a result in the bitmap's cache, if it's not a border region.
+   * Store a result in the bitmap cache, if it's not a border region.
    */
-  public void putBitmap(double lat, double lng, List<Location> locations) {
+  void putBitmap(double lat, double lng, List<Location> locations) {
     // Convert the latitude and longitude to x,y coordinates on the image.
     // The axes are swapped, and the image's origin is the top left.
     int x = (int) (Math.round ((lng+180d)/360d*(imgWidth -1)));

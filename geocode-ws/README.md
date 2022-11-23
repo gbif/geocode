@@ -1,10 +1,12 @@
-# geocode-ws
+# Geocode WS
 
 RESTful service that provides the reverse geocode functionality. The REST resource should be accessible at this URL: `http://{server}:{httpPort}/reverse`.
 
+The GBIF instance is available at `https://api.gbif.org/v1/geocode/reverse`.
+
 ## How to build and run this project
 
-The database url and credentials are required to start the application. You can provide them in different ways.
+Shapefiles and the database URL and credentials are required to start the application. You can provide them in different ways.
 
 ### Using maven
 You can put the DB credentials in a maven profile:
@@ -20,9 +22,9 @@ You can put the DB credentials in a maven profile:
 </profile>
 ```
 
-Then start the application with maven and your profile: ` mvn -Pgeocode-ws spring-boot:run`
+Then start the application with maven and your profile: `mvn -Pgeocode-ws spring-boot:run`
 
-### Using a java command
+### Using a Java command
 
 You can create an [application.yml](src/resources/application.yml) and a [bootstrap.yml](src/resources/bootstrap.yml) files
 and pass them to the application:
@@ -46,18 +48,32 @@ Response should be:
 
 ```json
 [
-  {
-    "title": "PA:6",
-    "id": "6"
-  }
-]
+    {
+        "id": "EUROPE",
+        "type": "Continent",
+        "source": "https://github.com/gbif/continents",
+        "title": "EUROPE",
+        "isoCountryCode2Digit": "",
+        "distance": 0.0,
+        "distanceMeters": 0.0
+    },
+    {
+        "id": "http://marineregions.org/mrgid/5674",
+        "type": "Political",
+        "source": "https://www.marineregions.org/",
+        "title": "Denmark",
+        "isoCountryCode2Digit": "DK",
+        "distance": 0.0,
+        "distanceMeters": 0.0
+    },
+    …
 ```
 
-## Create Database
+You can also try http://localhost:8080/geocode/debug/map.html
 
-At the moment we have two sources of data: Natural Earth and EEZ.
+## Create the database and shapefiles
 
-See [../database/scripts/import.sh](../database/scripts/import.sh) for a script to import the database. With appropriate environment variables, it can be used against non-Docker databases.
+See [../database/scripts/import.sh](../database/scripts/import.sh) for a script to import the database, and from it export shapefiles. With appropriate environment variables, it can be used against non-Docker databases.
 
 ## Map image for faster lookups
 
@@ -68,4 +84,3 @@ There is a PNG image used to speed up queries — after an initial query, roughl
 See [Map Image Lookup](./MapImageLookup.adoc) for how the image is created.
 
 The layers GADM0, GADM1 and GADM2 are queried at the same time as GADM3.  Since GBIF usage is for GADM3, efficient caching of the lower layers isn't implemented
-

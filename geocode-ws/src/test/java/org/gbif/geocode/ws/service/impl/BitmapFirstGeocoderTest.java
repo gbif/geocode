@@ -2,7 +2,7 @@ package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
-import org.gbif.geocode.ws.layers.PoliticalLayer;
+import org.gbif.geocode.ws.layers.Bitmap;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,15 +26,15 @@ public class BitmapFirstGeocoderTest {
    */
   @Test
   public void testGoodRequest() {
-    MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
+    GeocodeServiceImpl dbGeocoder = mock(GeocodeServiceImpl.class);
 
     GeocodeBitmapCache geocoder =
         new GeocodeBitmapCache(
             dbGeocoder,
             this.getClass().getResourceAsStream("/org/gbif/geocode/ws/resource/cache-bitmap.png"));
 
-    Location locationTest = new Location("test", "political", "source", "Greenland", "GD", 0d);
-    Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD", 0d);
+    Location locationTest = new Location("test", "political", "source", "Greenland", "GD", 0d, 0d);
+    Location locationTest2 = new Location("test", "political", "source", "Greenland", "GD", 0d, 0d);
 
     when(dbGeocoder.get(75.0, -40.0, null, null)).thenReturn(Arrays.asList(locationTest));
 
@@ -53,7 +53,7 @@ public class BitmapFirstGeocoderTest {
   /** Test that borders are read from the database every time. */
   @Test
   public void testBorderRequest() {
-    MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
+    GeocodeServiceImpl dbGeocoder = mock(GeocodeServiceImpl.class);
 
     GeocodeBitmapCache geocoder =
         new GeocodeBitmapCache(
@@ -61,8 +61,8 @@ public class BitmapFirstGeocoderTest {
             this.getClass().getResourceAsStream("/org/gbif/geocode/ws/resource/cache-bitmap.png"));
 
     // All of Sri Lanka is covered with black borders in the bitmap image.
-    Location locationTest = new Location("test", "political", "source", "Denmark", "DK", 0d);
-    Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK", 0d);
+    Location locationTest = new Location("test", "political", "source", "Denmark", "DK", 0d, 0d);
+    Location locationTest2 = new Location("test", "political", "source", "Denmark", "DK", 0d, 0d);
 
     when(dbGeocoder.get(55.102d, 14.685d, null, null)).thenReturn(Arrays.asList(locationTest));
 
@@ -80,16 +80,16 @@ public class BitmapFirstGeocoderTest {
   /** Test that areas are cached (if reasonable). */
   @Test
   public void testPoliticalRequest() {
-    MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
+    GeocodeServiceImpl dbGeocoder = mock(GeocodeServiceImpl.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
+        new GeocodeBitmapCache(dbGeocoder, Bitmap.class.getResourceAsStream("political.png"));
 
     // In the Pacific within French Polynesia's EEZ.
     Location locationTest =
-        new Location("test", "political", "source", "French Polynesia", "PF", 0d);
+        new Location("test", "political", "source", "French Polynesia", "PF", 0d, 0d);
     Location locationTest2 =
-        new Location("test", "political", "source", "French Polynesia", "PF", 0d);
+        new Location("test", "political", "source", "French Polynesia", "PF", 0d, 0d);
 
     when(dbGeocoder.get(-21.0d, -147.0d, null, null)).thenReturn(Arrays.asList(locationTest));
 
@@ -108,10 +108,10 @@ public class BitmapFirstGeocoderTest {
   /** Test that international water doesn't go to the database at all. */
   @Test
   public void testInternationalWaterRequest() {
-    MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
+    GeocodeServiceImpl dbGeocoder = mock(GeocodeServiceImpl.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
+        new GeocodeBitmapCache(dbGeocoder, Bitmap.class.getResourceAsStream("political.png"));
 
     Collection<Location> locations = geocoder.get(0d, 0d, null, null);
 
@@ -123,10 +123,10 @@ public class BitmapFirstGeocoderTest {
   /** Test that layer requests always go to the database. */
   @Test
   public void testLayerRequest() {
-    MyBatisGeocoder dbGeocoder = mock(MyBatisGeocoder.class);
+    GeocodeServiceImpl dbGeocoder = mock(GeocodeServiceImpl.class);
 
     GeocodeBitmapCache geocoder =
-        new GeocodeBitmapCache(dbGeocoder, PoliticalLayer.class.getResourceAsStream("political.png"));
+        new GeocodeBitmapCache(dbGeocoder, Bitmap.class.getResourceAsStream("political.png"));
 
     List<String> politicalLayer = Arrays.asList(new String[] {"Political"});
 

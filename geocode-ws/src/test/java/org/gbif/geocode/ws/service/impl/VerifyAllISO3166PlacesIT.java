@@ -7,8 +7,14 @@ import org.gbif.geocode.api.service.GeocodeService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,25 +28,31 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.gbif.api.vocabulary.Country.*;
 
 /**
- * Check we give the preferred response for dependent territories, overseas regions, disputed
+ * Check we give the preferred response for all places in our Country enumeration,
+ * i.e. everywhere with an ISO 3166-2 code, including dependent territories, overseas regions, disputed
  * regions etc. These can change in the underlying data sources, and it's undesirable that we could
  * "lose" a country due to a change in politics from a data source.
  */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = GeocoderIntegrationTestsConfiguration.class)
-@TestPropertySource(value = "classpath:application-test.properties", properties = "spring.shapefiles.enabled=PoliticalLayer")
-public class CountryCheckIT {
-  private static final Logger LOG = LoggerFactory.getLogger(CountryCheckIT.class);
+@TestPropertySource(value = "classpath:application-test.properties",
+  properties = {"spring.shapefiles.enabled=PoliticalLayer", "spring.defaultLayers=Political"})
+public class VerifyAllISO3166PlacesIT {
+  private static final Logger LOG = LoggerFactory.getLogger(VerifyAllISO3166PlacesIT.class);
 
   private final GeocodeService geocoder;
+  private Set<Country> spottedCountries = new HashSet<>();
 
   @Autowired
-  public CountryCheckIT(ShapefileGeocoder shapefileGeocoder) {
-    this.geocoder = shapefileGeocoder;
+  public VerifyAllISO3166PlacesIT(GeocodeServiceImpl geocodeServiceImpl) {
+    this.geocoder = geocodeServiceImpl;
   }
 
+  /**
+   * Some basics with comments explaining how territories etc are handled.
+   */
   @Test
-  public void testVariousLocations() {
+  public void basicTest() {
 
     // Straightforward test — Zürich is in Switzerland.
     testCountry("Zürich", 47.37, 8.55, SWITZERLAND);
@@ -66,7 +78,7 @@ public class CountryCheckIT {
     // Similarly for Denmark, Greenland, Faroe Islands, Australia etc.
 
     // France has overseas departments, which are equal with France.
-    // Metropolitain France (France in Europe) has ISO code FR, but the database comes
+    // Metropolitan France (France in Europe) has ISO code FR, but the database comes
     // with a polygon for all of France, which doesn't (strictly) have an ISO code.
     // It's been overridden.
     testCountry("Paris, Metropolitain France", 48.86, 2.35, FRANCE);
@@ -93,11 +105,18 @@ public class CountryCheckIT {
     testCountry("Wallis and Futuna", -14.28, -178.14, WALLIS_FUTUNA);
     testCountry("Ocean by Wallis and Futuna", -14.27, -178.05, WALLIS_FUTUNA);
     testCountry("Cul-de-Sac, Saint Martin", 18.10, -63.03, SAINT_MARTIN_FRENCH);
-    testCountry("Ocean by Saint Martin", 18.10, -63.00, SAINT_MARTIN_FRENCH);
+    testCountry("Ocean by Saint Martin", 18.10, -62.95, SAINT_MARTIN_FRENCH);
     testCountry("Saint Barthélemy", 17.90, -62.82, SAINT_BARTHÉLEMY);
-    testCountry("Ocean by Saint Barthélemy", 17.97, -62.79, SAINT_BARTHÉLEMY);
+    testCountry("Ocean by Saint Barthélemy", 18, -62.5, SAINT_BARTHÉLEMY);
     testCountry("New Caledonia", -20.98, 165.12, NEW_CALEDONIA);
     testCountry("Ocean by New Caledonia", -20.16, 165.36, NEW_CALEDONIA);
+    // The French Southern and Antarctic Lands
+    testCountry("Europa Island", -22.366667, 40.366667, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Bassas da India", -21.483333, 39.683333, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Juan de Nova Island", -17.055556, 42.725, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Tromelin Island", -15.892222, 54.524722, FRENCH_SOUTHERN_TERRITORIES, MADAGASCAR, MAURITIUS);
+    // Possibly TF ought to be before MG here.
+    testCountry("Glorioso Islands", -11.55, 47.333333, MADAGASCAR, FRENCH_SOUTHERN_TERRITORIES);
 
     // Taiwan / Chinese Taipei
     testCountry("臺北市, Taiwan", 25.05, 121.54, TAIWAN);
@@ -123,22 +142,19 @@ public class CountryCheckIT {
     testCountry("Ocean west of Western Sahara, Morocco", 26.85, -13.65, WESTERN_SAHARA, MOROCCO);
 
     // See also, https://en.wikipedia.org/wiki/List_of_states_with_limited_recognition
-
-    // There are further territories without ISO codes which we don't handle, for example
-    // • Scattered Islands in the Indian Ocean:
-    // https://en.wikipedia.org/wiki/Scattered_Islands_in_the_Indian_Ocean
-    // • Ashmore and Cartier Islands: https://en.wikipedia.org/wiki/Ashmore_and_Cartier_Islands
   }
 
   @Test
   public void capitalCitiesTest() {
+    spottedCountries.clear();
+
     // Mostly capital cities, doesn't necessarily include all ISO codes.
     testCountry("Kabul", 34.51666667, 69.183333, AFGHANISTAN);
     testCountry("Mariehamn", 60.116667, 19.9, ALAND_ISLANDS);
     testCountry("Tirana", 41.31666667, 19.816667, ALBANIA);
     testCountry("Algiers", 36.75, 3.05, ALGERIA);
     testCountry("Pago Pago", -14.26666667, -170.7, AMERICAN_SAMOA);
-    testCountry("Andorra la Vella", 42.5, 1.516667, ANDORRA);
+    testCountry("Andorra la Vella", 42.55, 1.516667, ANDORRA);
     testCountry("Luanda", -8.833333333, 13.216667, ANGOLA);
     testCountry("The Valley", 18.21666667, -63.05, ANGUILLA);
     testCountry("South Pole", -90, 0, ANTARCTICA);
@@ -160,8 +176,10 @@ public class CountryCheckIT {
     testCountry("Hamilton", 32.28333333, -64.783333, BERMUDA);
     testCountry("Thimphu", 27.46666667, 89.633333, BHUTAN);
     testCountry("La Paz", -16.5, -68.15, BOLIVIA);
+    testCountry("Bonaire", 12.18, -68.25, BONAIRE_SINT_EUSTATIUS_SABA);
     testCountry("Sarajevo", 43.86666667, 18.416667, BOSNIA_HERZEGOVINA);
     testCountry("Gaborone", -24.63333333, 25.9, BOTSWANA);
+    testCountry("Bouvet Island", -54.43, 3.38, BOUVET_ISLAND);
     testCountry("Brasilia", -15.78333333, -47.916667, BRAZIL);
     testCountry("Diego Garcia", -7.3, 72.4, BRITISH_INDIAN_OCEAN_TERRITORY, MAURITIUS);
     testCountry("Road Town", 18.41666667, -64.616667, VIRGIN_ISLANDS_BRITISH);
@@ -208,6 +226,7 @@ public class CountryCheckIT {
     testCountry("Suva", -18.13333333, 178.416667, FIJI);
     testCountry("Helsinki", 60.16666667, 24.933333, FINLAND);
     testCountry("Paris", 48.86666667, 2.333333, FRANCE);
+    testCountry("Certitude", 3.83, -53.3, FRENCH_GUIANA);
     testCountry("Papeete", -17.53333333, -149.566667, FRENCH_POLYNESIA);
     testCountry("Port-aux-Français", -49.35, 70.216667, FRENCH_SOUTHERN_TERRITORIES);
     testCountry("Libreville", 0.383333333, 9.45, GABON);
@@ -218,6 +237,7 @@ public class CountryCheckIT {
     testCountry("Athens", 37.98333333, 23.733333, GREECE);
     testCountry("Nuuk", 64.18333333, -51.75, GREENLAND);
     testCountry("Saint George's", 12.05, -61.75, GRENADA);
+    testCountry("Cadet", 16.27, -61.69, GUADELOUPE);
     testCountry("Hagatna", 13.46666667, 144.733333, GUAM);
     testCountry("Guatemala City", 14.61666667, -90.516667, GUATEMALA);
     testCountry("Saint Peter Port", 49.45, -2.533333, GUERNSEY);
@@ -245,7 +265,6 @@ public class CountryCheckIT {
     testCountry("Astana", 51.16666667, 71.416667, KAZAKHSTAN);
     testCountry("Nairobi", -1.283333333, 36.816667, KENYA);
     testCountry("Tarawa", -0.883333333, 169.533333, KIRIBATI);
-    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
     testCountry("Kuwait City", 29.36666667, 47.966667, KUWAIT);
     testCountry("Bishkek", 42.86666667, 74.6, KYRGYZSTAN);
     testCountry("Vientiane", 19.15, 102.21, LAO); // Rather than Vientiane
@@ -266,8 +285,10 @@ public class CountryCheckIT {
     testCountry("Bamako", 12.65, -8, MALI);
     testCountry("Valletta", 35.88333333, 14.5, MALTA);
     testCountry("Majuro", 7.1, 171.383333, MARSHALL_ISLANDS);
+    testCountry("Les Trois-Îlets", 14.53, -61.04, MARTINIQUE);
     testCountry("Nouakchott", 18.06666667, -15.966667, MAURITANIA);
     testCountry("Port Louis", -20.15, 57.483333, MAURITIUS);
+    testCountry("Mamoudzou", -12.78, 45.23, MAYOTTE, COMOROS);
     testCountry("Mexico City", 19.43333333, -99.133333, MEXICO);
     testCountry("Chisinau", 47, 28.85, MOLDOVA);
     testCountry("Monaco", 43.73333333, 7.416667, MONACO);
@@ -307,6 +328,7 @@ public class CountryCheckIT {
     testCountry("San Juan", 18.46666667, -66.116667, PUERTO_RICO);
     testCountry("Doha", 25.28333333, 51.533333, QATAR);
     testCountry("Owando", -0.49, 15.90, CONGO); // Rather than Brazzaville
+    testCountry("Forêt de Bébour", -21.11, 55.54, RÉUNION);
     testCountry("Bucharest", 44.43333333, 26.1, ROMANIA);
     testCountry("Moscow", 55.75, 37.6, RUSSIAN_FEDERATION);
     testCountry("Kigali", -1.95, 30.05, RWANDA);
@@ -379,8 +401,22 @@ public class CountryCheckIT {
     testCountry("Lusaka", -15.41666667, 28.283333, ZAMBIA);
     testCountry("Harare", -17.81666667, 31.033333, ZIMBABWE);
 
+    for (Country o : Country.OFFICIAL_COUNTRIES) {
+      if (!spottedCountries.contains(o)) {
+        LOG.error(o.getTitle() + " missing");
+      }
+    }
+    for (Country o : Country.OFFICIAL_COUNTRIES) {
+      MatcherAssert.assertThat(o.getTitle() + " checked", spottedCountries.contains(o));
+    }
+    Assertions.assertEquals(spottedCountries.size(), Country.OFFICIAL_COUNTRIES.size());
+
+    // Kosovo is an unofficial code (XK)
+    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
+
     // The same countries, but in reverse, to check the bitmap cache is OK.
-    // (grep testCountry CountryCheckTest.java | tac ...)
+    // (grep testCountry VerifyAllISO3166PlacesIT.java | tac ...)
+    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
     testCountry("Harare", -17.81666667, 31.033333, ZIMBABWE);
     testCountry("Lusaka", -15.41666667, 28.283333, ZAMBIA);
     testCountry("Sanaa", 15.35, 44.2, YEMEN);
@@ -452,6 +488,7 @@ public class CountryCheckIT {
     testCountry("Kigali", -1.95, 30.05, RWANDA);
     testCountry("Moscow", 55.75, 37.6, RUSSIAN_FEDERATION);
     testCountry("Bucharest", 44.43333333, 26.1, ROMANIA);
+    testCountry("Forêt de Bébour", -21.11, 55.54, RÉUNION);
     testCountry("Owando", -0.49, 15.90, CONGO); // Rather than Brazzaville
     testCountry("Doha", 25.28333333, 51.533333, QATAR);
     testCountry("San Juan", 18.46666667, -66.116667, PUERTO_RICO);
@@ -491,8 +528,10 @@ public class CountryCheckIT {
     testCountry("Monaco", 43.73333333, 7.416667, MONACO);
     testCountry("Chisinau", 47, 28.85, MOLDOVA);
     testCountry("Mexico City", 19.43333333, -99.133333, MEXICO);
+    testCountry("Mamoudzou", -12.78, 45.23, MAYOTTE, COMOROS);
     testCountry("Port Louis", -20.15, 57.483333, MAURITIUS);
     testCountry("Nouakchott", 18.06666667, -15.966667, MAURITANIA);
+    testCountry("Les Trois-Îlets", 14.53, -61.04, MARTINIQUE);
     testCountry("Majuro", 7.1, 171.383333, MARSHALL_ISLANDS);
     testCountry("Valletta", 35.88333333, 14.5, MALTA);
     testCountry("Bamako", 12.65, -8, MALI);
@@ -513,7 +552,6 @@ public class CountryCheckIT {
     testCountry("Vientiane", 19.15, 102.21, LAO); // Rather than Vientiane
     testCountry("Bishkek", 42.86666667, 74.6, KYRGYZSTAN);
     testCountry("Kuwait City", 29.36666667, 47.966667, KUWAIT);
-    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
     testCountry("Tarawa", -0.883333333, 169.533333, KIRIBATI);
     testCountry("Nairobi", -1.283333333, 36.816667, KENYA);
     testCountry("Astana", 51.16666667, 71.416667, KAZAKHSTAN);
@@ -541,6 +579,7 @@ public class CountryCheckIT {
     testCountry("Saint Peter Port", 49.45, -2.533333, GUERNSEY);
     testCountry("Guatemala City", 14.61666667, -90.516667, GUATEMALA);
     testCountry("Hagatna", 13.46666667, 144.733333, GUAM);
+    testCountry("Cadet", 16.27, -61.69, GUADELOUPE);
     testCountry("Saint George's", 12.05, -61.75, GRENADA);
     testCountry("Nuuk", 64.18333333, -51.75, GREENLAND);
     testCountry("Athens", 37.98333333, 23.733333, GREECE);
@@ -551,6 +590,7 @@ public class CountryCheckIT {
     testCountry("Libreville", 0.383333333, 9.45, GABON);
     testCountry("Port-aux-Français", -49.35, 70.216667, FRENCH_SOUTHERN_TERRITORIES);
     testCountry("Papeete", -17.53333333, -149.566667, FRENCH_POLYNESIA);
+    testCountry("Certitude", 3.83, -53.3, FRENCH_GUIANA);
     testCountry("Paris", 48.86666667, 2.333333, FRANCE);
     testCountry("Helsinki", 60.16666667, 24.933333, FINLAND);
     testCountry("Suva", -18.13333333, 178.416667, FIJI);
@@ -597,8 +637,10 @@ public class CountryCheckIT {
     testCountry("Road Town", 18.41666667, -64.616667, VIRGIN_ISLANDS_BRITISH);
     testCountry("Diego Garcia", -7.3, 72.4, BRITISH_INDIAN_OCEAN_TERRITORY, MAURITIUS);
     testCountry("Brasilia", -15.78333333, -47.916667, BRAZIL);
+    testCountry("Bouvet Island", -54.43, 3.38, BOUVET_ISLAND);
     testCountry("Gaborone", -24.63333333, 25.9, BOTSWANA);
     testCountry("Sarajevo", 43.86666667, 18.416667, BOSNIA_HERZEGOVINA);
+    testCountry("Bonaire", 12.18, -68.25, BONAIRE_SINT_EUSTATIUS_SABA);
     testCountry("La Paz", -16.5, -68.15, BOLIVIA);
     testCountry("Thimphu", 27.46666667, 89.633333, BHUTAN);
     testCountry("Hamilton", 32.28333333, -64.783333, BERMUDA);
@@ -620,7 +662,7 @@ public class CountryCheckIT {
     testCountry("South Pole", -90, 0, ANTARCTICA);
     testCountry("The Valley", 18.21666667, -63.05, ANGUILLA);
     testCountry("Luanda", -8.833333333, 13.216667, ANGOLA);
-    testCountry("Andorra la Vella", 42.5, 1.516667, ANDORRA);
+    testCountry("Andorra la Vella", 42.55, 1.516667, ANDORRA);
     testCountry("Pago Pago", -14.26666667, -170.7, AMERICAN_SAMOA);
     testCountry("Algiers", 36.75, 3.05, ALGERIA);
     testCountry("Tirana", 41.31666667, 19.816667, ALBANIA);
@@ -647,13 +689,18 @@ public class CountryCheckIT {
   }
 
   private List<Country> getCountryForLatLng(LatLng coord) {
-    List<Country> countries = new ArrayList<>();
+    List<Country> countries = new ArrayList();
 
     Collection<Location> lookups = geocoder.get(coord.getLat(), coord.getLng(), null, null);
+    boolean first = true;
     if (lookups != null && lookups.size() > 0) {
       for (Location loc : lookups) {
-        if (loc.getType().equals("Political") && loc.getIsoCountryCode2Digit() != null && loc.getDistance() == 0) {
+        if (loc.getIsoCountryCode2Digit() != null && loc.getDistance() == 0) {
           countries.add(Country.fromIsoCode(loc.getIsoCountryCode2Digit()));
+        }
+        if (first) {
+          spottedCountries.add(Country.fromIsoCode(loc.getIsoCountryCode2Digit()));
+          first = false;
         }
       }
       LOG.debug("Countries are {}", countries);

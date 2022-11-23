@@ -87,6 +87,11 @@ public class GeocodeBitmapCache extends AbstractBitmapCachedLayer implements Geo
   }
 
   @Override
+  protected List<Location> queryDatasource(double latitude, double longitude, double uncertainty) {
+    return get(latitude, longitude, uncertainty, null);
+  }
+
+  @Override
   public byte[] bitmap() {
     return new byte[0];
   }

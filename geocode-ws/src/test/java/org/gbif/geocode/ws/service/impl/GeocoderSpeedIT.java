@@ -26,22 +26,17 @@ import com.google.common.base.Stopwatch;
 @TestPropertySource(value = "classpath:application-test.properties")
 @Disabled
 public class GeocoderSpeedIT {
-  GeocodeService geocoder;
+  final GeocodeService geocoder;
 
-  final MyBatisGeocoder myBatisGeocoder;
-  final ShapefileGeocoder shapefileGeocoder;
+  // Set to "" to test shapefiles, "PG_" to test PostGIS
+  final String p = "";
 
   Stopwatch sf = Stopwatch.createUnstarted();
   List<String> layers = new ArrayList<>();
 
   @Autowired
-  public GeocoderSpeedIT(MyBatisGeocoder myBatisGeocoder, ShapefileGeocoder shapefileGeocoder) {
-    this.myBatisGeocoder = myBatisGeocoder;
-    this.shapefileGeocoder = shapefileGeocoder;
-
-    // Change according to test.
-    geocoder = shapefileGeocoder;
-    //geocoder = myBatisGeocoder;
+  public GeocoderSpeedIT(GeocodeServiceImpl geocoderService) {
+    this.geocoder = geocoderService;
   }
 
   @Test
@@ -99,15 +94,15 @@ public class GeocoderSpeedIT {
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
       double longitude = Math.random() * 360 - 180;
-      shapefileGeocoder.get(latitude, longitude, 0.05, null, testSfLayers).size();
+      geocoder.get(latitude, longitude, 0.05, null, testSfLayers).size();
     }
     sf.stop();
     System.out.println("SF " + "GADM3210: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
       + ((double)count) / sf.elapsed(TimeUnit.SECONDS) + " per second");
 
-    count = 100_000;
+    count = 100;
     // PG GADM3210: 100000 queries in 128 seconds; 781.25 per second
-    List<String> testMBLayers = Arrays.asList("GADM");
+    List<String> testMBLayers = Arrays.asList("PG_GADM");
     System.out.println("Testing GADM with MyBatis backend");
 
     sf.reset();
@@ -115,7 +110,7 @@ public class GeocoderSpeedIT {
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
       double longitude = Math.random() * 360 - 180;
-      myBatisGeocoder.get(latitude, longitude, 0.05, null, testMBLayers).size();
+      geocoder.get(latitude, longitude, 0.05, null, testMBLayers).size();
     }
     sf.stop();
     System.out.println("PG " + "GADM3210: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
@@ -135,7 +130,7 @@ public class GeocoderSpeedIT {
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
       double longitude = Math.random() * 360 - 180;
-      shapefileGeocoder.get(latitude, longitude, 0.05, null, Collections.EMPTY_LIST).size();
+      geocoder.get(latitude, longitude, 0.05, null).size();
     }
     sf.stop();
     System.out.println("SF all layers: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "
@@ -143,13 +138,20 @@ public class GeocoderSpeedIT {
 
     count = 10_000;
     // PG all layers: 10000 queries in 87 seconds; 114.9 per second
-    System.out.println("Testing all layers with MyBatis backend");
+    System.out.println("Testing all layers with PostGIS backend");
+    List<String> defaultPGLayers = new ArrayList<>();
+    defaultPGLayers.add("PG_Centroids");
+    defaultPGLayers.add("PG_Continent");
+    defaultPGLayers.add("PG_GADM3210");
+    defaultPGLayers.add("PG_IHO");
+    defaultPGLayers.add("PG_Political");
+    defaultPGLayers.add("PG_WGSRPD");
     sf.reset();
     sf.start();
     for (int i = 0; i < count; i++) {
       double latitude = Math.random() * 180 - 90;
       double longitude = Math.random() * 360 - 180;
-      myBatisGeocoder.get(latitude, longitude, 0.05, null, Collections.EMPTY_LIST).size();
+      geocoder.get(latitude, longitude, 0.05, null, defaultPGLayers).size();
     }
     sf.stop();
     System.out.println("PG all layers: " + count + " queries in " + sf.elapsed(TimeUnit.SECONDS) + " seconds; "

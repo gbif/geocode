@@ -1,28 +1,20 @@
-package org.gbif.geocode.ws.layers;
-
-import org.apache.commons.lang3.tuple.Pair;
+package org.gbif.geocode.ws.layers.shapefile;
 
 import org.gbif.geocode.api.model.Location;
-
-import org.springframework.stereotype.Component;
-
-import au.org.ala.layers.intersect.SimpleShapeFile;
+import org.gbif.geocode.ws.layers.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+import org.apache.commons.lang3.tuple.Pair;
+
+import au.org.ala.layers.intersect.SimpleShapeFile;
+
 public class PoliticalLayer extends AbstractShapefileLayer {
-  public PoliticalLayer() {
-    super(PoliticalLayer.class.getResourceAsStream("political.png"), 3);
-  }
-
-  public PoliticalLayer(SimpleShapeFile simpleShapeFile) {
-    super(simpleShapeFile, PoliticalLayer.class.getResourceAsStream("political.png"), 3);
-  }
-
   public PoliticalLayer(String root) {
-    this(new SimpleShapeFile(root + "political_subdivided", new String[]{"id", "name", "isoCountry"}));
+    super(new SimpleShapeFile(root + "political_subdivided", new String[]{"id", "name", "isoCountry"}),
+      Bitmap.class.getResourceAsStream("political.png"),
+      3);
   }
 
   @Override
@@ -36,7 +28,7 @@ public class PoliticalLayer extends AbstractShapefileLayer {
   }
 
   @Override
-  public List<Location> resultToLocation(Pair<Integer, Double> countryValue) {
+  public List<Location> resultToLocation(Pair<Integer, Double> countryValue, double latitude) {
     List<Location> locations = new ArrayList<>();
 
     String id = idColumnLookup[idColumnIndex[countryValue.getLeft()]];
@@ -53,6 +45,7 @@ public class PoliticalLayer extends AbstractShapefileLayer {
       l.setTitle(title);
       l.setIsoCountryCode2Digit(i);
       l.setDistance(countryValue.getRight());
+      l.calculateDistanceMetersFromLatitude(latitude);
       locations.add(l);
     }
 
