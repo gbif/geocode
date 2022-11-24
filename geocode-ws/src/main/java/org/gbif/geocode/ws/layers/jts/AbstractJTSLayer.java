@@ -49,13 +49,13 @@ public abstract class AbstractJTSLayer extends AbstractBitmapCachedLayer {
     //assert CRS.getAxisOrder(DefaultGeographicCRS.WGS84).equals(CRS.AxisOrder.NORTH_EAST);
   }
 
-  List<Location> resultToLocation(Pair<Country, Double> countryValue, double latitude) {
+  List<Location> resultToLocation(Pair<PointLocation, Double> countryValue, double latitude) {
     Location l = new Location();
     l.setType(name());
-    l.setSource(source());
-    l.setId(countryValue.getLeft().getIso2LetterCode());
-    l.setTitle(countryValue.getLeft().getTitle());
-    l.setIsoCountryCode2Digit(countryValue.getLeft().getIso2LetterCode());
+    l.setSource(countryValue.getLeft().source);
+    l.setId(countryValue.getLeft().id);
+    l.setTitle(countryValue.getLeft().title);
+    l.setIsoCountryCode2Digit(countryValue.getLeft().isoCountryCode2Digit);
     l.setDistanceMeters(countryValue.getRight());
     l.calculateDistanceDegreesFromMeters(latitude);
 
@@ -73,7 +73,7 @@ public abstract class AbstractJTSLayer extends AbstractBitmapCachedLayer {
 
       double distance = calculateDistance(from, to);
         if (distance <= distanceCutoffMeters) {
-          locations.addAll(resultToLocation(ImmutablePair.of(Country.fromIsoCode(p.isoCountryCode2Digit), distance), latitude));
+          locations.addAll(resultToLocation(ImmutablePair.of(p, distance), latitude));
         }
     }
 

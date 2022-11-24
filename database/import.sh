@@ -63,15 +63,47 @@ EOF
 function import_centroids() {
 	echo "Importing Centroids dataset"
 
-	echo "Dropping old tables"
-	# Generated (for the moment) with GeoLocateCentroids.java "test" in the geocode-ws module.
+	echo "(Re) creating tables"
 	echo "DROP TABLE IF EXISTS geolocate_centroids CASCADE;" | exec_psql
-	# Generated from the R script in the comment in this file.
 	echo "DROP TABLE IF EXISTS coordinatecleaner_centroids CASCADE;" | exec_psql
+	echo "
+		DROP TABLE IF EXISTS centroids_catalogue;
+		CREATE TABLE centroids_catalogue (
+		    iso3                 CHAR(3),
+		    iso2                 CHAR(2),
+		    gadm1                TEXT,
+		    gbif_name            TEXT,
+		    type                 TEXT,
+		    area_sqkm            NUMERIC,
+		    decimal_longitude    NUMERIC,
+		    decimal_latitude     NUMERIC,
+		    source_locality_name TEXT,
+		    source_reference     TEXT,
+		    source               TEXT);
+		" | exec_psql
+
+	catalogue=https://github.com/jhnwllr/catalogue-of-centroids/raw/v0.0.1/centroids.tsv
 
 	echo "Importing Centroids to PostGIS"
-	exec_psql_file $SCRIPT_DIR/geolocate_centroids.sql
-	exec_psql_file $SCRIPT_DIR/coordinatecleaner_centroids.sql
+	echo "\copy centroids_catalogue FROM PROGRAM 'curl -LSs --fail $catalogue' DELIMITER E'\t' CSV HEADER" | exec_psql
+
+	echo "Generating Centroids table"
+	echo "DROP TABLE IF EXISTS centroids;
+	    CREATE TABLE centroids AS
+			SELECT DISTINCT
+			       REPLACE(source || ' ' || source_locality_name, ' ', '_') AS id,
+			       iso2 AS isoCountryCode2Digit,
+			       COALESCE(gbif_name, iso2) AS title,
+			       decimal_longitude,
+			       decimal_latitude,
+			       source_reference AS source,
+			       ST_SetSRID(ST_MakePoint(decimal_longitude, decimal_latitude), 4326) AS geom
+			FROM centroids_catalogue
+			WHERE type = 'PCLI'
+			  AND decimal_longitude IS NOT NULL
+			  AND decimal_latitude IS NOT NULL
+			  AND source_reference IS NOT NULL;
+		CREATE INDEX centroid_geom_idx ON centroids USING GIST (geom);" | exec_psql
 
 	echo "Centroids import complete"
 	echo

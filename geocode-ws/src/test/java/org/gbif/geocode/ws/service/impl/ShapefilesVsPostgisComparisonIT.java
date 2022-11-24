@@ -162,7 +162,8 @@ public class ShapefilesVsPostgisComparisonIT {
 
   @Test
   public void compareRandomQueries() {
-    int count = 10_000;
+    // Consider disabling the geography distance calculation (in the all layers function) for a much faster test.
+    int count = 100;
 
     sfLayers.clear();
     sfLayers.add("Political");

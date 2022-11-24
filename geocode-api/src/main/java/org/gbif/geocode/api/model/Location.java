@@ -1,5 +1,7 @@
 package org.gbif.geocode.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
@@ -58,6 +60,7 @@ public class Location implements Serializable, Comparable<Location> {
    */
   private Double distance;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   private Double distanceMeters;
 
   public Location() {

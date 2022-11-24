@@ -45,7 +45,6 @@ public class PoliticalLayer extends AbstractShapefileLayer {
       l.setTitle(title);
       l.setIsoCountryCode2Digit(i);
       l.setDistance(countryValue.getRight());
-      l.calculateDistanceMetersFromLatitude(latitude);
       locations.add(l);
     }
 

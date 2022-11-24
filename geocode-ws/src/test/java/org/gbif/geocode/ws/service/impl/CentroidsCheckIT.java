@@ -42,12 +42,12 @@ public class CentroidsCheckIT {
 
   @Test
   public void test5kmFromCentroid() {
-    // Straightforward test — centroid of São Tomé, which is at POINT(6.6 0.25)
-    testCentroidDistance("São Tomé", 0.25, 6.6, SAO_TOME_PRINCIPE, 0d);
-    // WITH stp AS (SELECT ST_SetSRID(ST_GeomFromText('POINT(6.6 0.25)'), 4326) AS geom) SELECT ST_AsEWKT(geom), ST_AsEWKT(ST_Project(geom::geography, 5000.0, RADIANS(00))) FROM stp;
-    testCentroidDistance("São Tomé N", 0.295218463549971, 6.6, SAO_TOME_PRINCIPE, 5_000.0d);
-    // WITH stp AS (SELECT ST_SetSRID(ST_GeomFromText('POINT(6.6 0.25)'), 4326) AS geom) SELECT ST_AsEWKT(geom), ST_AsEWKT(ST_Project(geom::geography, 5000.0, RADIANS(90))) FROM stp;
-    testCentroidDistance("São Tomé E", 0.25, 6.64491618891327, SAO_TOME_PRINCIPE, 5_000.0d);
+    // Straightforward test — centroid of São Tomé, which is at POINT(7 1)
+    testCentroidDistance("São Tomé", 1, 7, SAO_TOME_PRINCIPE, 0d);
+    // WITH stp AS (SELECT ST_SetSRID(ST_GeomFromText('POINT(7 1)'), 4326) AS geom) SELECT ST_AsEWKT(geom), ST_AsEWKT(ST_Project(geom::geography, 5000.0, RADIANS(00))) FROM stp;
+    testCentroidDistance("São Tomé N", 1.04521832920333, 7, SAO_TOME_PRINCIPE, 5_000.0d);
+    // WITH stp AS (SELECT ST_SetSRID(ST_GeomFromText('POINT(7 1)'), 4326) AS geom) SELECT ST_AsEWKT(geom), ST_AsEWKT(ST_Project(geom::geography, 5000.0, RADIANS(90))) FROM stp;
+    testCentroidDistance("São Tomé E", 1, 7.04492256033466, SAO_TOME_PRINCIPE, 5_000.0d);
 
     // Straightforward test — centroid of Greenland, which is at POINT(-40 72)
     testCentroidDistance("Greenland", 72, -40, GREENLAND, 0d);

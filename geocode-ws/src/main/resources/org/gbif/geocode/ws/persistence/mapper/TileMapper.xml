@@ -299,11 +299,11 @@
     WITH overlappings AS (
       SELECT
         id,
-        type,
+        'Centroids' AS type,
         source,
-        isoCountryCode2Digit AS title,
+        title,
         isoCountryCode2Digit,
-        geom AS geom
+        geom
       FROM centroids
       WHERE geom &amp;&amp; ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4}))
     ), intersectings AS (
@@ -409,6 +409,6 @@
   </select>
 
   <select id="svgCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT type || id AS id, ST_AsSVG(ST_Buffer(geom::geography, 5000, 'quad_segs=4')) AS shape FROM centroids
+    SELECT id, ST_AsSVG(ST_Buffer(geom::geography, 5000, 'quad_segs=4')) AS shape FROM centroids
   </select>
 </mapper>

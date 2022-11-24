@@ -58,7 +58,6 @@ public class GadmLayer extends AbstractShapefileLayer {
         l.setTitle(title[i]);
         l.setIsoCountryCode2Digit(isoCode);
         l.setDistance(countryValue.getRight());
-        l.calculateDistanceMetersFromLatitude(latitude);
         locations.add(l);
       }
     }

@@ -93,7 +93,6 @@ public abstract class AbstractShapefileLayer extends AbstractBitmapCachedLayer {
     l.setTitle(title);
     l.setIsoCountryCode2Digit(isoCode);
     l.setDistance(countryValue.getRight());
-    l.calculateDistanceMetersFromLatitude(latitude);
 
     return Collections.singletonList(l);
   }

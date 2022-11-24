@@ -5,6 +5,7 @@ import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.layers.jts.AbstractJTSLayer;
 import org.gbif.geocode.ws.layers.postgis.AbstractPostGISLayer;
+import org.gbif.geocode.ws.layers.postgis.PGCentroidsLayer;
 import org.gbif.geocode.ws.layers.postgis.PGContinentLayer;
 import org.gbif.geocode.ws.layers.postgis.PGGadmLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIhoLayer;
@@ -77,6 +78,7 @@ public class GeocodeServiceImpl implements GeocodeService {
 
       // 2: Load PostGIS layers
       Class<AbstractPostGISLayer>[] availablePostGISLayers = new Class[]{
+        PGCentroidsLayer.class,
         PGContinentLayer.class,
         PGGadmLayer.class,
         PGIhoLayer.class,

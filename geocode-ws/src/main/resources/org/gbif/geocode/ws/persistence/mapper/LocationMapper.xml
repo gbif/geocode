@@ -3,17 +3,17 @@
 <mapper namespace="org.gbif.geocode.ws.persistence.mapper.LocationMapper">
 
   <select id="queryLayers" resultType="Location">
-    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance
+    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance, distanceMeters
     FROM query_layers(#{lng}, #{lat}, #{distance}, <foreach item="item" collection="layers" open="ARRAY[" separator="," close="]">#{item}</foreach>);
   </select>
 
   <select id="queryLayer" resultType="Location">
-    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance
+    SELECT layer AS type, id, source, title, isoCountryCode2Digit, distance, distanceMeters
     FROM query_layers(#{lng}, #{lat}, #{distance}, ARRAY[#{layer}]);
   </select>
 
   <select id="fetchPointLocations" resultType="PointLocation">
-    SELECT ST_X(geom) AS longitude, ST_Y(geom) AS latitude, id, isoCountryCode2Digit
+    SELECT ST_X(geom) AS longitude, ST_Y(geom) AS latitude, id, isoCountryCode2Digit, title, source
     FROM centroids;
   </select>
 

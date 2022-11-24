@@ -6,4 +6,6 @@ public class PointLocation {
 
   String id;
   String isoCountryCode2Digit;
+  String title;
+  String source;
 }

@@ -15,6 +15,6 @@ public class CentroidsLayer extends AbstractJTSLayer {
 
   @Override
   public String source() {
-    return "http://geo-locate.org/webservices/geolocatesvcv2/ / https://github.com/ropensci/CoordinateCleaner";
+    return "https://github.com/jhnwllr/catalogue-of-centroids";
   }
 }
