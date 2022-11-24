@@ -543,9 +543,15 @@ closer.onclick = function() {
 /**
  * Add a click handler to the map to render the popup.
  */
-function updateUncertainty() {
+function updateUncertaintyFromMeters() {
 	uncertaintyDegrees_input.value = uncertaintyMeters_input.value / (111319.491 * Math.cos(latitude_input.value * Math.PI / 180));
+	updateUncertainty = updateUncertaintyFromMeters;
 }
+function updateUncertaintyFromDegrees() {
+	uncertaintyMeters_input.value = uncertaintyDegrees_input.value * (111319.491 * Math.cos(latitude_input.value * Math.PI / 180));
+	updateUncertainty = updateUncertaintyFromDegrees;
+}
+updateUncertainty = updateUncertaintyFromDegrees;
 
 function geocode(coordinate) {
   updateUncertainty();
@@ -603,7 +609,8 @@ longitude_input.onchange = (function(e) {
   geocode(coordinate);
 });
 
-document.getElementById('uncertaintyMeters_input').onchange = updateUncertainty;
+document.getElementById('uncertaintyMeters_input').onchange = updateUncertaintyFromMeters;
+document.getElementById('uncertaintyDegrees_input').onchange = updateUncertaintyFromDegrees;
 
 var occurrences_density_input = document.getElementById('occurrences_density_input');
 occurrences_density_input.onchange = (function(e) {
