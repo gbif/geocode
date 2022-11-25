@@ -42,7 +42,7 @@ public class GeocoderSpeedIT {
   @Test
   @Disabled
   public void speedTestRandomQueries() {
-    // PostGIS speeds (localhost PostGIS, Matt's desktop, no geagraphy distance calculation)
+    // PostGIS speeds (localhost PostGIS, Matt's desktop, no geography distance calculation)
     // Political:   10000 queries in   8 seconds;   1250 per second (obsolete layer)
     // EEZ:         10000 queries in  34 seconds;    294 per second (obsolete layer)
     // GADM:       100000 queries in 112 seconds;    892 per second
@@ -58,7 +58,7 @@ public class GeocoderSpeedIT {
       "Continent",    // Continent:    10000000 queries in 15 seconds; 666666.6 per second
       "IHO",          // IHO:          10000000 queries in 15 seconds; 666666.6 per second
       "WGSRPD",       // WGSRPD:       10000000 queries in 14 seconds; 714285.7 per second
-      "Centroids");   // Centroids:    10000000 queries in 14 seconds; 714285.7 per second
+      "Centroids");   // Centroids:    10000000 queries in 24 seconds; 416666.6 per second (home computer)
 
     for (String l : testLayers) {
       System.out.println("Testing layer "+l);

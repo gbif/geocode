@@ -86,7 +86,8 @@
     <findbugs-jsr305.version>3.0.1</findbugs-jsr305.version>
     <guava.version>18.0</guava.version>
     <zookeeper.version>3.4.14</zookeeper.version>
-    <geotools.version>20.5</geotools.version>
+    <!-- Matched to version used by au.org.ala.layers-store -->
+    <geotools.version>11.1</geotools.version>
 
     <!-- Plugin versions -->
     <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
@@ -253,7 +254,7 @@
       </dependency>
       <dependency>
         <groupId>org.geotools</groupId>
-        <artifactId>gt-epsg-hsql</artifactId>
+        <artifactId>gt-epsg-wkt</artifactId>
         <version>${geotools.version}</version>
       </dependency>
       <dependency>
