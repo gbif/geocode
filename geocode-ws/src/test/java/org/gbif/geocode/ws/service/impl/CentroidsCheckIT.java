@@ -62,6 +62,9 @@ public class CentroidsCheckIT {
       // WITH ant AS (SELECT ST_SetSRID(ST_GeomFromText('POINT(0 -90)'), 4326) AS geom) SELECT ST_AsEWKT(geom), ST_AsEWKT(ST_Project(geom::geography, 5000.0, RADIANS(0))) FROM ant;
       testCentroidDistance("Antarctica", -89.9552348297552, longitude, 0, ANTARCTICA, 5_000d);
     }
+
+    // Vatican
+    testCentroidDistance("Vatican City", 41.89, 12.45, 0, VATICAN, 1110.7124511877291d);
   }
 
   @Test

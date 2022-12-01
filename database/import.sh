@@ -91,7 +91,7 @@ function import_centroids() {
     echo "DROP TABLE IF EXISTS centroids;
         CREATE TABLE centroids AS
             SELECT DISTINCT
-                   REPLACE(source || ' ' || source_locality_name, ' ', '_') AS id,
+                   REGEXP_REPLACE(source || '_' || COALESCE(source_locality_name, ''), '[^[:alpha:][:digit:]_]','','g') AS id,
                    iso2 AS isoCountryCode2Digit,
                    COALESCE(gbif_name, iso2) AS title,
                    decimal_longitude,
