@@ -43,6 +43,12 @@ public class GeocodeServiceImpl implements GeocodeService {
   // 0.05° ~= 5.55 km
   private static final double MINIMUM_UNCERTAINTY_DEGREES = 0.05d;
 
+  // The maximum uncertainty is chosen for performance.  It's not strictly correct behaviour, but if a point really is
+  // more than 10° uncertain it seems unlikely that it is more than 10° from something as large as a country.
+  private static final double MAXIMUM_UNCERTAINTY_DEGREES = 10.0d;
+  // But allow 60° at very high latitudes so we have about 100km of uncertainty.
+  private static final double MAXIMUM_POLAR_UNCERTAINTY_DEGREES = 60.0d;
+
   public GeocodeServiceImpl(LocationMapper locationMapper,
                             @Value("${spring.shapefiles.root}") String root,
                             @Value("${spring.shapefiles.enabled}") List<String> enabled,
@@ -158,6 +164,19 @@ public class GeocodeServiceImpl implements GeocodeService {
     // Set a default uncertainty, if none was specified.
     if (uncertaintyDegrees == null) {
       uncertaintyDegrees = MINIMUM_UNCERTAINTY_DEGREES;
+    }
+
+    // Limit the maximum uncertainty.
+    if (uncertaintyDegrees > MAXIMUM_UNCERTAINTY_DEGREES) {
+      if (Math.abs(lat) > 85) {
+        if (uncertaintyDegrees > MAXIMUM_POLAR_UNCERTAINTY_DEGREES) {
+          LOG.debug("Excessive polar uncertainty {}° clamped to {}°", uncertaintyDegrees, MAXIMUM_POLAR_UNCERTAINTY_DEGREES);
+          uncertaintyDegrees = MAXIMUM_POLAR_UNCERTAINTY_DEGREES;
+        }
+      } else {
+        LOG.debug("Excessive uncertainty {}° clamped to {}°", uncertaintyDegrees, MAXIMUM_UNCERTAINTY_DEGREES);
+        uncertaintyDegrees = MAXIMUM_UNCERTAINTY_DEGREES;
+      }
     }
 
     // Increase to the default distance if needed, to account for inaccuracies in the layer data.
