@@ -6,18 +6,20 @@ import org.gbif.geocode.api.service.GeocodeService;
 import java.io.InputStream;
 import java.util.List;
 
+import org.gbif.geocode.api.service.InternalGeocodeService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A cache which uses a bitmap to cache coordinate lookups.
  */
-public class GeocodeBitmapCache extends AbstractBitmapCachedLayer implements GeocodeService {
+public class GeocodeBitmapCache extends AbstractBitmapCachedLayer implements InternalGeocodeService {
   public static Logger LOG = LoggerFactory.getLogger(GeocodeBitmapCache.class);
 
-  private final GeocodeService geocodeService;
+  private final InternalGeocodeService geocodeService;
 
-  public GeocodeBitmapCache(GeocodeService geocodeService, InputStream bitmap) {
+  public GeocodeBitmapCache(InternalGeocodeService geocodeService, InputStream bitmap) {
     super(bitmap, 500);
     this.geocodeService = geocodeService;
   }

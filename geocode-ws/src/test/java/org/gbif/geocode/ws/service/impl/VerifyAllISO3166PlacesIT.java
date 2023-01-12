@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
+import org.gbif.geocode.api.service.InternalGeocodeService;
+
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,7 @@ import static org.gbif.api.vocabulary.Country.*;
 public class VerifyAllISO3166PlacesIT {
   private static final Logger LOG = LoggerFactory.getLogger(VerifyAllISO3166PlacesIT.class);
 
-  private final GeocodeService geocoder;
+  private final InternalGeocodeService geocoder;
   private Set<Country> spottedCountries = new HashSet<>();
 
   @Autowired

@@ -1,5 +1,6 @@
 package org.gbif.geocode.ws.resource;
 
+import org.gbif.api.model.common.paging.PagingRequest;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 import org.gbif.geocode.ws.client.GeocodeWsClient;
@@ -36,7 +37,7 @@ public class GeocodeResourceIT {
 
   @Test
   public void reverseTest() {
-    Collection<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList());
+    Collection<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList(), new PagingRequest()).getResults();
     assertEquals(1, result.size());
     assertEquals("South Atlantic Ocean", result.iterator().next().getTitle());
   }
@@ -44,7 +45,7 @@ public class GeocodeResourceIT {
   @Test
   public void reverseWithLayersTest() {
     Collection<Location> result =
-        geocodeClient.get(51d, 18d, 0.1d, null, Collections.singletonList("Political"));
+        geocodeClient.get(51d, 18d, 0.1d, null, Collections.singletonList("Political"), new PagingRequest()).getResults();
     assertEquals(1, result.size());
     assertEquals("PL", result.iterator().next().getIsoCountryCode2Digit());
   }
@@ -56,11 +57,11 @@ public class GeocodeResourceIT {
 
   @Test
   public void offWorldParametersTest() {
-    assertThrows(IllegalArgumentException.class, () -> geocodeClient.get(100d, 1d, 1d, 1d));
+    assertThrows(IllegalArgumentException.class, () -> geocodeClient.get(100d, 1d, 1d, 1d, null));
   }
 
   @Test
   public void uncertainParametersTest() {
-    assertThrows(IllegalArgumentException.class, () -> geocodeClient.get(1d, 1d, 1d, 1d));
+    assertThrows(IllegalArgumentException.class, () -> geocodeClient.get(1d, 1d, 1d, 1d, null));
   }
 }

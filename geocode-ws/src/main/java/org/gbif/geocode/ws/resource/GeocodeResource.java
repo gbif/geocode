@@ -1,8 +1,12 @@
 package org.gbif.geocode.ws.resource;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingRequest;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.api.service.InternalGeocodeService;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
@@ -39,14 +43,16 @@ import com.google.common.io.ByteStreams;
       "Access-Control-Allow-Headers"
     })
 public class GeocodeResource implements GeocodeService {
-  private final GeocodeService geocoderService;
+  private final InternalGeocodeService geocoderService;
 
   private final List<String> defaultLayers;
+
+  private static final int DEFAULT_PAGE_LIMIT = 1000;
 
   private static final String DEFAULT_LAYERS_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
-  public GeocodeResource(GeocodeService geocoderService,
+  public GeocodeResource(InternalGeocodeService geocoderService,
                          @Nullable BuildProperties buildProperties) {
     this.geocoderService = new GeocodeBitmapCache(
         geocoderService, this.getClass().getResourceAsStream(DEFAULT_LAYERS_CACHE_BITMAP));
@@ -66,14 +72,15 @@ public class GeocodeResource implements GeocodeService {
 
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
   @Override
-  public List<Location> get(
+  public PagingResponse<Location> get(
       @RequestParam(value = "lat") Double latitude,
       @RequestParam(value = "lng") Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
           Double uncertaintyDegrees,
       @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
           Double uncertaintyMeters,
-      @Nullable @RequestParam(value = "layer", required = false) List<String> layers) {
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers,
+      @Nullable Pageable page) {
     if (latitude == null
         || longitude == null
         || latitude < -90
@@ -93,13 +100,22 @@ public class GeocodeResource implements GeocodeService {
       layers.add("GADM");
     }
 
-    return geocoderService.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    if (page == null) {
+      page = new PagingRequest(0, DEFAULT_PAGE_LIMIT);
+    }
+
+    List<Location> locations = geocoderService.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    long size = locations.size();
+    return new PagingResponse<>(
+      page,
+      size,
+      locations.subList((int)page.getOffset(), (int)Math.min(size, page.getOffset()+page.getLimit())));
   }
 
   @Override
-  public List<Location> get(
-      Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
+  public PagingResponse<Location> get(
+      Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters, Pageable page) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST, page);
   }
 
   /*

@@ -1,5 +1,6 @@
 package org.gbif.geocode.ws.service.impl;
 
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.ws.layers.Bitmap;
@@ -115,7 +116,7 @@ public class BitmapFirstGeocoderTest {
 
     Collection<Location> locations = geocoder.get(0d, 0d, null, null);
 
-    verify(dbGeocoder, never()).get(0d, 0d, null, null);
+    verify(dbGeocoder, never()).get(null, 0d, 0d, null, null);
 
     assertEquals(0, locations.size());
   }

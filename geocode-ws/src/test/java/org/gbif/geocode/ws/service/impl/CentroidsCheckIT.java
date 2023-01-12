@@ -6,6 +6,8 @@ import org.gbif.api.vocabulary.Country;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 
+import org.gbif.geocode.api.service.InternalGeocodeService;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ import static org.gbif.api.vocabulary.Country.*;
 public class CentroidsCheckIT {
   private static final Logger LOG = LoggerFactory.getLogger(CentroidsCheckIT.class);
 
-  private final GeocodeService geocoder;
+  private final InternalGeocodeService geocoder;
 
   @Autowired
   public CentroidsCheckIT(GeocodeServiceImpl geocodeServiceImpl) {

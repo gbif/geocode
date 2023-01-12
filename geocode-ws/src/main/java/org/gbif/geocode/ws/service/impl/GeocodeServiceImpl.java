@@ -1,8 +1,12 @@
 package org.gbif.geocode.ws.service.impl;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingRequest;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.api.service.InternalGeocodeService;
 import org.gbif.geocode.ws.layers.jts.AbstractJTSLayer;
 import org.gbif.geocode.ws.layers.postgis.AbstractPostGISLayer;
 import org.gbif.geocode.ws.layers.postgis.PGCentroidsLayer;
@@ -33,7 +37,7 @@ import org.springframework.stereotype.Service;
  * - JTS, reading point data from PostGIS
  */
 @Service
-public class GeocodeServiceImpl implements GeocodeService {
+public class GeocodeServiceImpl implements InternalGeocodeService {
   private static final Logger LOG = LoggerFactory.getLogger(GeocodeServiceImpl.class);
 
   private final Map<String, AbstractBitmapCachedLayer> layers = new HashMap<>();

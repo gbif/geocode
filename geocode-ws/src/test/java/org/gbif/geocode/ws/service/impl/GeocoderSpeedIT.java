@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.gbif.geocode.api.service.InternalGeocodeService;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,7 @@ import com.google.common.base.Stopwatch;
 @TestPropertySource(value = "classpath:application-test.properties")
 @Disabled
 public class GeocoderSpeedIT {
-  final GeocodeService geocoder;
+  final InternalGeocodeService geocoder;
 
   // Set to "" to test shapefiles, "PG_" to test PostGIS
   final String p = "";

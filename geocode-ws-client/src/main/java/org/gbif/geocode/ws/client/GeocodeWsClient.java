@@ -1,5 +1,7 @@
 package org.gbif.geocode.ws.client;
 
+import org.gbif.api.model.common.paging.Pageable;
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
 
@@ -25,19 +27,20 @@ public interface GeocodeWsClient extends GeocodeService {
       value = "reverse",
       produces = MediaType.APPLICATION_JSON_VALUE)
   @Override
-  List<Location> get(
+  PagingResponse<Location> get(
       @RequestParam("lat") Double latitude,
       @RequestParam("lng") Double longitude,
       @Nullable @RequestParam(value = "uncertaintyDegrees", required = false)
           Double uncertaintyDegrees,
       @Nullable @RequestParam(value = "uncertaintyMeters", required = false)
           Double uncertaintyMeters,
-      @Nullable @RequestParam(value = "layer", required = false) List<String> layers);
+      @Nullable @RequestParam(value = "layer", required = false) List<String> layers,
+      @Nullable Pageable page);
 
   @Override
-  default List<Location> get(
-      Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, null);
+  default PagingResponse<Location> get(
+    Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters, Pageable page) {
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, null, null);
   }
 
   @RequestMapping(

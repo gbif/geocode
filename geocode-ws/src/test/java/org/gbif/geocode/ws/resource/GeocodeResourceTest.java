@@ -1,7 +1,9 @@
 package org.gbif.geocode.ws.resource;
 
+import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.api.service.InternalGeocodeService;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 
 import java.util.Arrays;
@@ -22,24 +24,24 @@ public class GeocodeResourceTest {
   @Test
   public void testMissingParameters() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    assertThrows(OffWorldException.class, () -> geocodeService.get(null, null, null, null));
+    assertThrows(OffWorldException.class, () -> geocodeService.get(null, null, null, null, null));
   }
 
   @Test
   public void testMissingParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    assertThrows(OffWorldException.class, () -> geocodeService.get(10.0d, null, null, null));
+    assertThrows(OffWorldException.class, () -> geocodeService.get(null, 10.0d, null, null, null));
   }
 
   @Test
   public void testOffWorldParameter() {
     GeocodeService geocodeService = new GeocodeResource(null, null);
-    assertThrows(OffWorldException.class, () -> geocodeService.get(95.0d, 0.0d, null, null));
+    assertThrows(OffWorldException.class, () -> geocodeService.get(null, 95.0d, 0.0d, null, null));
   }
 
   @Test
   public void testGoodRequest() {
-    GeocodeService geocoder = mock(GeocodeService.class);
+    InternalGeocodeService geocoder = mock(InternalGeocodeService.class);
     GeocodeService geocodeService = new GeocodeResource(geocoder, null);
 
     List<String> defaultLayers = Arrays.asList(
@@ -56,7 +58,7 @@ public class GeocodeResourceTest {
     Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d, 0d);
     Location locationTest2 = new Location("test", "political", "source", "Germany", "DE", 0d, 0d);
     when(geocoder.get(10.0d, 53.0d, null, null, defaultLayers)).thenReturn(Arrays.asList(locationTest));
-    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null, null);
+    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null, null, null).getResults();
     verify(geocoder).get(10.0d, 53.0d, null, null, defaultLayers);
     assertEquals(1, locations.size());
     assertTrue(locations.contains(locationTest2));
