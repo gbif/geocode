@@ -14,6 +14,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -39,6 +41,8 @@ import com.google.common.io.ByteStreams;
       "Access-Control-Allow-Headers"
     })
 public class GeocodeResource implements GeocodeService {
+  private static final Logger LOG = LoggerFactory.getLogger(GeocodeResource.class);
+
   private final GeocodeService geocoderService;
 
   private final List<String> defaultLayers;
@@ -93,7 +97,15 @@ public class GeocodeResource implements GeocodeService {
       layers.add("GADM");
     }
 
-    return geocoderService.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    // Limit the response to 1000 entries.  See the branch paging-responses for an initial implementation of paging,
+    // though this is not a backwards compatible change.
+    List<Location> locations = geocoderService.get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers);
+    if (locations.size() > 1000) {
+      LOG.warn("Truncating response for {}, {}, {}, {}, {} with {} results to 1000", latitude, longitude, uncertaintyDegrees, uncertaintyMeters, layers, locations.size());
+      return locations.subList(0, 1000);
+    } else {
+      return locations;
+    }
   }
 
   @Override
