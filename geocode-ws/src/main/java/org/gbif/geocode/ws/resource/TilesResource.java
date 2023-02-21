@@ -5,8 +5,6 @@ import org.gbif.geocode.ws.persistence.mapper.TileMapper;
 import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.maps.common.projection.Double2D;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -20,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
 /**
  * Fetches Mapbox Vector Tiles from PostgreSQL, using PostGIS' inbuilt functions for generating
  * them.
  */
+@Hidden
 @RestController
 @RequestMapping("geocode/tile")
 @CrossOrigin(

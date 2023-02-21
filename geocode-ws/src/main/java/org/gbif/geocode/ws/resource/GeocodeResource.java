@@ -1,5 +1,8 @@
 package org.gbif.geocode.ws.resource;
 
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
@@ -30,7 +33,21 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.google.common.io.ByteStreams;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /** Provides the web service interface to query our Geocoder. */
+@Tag(
+  name = "Reverse geocoding",
+  description = "This API allows querying the GBIF layers store to find known " +
+    "regions (countries, continents, seas and so on) at a particular coordinate.\n\n" +
+    "It is used during GBIF occurrence indexing.",
+  extensions = @io.swagger.v3.oas.annotations.extensions.Extension(
+    name = "Order", properties = @ExtensionProperty(name = "Order", value = "0200"))
+)
 @RestController
 @RequestMapping("geocode")
 @CrossOrigin(
@@ -68,6 +85,41 @@ public class GeocodeResource implements GeocodeService {
       "WGSRPD");
   }
 
+  @Operation(
+    operationId = "reverse",
+    summary = "Reverse geocode a coordinate.",
+    description = "Query the GBIF layer store for known areas containing the " +
+      "given coordinate."
+  )
+  @Parameter(
+    name = "lat",
+    description = "Latitude in WGS84 decimal degrees."
+  )
+  @Parameter(
+    name = "lng",
+    description = "Longitude in WGS84 decimal degrees."
+  )
+  @Parameter(
+    name = "uncertaintyDegrees",
+    description = "An uncertainty in WGS84 decimal degrees.\n\n" +
+      "Note the service has a built-in minimum according to the resolution " +
+      "of the layer data.",
+    schema = @Schema(minimum = "0.05", maximum = "10.0")
+  )
+  @Parameter(
+    name = "uncertaintyMeters",
+    description = "An uncertainty in metres.\n\n" +
+      "Note the service has a built-in minimum according to the resolution " +
+      "of the layer data.",
+    schema = @Schema(minimum = "0.05", maximum = "10.0")
+  )
+  @Parameter(
+    name = "layer",
+    description = "One or more layers to query. If unspecified, a default " +
+      "set of layers is queried.",
+    array = @ArraySchema(schema = @Schema(implementation = String.class)),
+    explode = Explode.TRUE
+  )
   @GetMapping(value = "reverse", produces = MediaType.APPLICATION_JSON_VALUE)
   @Override
   public List<Location> get(
@@ -117,6 +169,14 @@ public class GeocodeResource implements GeocodeService {
   /*
    * Disable client-side caching until I work out a reasonable way to do it.
    */
+  @Operation(
+    operationId = "bitmap",
+    summary = "A bitmap to use as a cache.",
+    description = "This bitmap may be used as a cache.\n\n" +
+      "The map colours are all distinct.  Associate the response from the `reverse` " +
+      "method with a colour.  White is null, and black always requires querying " +
+      "the API."
+  )
   @GetMapping(value = "bitmap", produces = MediaType.IMAGE_PNG_VALUE)
   public ResponseEntity<Resource> bitmap(WebRequest request) throws IOException {
     if (request.checkNotModified(eTag)) {
