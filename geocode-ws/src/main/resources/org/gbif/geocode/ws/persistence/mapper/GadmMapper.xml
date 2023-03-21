@@ -110,17 +110,12 @@
       <property name="query" value="#{query}"/>
     </include>
     <where>
-      <choose>
-        <when test="gid != null and level != null" >
-          top_levels[#{level}] = #{gid}
-        </when>
-        <when test="level != null">
-          gadm_level = #{level}
-        </when>
-        <when test="gid != null">
-          #{gid} = ANY(top_levels)
-        </when>
-      </choose>
+      <if test="level != null" >
+        gadm_level = #{level}
+      </if>
+      <if test="gid != null" >
+        AND (#{gid} = ANY(top_levels) OR gid = #{gid})
+      </if>
     </where>
     ORDER BY gadm_level<if test="query != null" >, ft_rank DESC </if>, gid
     <if test="page != null" >
@@ -135,17 +130,12 @@
         <property name="query" value="#{query}"/>
       </include>
       <where>
-        <choose>
-          <when test="gid != null and level != null" >
-            top_levels[#{level}] = #{gid}
-          </when>
-          <when test="level != null">
-            gadm_level = #{level}
-          </when>
-          <when test="gid != null">
-            #{gid} = ANY(top_levels)
-          </when>
-        </choose>
+        <if test="level != null" >
+          gadm_level = #{level}
+        </if>
+        <if test="gid != null" >
+          AND (#{gid} = ANY(top_levels) OR gid = #{gid})
+        </if>
       </where>
 
     </select>
