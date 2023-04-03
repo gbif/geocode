@@ -28,6 +28,7 @@ var layers = [];
 const urlBase = '..';
 const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
 const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
+const iucn_range_url = urlBase + '/tile/iucn/{z}/{x}/{y}.mvt';
 
 var labels_input = document.getElementById('labels_input');
 
@@ -285,8 +286,7 @@ layers['bitmapCache'] = new ol.layer.Tile({
 
 layers['political'] = new ol.layer.VectorTile({
     title: 'Political',
-    renderMode: 'image',
-        source: new ol.source.VectorTile({
+    source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
         tileGrid: tileGrid,
@@ -300,8 +300,7 @@ layers['political'] = new ol.layer.VectorTile({
 
 layers['continent'] = new ol.layer.VectorTile({
     title: 'Continent',
-    renderMode: 'image',
-        source: new ol.source.VectorTile({
+    source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
         tileGrid: tileGrid,
@@ -315,7 +314,6 @@ layers['continent'] = new ol.layer.VectorTile({
 
 layers['gadm5'] = new ol.layer.VectorTile({
     title: 'GADM5',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -330,7 +328,6 @@ layers['gadm5'] = new ol.layer.VectorTile({
 
 layers['gadm4'] = new ol.layer.VectorTile({
     title: 'GADM4',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -345,7 +342,6 @@ layers['gadm4'] = new ol.layer.VectorTile({
 
 layers['gadm3'] = new ol.layer.VectorTile({
     title: 'GADM3',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -360,7 +356,6 @@ layers['gadm3'] = new ol.layer.VectorTile({
 
 layers['gadm2'] = new ol.layer.VectorTile({
     title: 'GADM2',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -375,7 +370,6 @@ layers['gadm2'] = new ol.layer.VectorTile({
 
 layers['gadm1'] = new ol.layer.VectorTile({
     title: 'GADM1',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -390,7 +384,6 @@ layers['gadm1'] = new ol.layer.VectorTile({
 
 layers['iho'] = new ol.layer.VectorTile({
     title: 'IHO',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -403,9 +396,22 @@ layers['iho'] = new ol.layer.VectorTile({
     visible: false,
 });
 
+layers['iucn'] = new ol.layer.VectorTile({
+    title: 'IUCN',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: iucn_range_url,
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false,
+});
+
 layers['wgsrpd'] = new ol.layer.VectorTile({
     title: 'WGSRPD',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -420,7 +426,6 @@ layers['wgsrpd'] = new ol.layer.VectorTile({
 
 layers['centroids'] = new ol.layer.VectorTile({
     title: 'Centroids',
-    renderMode: 'image',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
@@ -495,6 +500,7 @@ var map = new ol.Map({
         new ol.layer.Group({
             title: 'Layer',
             layers: [
+                layers['iucn'],
                 layers['centroids'],
                 layers['wgsrpd'],
                 layers['iho'],
@@ -646,3 +652,18 @@ occurrences_adhoc_input.onchange = (function(e) {
         }));
 });
 occurrences_adhoc_input.onchange();
+
+var iucn_range_input = document.getElementById('iucn_range_input');
+iucn_range_input.onchange = (function(e) {
+    layers['iucn'].setSource(
+        new ol.source.VectorTile({
+            projection: 'EPSG:4326',
+            format: new ol.format.MVT(),
+            tileGrid: tileGrid,
+            tilePixelRatio: 8,
+            url: iucn_range_url+'?id='+iucn_range_input.value,
+            tilePixelRatio: pixel_ratio,
+            wrapX: false
+        }));
+});
+iucn_range_input.onchange();
