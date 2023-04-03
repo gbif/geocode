@@ -121,6 +121,9 @@ public class TilesResource {
       case "iho":
         tile = tileMapper.tileIho(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
+
+      case "iucn":
+        tile = tileMapper.tileIucn(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "wgsrpd":
@@ -137,7 +140,7 @@ public class TilesResource {
     sw.stop();
 
     if (tile != null) {
-      LOG.debug(
+      LOG.info(
           "Tile {}/{}/{}/{}{} generated in {}ms ({}B)",
           layer,
           z,

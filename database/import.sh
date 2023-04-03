@@ -723,6 +723,36 @@ EOF
     echo
 }
 
+function import_iucn() {
+    echo "Using IUCN range maps from NFS"
+
+    # IUCN Spatial Data download: https://www.iucnredlist.org/resources/spatial-data-download
+
+    mkdir -p /var/tmp/import
+    cd /var/tmp/import
+    #curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/...
+    mkdir -p iucn
+    unzip -oj /mnt/auto/maps/IUCN_Range_Maps/MAMMALS.zip -d iucn/
+
+    shp2pgsql -d -D -s 4326 -i -I -W UTF-8 iucn/MAMMALS.shp public.iucn | wrap_drop_geometry_commands > iucn/MAMMALS.sql
+
+    echo "Dropping old tables"
+    echo "DROP TABLE IF EXISTS iucn;" | exec_psql
+
+    echo "Importing IUCN MAMMALS to PostGIS"
+    exec_psql_file iucn/MAMMALS.sql
+
+    rm iucn/ -Rf
+
+    echo "UPDATE iucn SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
+    echo "SELECT AddGeometryColumn('iucn', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE iucn SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "IUCN import complete"
+    echo
+}
+
 function create_cache() {
 
     exec_psql <<EOF
@@ -733,6 +763,7 @@ function create_cache() {
         z          int           NOT NULL,
         x          int           NOT NULL,
         y          int           NOT NULL,
+        id         text          NULL,
         tile       bytea         NOT NULL,
         timeTaken  int           NULL,
         created    timestamp     DEFAULT NOW()
@@ -765,6 +796,7 @@ else
     import_wgsrpd
     import_esri_countries
     import_continents
+    import_iucn
     create_combined_function
     touch import-complete
 fi

@@ -21,7 +21,7 @@
       LEFT OUTER JOIN iso_map ON political.iso_ter1 = iso_map.iso3
       WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
       <if test="id != null">
-        AND 'http://marineregions.org/mrgid/' || political.mrgid_eez = #{id}
+        AND (political.mrgid_eez::text = #{id} OR iso_map.iso2 = #{id})
       </if>
     ), intersectings AS (
       SELECT * FROM overlappings
@@ -268,7 +268,7 @@
       FROM iho
       WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
       <if test="id != null">
-        AND 'http://marineregions.org/mrgid/' || mrgid = #{id}
+        AND mrgid::text = #{id}
       </if>
     ), intersectings AS (
       SELECT * FROM overlappings
@@ -287,6 +287,64 @@
       FROM intersectings
     ) AS tile;
   </select>
+
+  <!-- Tiles from the public.iucn table -->
+  <select id="tileIucn" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        'https://apiv3.iucnredlist.org/api/v3/taxonredirect/' || id_no AS id,
+        'IUCN' AS type,
+        'https://www.iucnredlist.org/' AS source,
+        CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title,
+        sci_name AS scientificName, <!-- Often only to species level -->
+        CASE presence WHEN 2 THEN 'PROBABLY_EXTANT' WHEN 3 THEN 'POSSIBLY_EXTANT' WHEN 4 THEN 'POSSIBLY_EXTINCT' WHEN 5 THEN 'EXTINCT' WHEN 6 THEN 'PRESENCE_UNCERTAIN' ELSE 'EXTANT' END AS iucnRedListPresence,
+        CASE origin WHEN 2 THEN 'NATIVE_REINTRODUCED' WHEN 3 THEN 'INTRODUCED' WHEN 4 THEN 'VAGRANT' WHEN 5 THEN 'UNCERTAIN' WHEN 6 THEN 'INTRODUCED_ASSISTED_COLONIZATION' ELSE 'NATIVE' END AS establishmentMeans,
+        CASE seasonal WHEN 2 THEN 'BREEDING_SEASON' WHEN 3 THEN 'NON_BREEDING_SEASON' WHEN 4 THEN 'PASSAGE' WHEN 5 THEN 'SEASONAL_OCCURRENCE_UNCERTAIN' ELSE 'RESIDENT' END AS seasonal,
+        compiler,
+        yrcompiled AS yearCompiled,
+        citation,
+        subspecies AS infraspecificEpithet,
+        subpop AS subpopulationName,
+        iucn.source AS sourceReference,
+        island,
+        tax_comm AS taxonomicRemarks,
+        dist_comm AS distributionRemarks,
+        generalisd AS isGeneralized,
+        kingdom,
+        phylum,
+        class,
+        order_ AS "order",
+        family,
+        genus,
+        category AS iucnRedListCategory,
+        marine AS isMarine,
+        terrestial AS isTerrestial,
+        freshwater AS isFreshwater,
+        geom,
+        centroid_geom
+      FROM iucn
+      WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
+      <if test="id != null">
+        AND id_no::text = #{id}
+      </if>
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
+    )
+    SELECT ST_AsMVT(tile, 'iucn', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, scientificName, iucnRedListPresence, establishmentMeans, seasonal, compiler, yearCompiled, citation, infraspecificEpithet,
+        subpopulationName, sourceReference, island, taxonomicRemarks, distributionRemarks, isGeneralized, kingdom, phylum, class, "order", family, genus,
+        iucnRedListCategory, isMarine, isTerrestial, isFreshwater,
+        ST_AsMVTGeom(ST_Simplify(geom, #{scale}, false), ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, scientificName, iucnRedListPresence, establishmentMeans, seasonal, compiler, yearCompiled, citation, infraspecificEpithet,
+        subpopulationName, sourceReference, island, taxonomicRemarks, distributionRemarks, isGeneralized, kingdom, phylum, class, "order", family, genus,
+        iucnRedListCategory, isMarine, isTerrestial, isFreshwater,
+        ST_AsMVTGeom(centroid_geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
       FROM intersectings
     ) AS tile;
   </select>
