@@ -7,12 +7,12 @@ import org.springframework.http.MediaType;
 
 public class OffWorldException extends WebApplicationException {
 
-  /** Create a HTTP 400 (Bad Request) exception with a JSON body. */
+  /** Create an HTTP 400 (Bad Request) exception with a JSON body. */
   public OffWorldException() {
     super("[]", HttpStatus.BAD_REQUEST, MediaType.APPLICATION_JSON);
   }
 
-  /** Create a HTTP 400 (Bad Request) exception with a JSON body. */
+  /** Create an HTTP 400 (Bad Request) exception with a JSON body. */
   public OffWorldException(String message) {
     super(message, HttpStatus.BAD_REQUEST, MediaType.APPLICATION_JSON);
   }

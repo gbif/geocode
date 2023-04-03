@@ -4,24 +4,7 @@ var pixel_ratio = parseInt(window.devicePixelRatio) || 1;
 
 var extent = 180.0;
 var tile_size = 512;
-/*
-  Going by the tile schema used for base map tiles, we have geocoder tiles from zooms 2 and 6.
-  At zoom 0, we show the zoom 2 tiles -- they will be 128px wide.
-
-  0: 2@128
-  1: 2@256
-  2: 2@512
-  3: 2@1024
-  4: 2@2048
-  5: 2@4096
-  6: 6@512
-  7: 6@1024
-  8: 6@2048
-  9: 6@4096
-
-  We run out of detail at zoom 9, so this is the most detailed resolution.
-*/
-var resolutions = Array(13).fill().map((_, i) => ( extent / tile_size / Math.pow(2, i) ));
+var resolutions = Array(15).fill().map((_, i) => ( extent / tile_size / Math.pow(2, i) ));
 
 var tileGrid = new ol.tilegrid.TileGrid({
     extent: ol.proj.get('EPSG:4326').getExtent(),
@@ -186,7 +169,7 @@ function countryStyle() {
                 image: new ol.style.Circle({
                     fill: text.getText().getFill(),
                     stroke: new ol.style.Stroke({color: invertColour, width: 1}),
-                    radius: 8
+                    radius: 2.5
                 }),
             });
         } else {
@@ -227,6 +210,17 @@ var view = new ol.View({
     projection: 'EPSG:4326',
     zoom: 2,
     resolutions: resolutions
+});
+
+layers['grid'] = new ol.layer.Tile({
+    title: 'Tile grid',
+	extent: ol.proj.get('EPSG:4326').getExtent(),
+	source: new ol.source.TileDebug({
+		projection: 'EPSG:4326',
+		tileGrid: tileGrid,
+		wrapX: false
+	}),
+	visible: false,
 });
 
 layers['baselayer'] = new ol.layer.Tile({
@@ -499,7 +493,8 @@ var map = new ol.Map({
                 layers['political']
             ]
         }),
-        vector
+        vector,
+        layers['grid']
     ],
     target: 'map',
     view: view,
