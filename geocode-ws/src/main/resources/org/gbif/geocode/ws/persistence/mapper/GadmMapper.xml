@@ -124,20 +124,19 @@
   </select>
 
   <select id="searchCount" resultType="long">
-      SELECT COUNT(*)
-      FROM gadm_region
-      <include refid="fulltext_query">
-        <property name="query" value="#{query}"/>
-      </include>
-      <where>
-        <if test="level != null" >
-          gadm_level = #{level}
-        </if>
-        <if test="gid != null" >
-          AND (#{gid} = ANY(top_levels) OR gid = #{gid})
-        </if>
-      </where>
-
-    </select>
+    SELECT COUNT(*)
+    FROM gadm_region
+    <include refid="fulltext_query">
+      <property name="query" value="#{query}"/>
+    </include>
+    <where>
+      <if test="level != null" >
+        gadm_level = #{level}
+      </if>
+      <if test="gid != null" >
+        AND (#{gid} = ANY(top_levels) OR gid = #{gid})
+      </if>
+    </where>
+  </select>
 
 </mapper>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -37,10 +38,26 @@ import io.swagger.v3.oas.annotations.Hidden;
 public class TilesResource {
   public static final Logger LOG = LoggerFactory.getLogger(TilesResource.class);
 
+  // The tile width in screen pixels.  The real vector tile is 4096px wide, but we
+  // don't need that detail.  They are displayed on screen covering 512 pixels — though for a high-density
+  // screen, it may be 1024 or more pixels in reality.
+  final int TILE_WIDTH_IN_PIXELS = 512;
+  final double[] scale;
+  final double[] buffer;
+
   private final TileMapper tileMapper;
 
   public TilesResource(TileMapper tileMapper) {
     this.tileMapper = tileMapper;
+
+    scale = new double[20];
+    buffer = new double[20];
+
+    for (int z = 0; z < scale.length; z++) {
+      Double2D[] b = tileBoundary(z, 1, 0, 0);
+      scale[z] = 180d / (TILE_WIDTH_IN_PIXELS * Math.pow(2, z));
+      buffer[z] = (b[1].getX() - b[0].getX()) / 64; // Date line! And X vs Y degree sizes.
+    }
   }
 
   /** Fetch a single tile for a layer. */
@@ -49,18 +66,23 @@ public class TilesResource {
       @PathVariable("layer") String layer,
       @PathVariable("z") int z,
       @PathVariable("x") long x,
-      @PathVariable("y") long y) {
+      @PathVariable("y") long y,
+      @RequestParam(value = "id", required = false) String id) {
     if (z < 0 || x > Math.pow(2, (z + 1)) || y > Math.pow(2, z)) {
       LOG.warn("Off world {}/{}/{}", z, x, y);
       throw new OffWorldException();
     }
+    if (z > scale.length) {
+      LOG.warn("Zoom too high {}/{}/{}", z, x, y);
+      throw new OffWorldException();
+    }
 
-    Tile tile = tileMapper.fromCache(layer, z, x, y);
+    Tile tile = tileMapper.fromCache(layer, z, x, y, id);
     if (tile != null) {
-      LOG.debug("Tile {}/{}/{}/{} found in cache", layer, z, x, y);
+      LOG.debug("Tile {}/{}/{}/{}{} found in cache", layer, z, x, y, id == null ? "" : "?"+id);
       return tile.getT();
     } else {
-      LOG.debug("Tile {}/{}/{}/{} not found in cache", layer, z, x, y);
+      LOG.debug("Tile {}/{}/{}/{}{} not found in cache", layer, z, x, y, id == null ? "" : "?"+id);
     }
 
     Double2D[] b = tileBoundary(z, x, y, 0);
@@ -69,44 +91,43 @@ public class TilesResource {
 
     switch (layer) {
       case "political":
-        tile = tileMapper.tilePolitical(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tilePolitical(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "continent":
-        tile = tileMapper.tileContinent(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileContinent(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "gadm5":
-        tile = tileMapper.tileGadm5(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileGadm5(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "gadm4":
-        tile = tileMapper.tileGadm4(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileGadm4(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "gadm3":
-        tile = tileMapper.tileGadm3(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileGadm3(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "gadm2":
-        tile = tileMapper.tileGadm2(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileGadm2(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "gadm1":
-        tile = tileMapper.tileGadm1(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileGadm1(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "iho":
-        tile = tileMapper.tileIho(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileIho(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "wgsrpd":
-        tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "centroids":
-        tile =
-            tileMapper.tileCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY());
+        tile = tileMapper.tileCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       default:
@@ -116,15 +137,16 @@ public class TilesResource {
 
     if (tile != null) {
       LOG.debug(
-          "Tile {}/{}/{}/{} generated in {}ms ({}B)",
+          "Tile {}/{}/{}/{}{} generated in {}ms ({}B)",
           layer,
           z,
           x,
           y,
+          id == null ? "" : "?"+id,
           sw.elapsed(TimeUnit.MILLISECONDS),
           tile.getT().length);
 
-      tileMapper.toCache(layer, z, x, y, tile, sw.elapsed(TimeUnit.MILLISECONDS));
+      tileMapper.toCache(layer, z, x, y, id, tile, sw.elapsed(TimeUnit.MILLISECONDS));
 
       return tile.getT();
     }
