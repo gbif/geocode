@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gbif.geocode.ws.persistence.mapper.GeoJsonMapper">
+
+  <!-- GeoJSON from the public.political table -->
+  <select id="geoJsonPolitical" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || political.mrgid_eez AS id,
+        'Political' AS type,
+        'http://marineregions.org' AS source,
+        political.union AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom,
+        centroid_geom
+      FROM political
+      LEFT OUTER JOIN iso_map ON political.iso_ter1 = iso_map.iso3
+      WHERE (political.mrgid_eez::text = #{id} OR iso_map.iso2 = #{id})
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.continent table -->
+  <select id="geoJsonContinent" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        continent AS id,
+        'Continent' AS type,
+        'https://github.com/gbif/continents' AS source,
+        continent AS title,
+        NULL AS isoCountryCode2Digit,
+        geom,
+        centroid_geom
+      FROM continent_subdivided
+      WHERE continent = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.gadm5 table -->
+  <select id="geoJsonGadm5" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        gid_5 AS id,
+        'GADM5' AS type,
+        'http://gadm.org' AS source,
+        name_5 AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom AS geom,
+        centroid_geom
+      FROM gadm
+      LEFT OUTER JOIN iso_map ON gadm.gid_0 = iso_map.iso3
+      WHERE gid_5 IS NOT NULL
+        AND gid_5 = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.gadm4 table -->
+  <select id="geoJsonGadm4" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        gid_4 AS id,
+        'GADM4' AS type,
+        'http://gadm.org' AS source,
+        name_4 AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom AS geom,
+        centroid_geom
+      FROM gadm4
+      LEFT OUTER JOIN iso_map ON gadm4.gid_0 = iso_map.iso3
+      WHERE gid_4 IS NOT NULL
+        AND gid_4 = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.gadm3 table -->
+  <select id="geoJsonGadm3" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        gid_3 AS id,
+        'GADM3' AS type,
+        'http://gadm.org' AS source,
+        name_3 AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom AS geom,
+        centroid_geom
+      FROM gadm3
+      LEFT OUTER JOIN iso_map ON gadm3.gid_0 = iso_map.iso3
+      WHERE gid_3 IS NOT NULL
+        AND gid_5 = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.gadm2 table -->
+  <select id="geoJsonGadm2" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        gid_2 AS id,
+        'GADM2' AS type,
+        'http://gadm.org' AS source,
+        name_2 AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom AS geom,
+        centroid_geom
+      FROM gadm2
+      LEFT OUTER JOIN iso_map ON gadm2.gid_0 = iso_map.iso3
+      WHERE gid_2 IS NOT NULL
+        AND gid_2 = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.gadm1 table -->
+  <select id="geoJsonGadm1" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        gid_1 AS id,
+        'GADM1' AS type,
+        'http://gadm.org' AS source,
+        name_1 AS title,
+        iso_map.iso2 AS isoCountryCode2Digit,
+        geom AS geom,
+        centroid_geom
+      FROM gadm1
+      LEFT OUTER JOIN iso_map ON gadm1.gid_0 = iso_map.iso3
+      WHERE gid_1 IS NOT NULL
+        AND gid_1 = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.iho table -->
+  <select id="geoJsonIho" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'IHO' AS type,
+        'http://marineregions.org' AS source,
+        name AS title,
+        geom,
+        centroid_geom
+      FROM iho
+      WHERE mrgid::text = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.iucn table -->
+  <select id="geoJsonIucn" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'https://apiv3.iucnredlist.org/api/v3/taxonredirect/' || id_no AS id,
+        'IUCN' AS type,
+        'https://www.iucnredlist.org/' AS source,
+        CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title,
+        sci_name AS "scientificName", <!-- Often only to species level -->
+        CASE presence WHEN 2 THEN 'PROBABLY_EXTANT' WHEN 3 THEN 'POSSIBLY_EXTANT' WHEN 4 THEN 'POSSIBLY_EXTINCT' WHEN 5 THEN 'EXTINCT' WHEN 6 THEN 'PRESENCE_UNCERTAIN' ELSE 'EXTANT' END AS "iucnRedListPresence",
+        CASE origin WHEN 2 THEN 'NATIVE_REINTRODUCED' WHEN 3 THEN 'INTRODUCED' WHEN 4 THEN 'VAGRANT' WHEN 5 THEN 'UNCERTAIN' WHEN 6 THEN 'INTRODUCED_ASSISTED_COLONIZATION' ELSE 'NATIVE' END AS "establishmentMeans",
+        CASE seasonal WHEN 2 THEN 'BREEDING_SEASON' WHEN 3 THEN 'NON_BREEDING_SEASON' WHEN 4 THEN 'PASSAGE' WHEN 5 THEN 'SEASONAL_OCCURRENCE_UNCERTAIN' ELSE 'RESIDENT' END AS seasonal,
+        compiler,
+        yrcompiled AS "yearCompiled",
+        citation,
+        subspecies AS "infraspecificEpithet",
+        subpop AS "subpopulationName",
+        iucn.source AS "sourceReference",
+        island,
+        tax_comm AS "taxonomicRemarks",
+        dist_comm AS "distributionRemarks",
+        generalisd AS "isGeneralized",
+        kingdom,
+        phylum,
+        class,
+        order_ AS "order",
+        family,
+        genus,
+        category AS "iucnRedListCategory",
+        marine AS "isMarine",
+        terrestial AS "isTerrestial",
+        freshwater AS "isFreshwater",
+        geom
+      FROM iucn
+      WHERE id_no::text = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.wgsrpd_level4 table -->
+  <select id="geoJsonWgsrpd" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        level4_cod AS id,
+        'WGSRPD' AS type,
+        'http://www.tdwg.org/standards/109' AS source,
+        level_4_na AS title,
+        geom,
+        centroid_geom
+      FROM wgsrpd_level4
+      WHERE level4_cod = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.centroids view -->
+  <select id="geoJsonCentroids" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        id,
+        'Centroids' AS type,
+        source,
+        title,
+        isoCountryCode2Digit,
+        geom
+      FROM centroids
+      WHERE id = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+</mapper>
