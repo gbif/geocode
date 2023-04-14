@@ -42,6 +42,7 @@ public interface TileMapper {
   Tile tileGadm3(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileGadm2(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileGadm1(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
+  Tile tileGadm0(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileIho(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileIucn(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileWgsrpd(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);

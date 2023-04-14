@@ -382,6 +382,20 @@ layers['gadm1'] = new ol.layer.VectorTile({
     visible: false
 });
 
+layers['gadm0'] = new ol.layer.VectorTile({
+    title: 'GADM0',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: urlBase + '/tile/gadm0/{z}/{x}/{y}.mvt',
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false
+});
+
 layers['iho'] = new ol.layer.VectorTile({
     title: 'IHO',
     source: new ol.source.VectorTile({
@@ -509,6 +523,7 @@ var map = new ol.Map({
                 layers['gadm3'],
                 layers['gadm2'],
                 layers['gadm1'],
+                layers['gadm0'],
                 layers['continent'],
                 layers['political']
             ]
