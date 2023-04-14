@@ -82,6 +82,10 @@ public class FeatureResource {
         features = geoJsonMapper.geoJsonGadm1(id);
         break;
 
+      case "gadm0":
+        features = geoJsonMapper.geoJsonGadm0(id);
+        break;
+
       case "iho":
         features = geoJsonMapper.geoJsonIho(id);
         break;
