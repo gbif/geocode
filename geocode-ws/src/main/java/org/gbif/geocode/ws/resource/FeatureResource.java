@@ -94,6 +94,10 @@ public class FeatureResource {
         features = geoJsonMapper.geoJsonIucn(id);
         break;
 
+      case "wdpa":
+        features = geoJsonMapper.geoJsonWdpa(id);
+        break;
+
       case "wgsrpd":
         features = geoJsonMapper.geoJsonWgsrpd(id);
         break;

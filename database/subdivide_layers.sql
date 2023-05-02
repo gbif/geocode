@@ -142,6 +142,36 @@ BEGIN
 END
 $do$;
 
+-- WDPA
+DROP TABLE IF EXISTS wdpa_subdivided;
+CREATE TABLE wdpa_subdivided AS
+    SELECT "wdpaId", "wdpaParcelId", name, "iso3Code", geom
+    FROM wdpa
+    WHERE ST_NPoints(geom) <= 1024;
+
+INSERT INTO wdpa_subdivided
+    SELECT "wdpaId", "wdpaParcelId", name, "iso3Code", ST_Multi(ST_Subdivide(geom, 1024)) AS geom
+    FROM wdpa
+    WHERE ST_NPoints(geom) > 1024 AND ST_NPoints(geom) <= 10000;
+
+DO
+$do$
+DECLARE
+   k   record;
+BEGIN
+   FOR k IN
+      SELECT "wdpaParcelId" AS id, name FROM wdpa WHERE ST_NPoints(geom) > 10000
+   LOOP
+      RAISE NOTICE 'Processing % (%)', k.id, k.name;
+      INSERT INTO wdpa_subdivided
+        SELECT "wdpaId", "wdpaParcelId", name, "iso3Code", ST_Multi(ST_Subdivide(geom, 1024)) AS geom
+        FROM wdpa
+        WHERE "wdpaParcelId" = k.id;
+      RAISE NOTICE 'Completed % (%)', k.id, k.name;
+   END LOOP;
+END
+$do$;
+
 -- WGSPRD
 DROP TABLE IF EXISTS wgsrpd_level4_subdivided;
 CREATE TABLE wgsrpd_level4_subdivided AS

@@ -11,8 +11,8 @@ import org.gbif.geocode.ws.layers.postgis.PGGadmLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIhoLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIucnLayer;
 import org.gbif.geocode.ws.layers.postgis.PGPoliticalLayer;
+import org.gbif.geocode.ws.layers.postgis.PGWdpaLayer;
 import org.gbif.geocode.ws.layers.postgis.PGWgsrpdLayer;
-import org.gbif.geocode.ws.layers.shapefile.AbstractShapefileLayer;
 import org.gbif.geocode.ws.persistence.mapper.LocationMapper;
 
 import java.lang.reflect.Constructor;
@@ -59,11 +59,12 @@ public class GeocodeServiceImpl implements GeocodeService {
       LOG.info("Enabled layers: {}", enabled);
 
       // 1: Load enabled shapefile layers
-      Class<AbstractShapefileLayer>[] availableShapefileLayers = new Class[]{
+      Class<AbstractBitmapCachedLayer>[] availableShapefileLayers = new Class[]{
         org.gbif.geocode.ws.layers.shapefile.ContinentLayer.class,
         org.gbif.geocode.ws.layers.shapefile.GadmLayer.class,
         org.gbif.geocode.ws.layers.shapefile.IhoLayer.class,
         org.gbif.geocode.ws.layers.shapefile.PoliticalLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.WdpaLayer.class,
         org.gbif.geocode.ws.layers.shapefile.WgsrpdLayer.class
       };
 
@@ -72,8 +73,8 @@ public class GeocodeServiceImpl implements GeocodeService {
 
         if (enabled == null || enabled.isEmpty() || enabled.contains(name)) {
           try {
-            Constructor<AbstractShapefileLayer> c = class_.getDeclaredConstructor(String.class);
-            AbstractShapefileLayer layer = c.newInstance(new Object[]{root});
+            Constructor<AbstractBitmapCachedLayer> c = class_.getDeclaredConstructor(String.class);
+            AbstractBitmapCachedLayer layer = c.newInstance(new Object[]{root});
             layers.put(layer.name(), layer);
           } catch (Exception e) {
             throw new RuntimeException("Error loading layer "+name+" from "+root, e);
@@ -91,6 +92,7 @@ public class GeocodeServiceImpl implements GeocodeService {
         PGIhoLayer.class,
         PGIucnLayer.class,
         PGPoliticalLayer.class,
+        PGWdpaLayer.class,
         PGWgsrpdLayer.class
       };
 

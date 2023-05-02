@@ -1,8 +1,5 @@
 package org.gbif.geocode.ws.resource;
 
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
@@ -36,8 +33,10 @@ import com.google.common.io.ByteStreams;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /** Provides the web service interface to query our Geocoder. */
 @Tag(
@@ -82,6 +81,7 @@ public class GeocodeResource implements GeocodeService {
       "GADM2",
       "GADM3",
       "IHO",
+      "WDPA",
       "WGSRPD");
   }
 

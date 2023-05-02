@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 
 import io.swagger.v3.oas.annotations.Hidden;
 
@@ -76,6 +77,7 @@ public class TilesResource {
       LOG.warn("Zoom too high {}/{}/{}", z, x, y);
       throw new OffWorldException();
     }
+    id = Strings.emptyToNull(id);
 
     Tile tile = tileMapper.fromCache(layer, z, x, y, id);
     if (tile != null) {
@@ -128,6 +130,10 @@ public class TilesResource {
 
       case "iucn":
         tile = tileMapper.tileIucn(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
+        break;
+
+      case "wdpa":
+        tile = tileMapper.tileWdpa(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "wgsrpd":

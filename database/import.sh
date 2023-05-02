@@ -730,7 +730,6 @@ function import_iucn() {
 
     mkdir -p /var/tmp/import
     cd /var/tmp/import
-    #curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/...
     mkdir -p iucn
     unzip -oj /mnt/auto/maps/IUCN_Range_Maps/MAMMALS.zip -d iucn/
 
@@ -750,6 +749,110 @@ function import_iucn() {
     echo "UPDATE iucn SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
     echo "IUCN import complete"
+    echo
+}
+
+function import_wdpa() {
+    echo "Using WDPA maps from NFS"
+
+    # World Database of Protected Areas download: https://www.protectedplanet.net/
+
+    mkdir -p /var/tmp/import
+    cd /var/tmp/import
+    mkdir -p wdpa
+    unzip -o /mnt/auto/maps/WDPA_Maps/WDPA_Apr2023_Public.zip -d wdpa/
+
+    echo "Dropping old tables"
+    echo "DROP TABLE IF EXISTS wdpa_point_apr2023;" | exec_psql
+    echo "DROP TABLE IF EXISTS wdpa_poly_apr2023;" | exec_psql
+    echo "DROP TABLE IF EXISTS wdpa_source_apr2023;" | exec_psql
+
+    echo "Importing WDPA polygons to PostGIS"
+    ogr2ogr -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" wdpa/WDPA_Apr2023_Public.gdb
+
+    rm wdpa/ -Rf
+
+    echo "SELECT AddGeometryColumn('wdpa_poly_apr2023', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE wdpa_poly_apr2023 SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    # Buffer the point locations which have a reference area, as recommended in the user manual, §5.5.2 "Point Data".
+    echo "SELECT AddGeometryColumn('wdpa_point_apr2023', 'buffered_geom', 4326, 'MULTIPOLYGON', 2);" | exec_psql
+    echo "UPDATE wdpa_point_apr2023 SET buffered_geom = ST_Multi(ST_Buffer(geom::geography, SQRT(rep_area/PI()), 'quad_segs=16')::geometry) WHERE rep_area > 0;" | exec_psql
+
+    # Combine the polygon and point (now circle) areas into a single view.
+    echo '
+    CREATE VIEW wdpa AS
+      SELECT
+        objectid,
+        wdpaid AS "wdpaId",
+        wdpa_pid AS "wdpaParcelId",
+        pa_def AS "protectedAreaDefinition",
+        name,
+        orig_name AS "originalName",
+        desig AS "designation",
+        desig_eng AS "englishDesignation",
+        desig_type AS "designationType",
+        iucn_cat AS "iucnManagementCategory",
+        int_crit AS "internationalCriteria",
+        marine,
+        rep_m_area AS "reportedMarineArea",
+        rep_area AS "reportedArea",
+        no_take AS "noTake",
+        no_tk_area AS "noTakeArea",
+        status,
+        status_yr AS "statusYear",
+        gov_type AS "governanceType",
+        own_type AS "ownershipType",
+        mang_auth AS "managementAuthority",
+        mang_plan AS "managementPlan",
+        verif AS "verification",
+        metadataid AS "metadataId",
+        sub_loc AS "subNationalLocation",
+        parent_iso3 AS "parentIso3Code",
+        iso3 AS "iso3Code",
+        supp_info AS "supplementaryInformation",
+        cons_obj AS "conservationObjectives",
+        geom,
+        centroid_geom
+      FROM wdpa_poly_apr2023
+      UNION ALL
+      SELECT
+        objectid,
+        wdpaid AS "wdpaId",
+        wdpa_pid AS "wdpaParcelId",
+        pa_def AS "protectedAreaDefinition",
+        name,
+        orig_name AS "originalName",
+        desig AS "designation",
+        desig_eng AS "englishDesignation",
+        desig_type AS "designationType",
+        iucn_cat AS "iucnManagementCategory",
+        int_crit AS "internationalCriteria",
+        marine,
+        rep_m_area AS "reportedMarineArea",
+        rep_area AS "reportedArea",
+        no_take AS "noTake",
+        no_tk_area AS "noTakeArea",
+        status,
+        status_yr AS "statusYear",
+        gov_type AS "governanceType",
+        own_type AS "ownershipType",
+        mang_auth AS "managementAuthority",
+        mang_plan AS "managementPlan",
+        verif AS "verification",
+        metadataid AS "metadataId",
+        sub_loc AS "subNationalLocation",
+        parent_iso3 AS "parentIso3Code",
+        iso3 AS "iso3Code",
+        supp_info AS "supplementaryInformation",
+        cons_obj AS "conservationObjectives",
+        buffered_geom AS geom,
+        geom AS centroid_geom
+      FROM wdpa_point_apr2023
+        WHERE rep_area > 0
+    ;' | exec_psql
+
+    echo "WDPA import complete"
     echo
 }
 
@@ -797,6 +900,7 @@ else
     import_esri_countries
     import_continents
     import_iucn
+    import_wdpa
     create_combined_function
     touch import-complete
 fi

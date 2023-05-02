@@ -266,6 +266,54 @@
     FROM features;
   </select>
 
+  <!-- GeoJSON from the public.wdpa view -->
+  <select id="geoJsonWdpa" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'https://www.protectedplanet.net/' || "wdpaId"::text AS id,
+        'WDPA' AS type,
+        'https://www.protectedplanet.net/' AS source,
+        name AS title,
+        "wdpaId",
+        "wdpaParcelId",
+        "protectedAreaDefinition",
+        "originalName",
+        "designation",
+        "englishDesignation",
+        "designationType",
+        "iucnManagementCategory",
+        "internationalCriteria",
+        marine,
+        "reportedMarineArea",
+        "reportedArea",
+        "noTake",
+        "noTakeArea",
+        status,
+        "statusYear",
+        "governanceType",
+        "ownershipType",
+        "managementAuthority",
+        "managementPlan",
+        "verification",
+        "metadataId",
+        "subNationalLocation",
+        "parentIso3Code",
+        "iso3Code",
+        "supplementaryInformation",
+        "conservationObjectives",
+        geom
+      FROM wdpa
+      WHERE wdpa_pid = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
   <!-- GeoJSON from the public.wgsrpd_level4 table -->
   <select id="geoJsonWgsrpd" resultType="java.lang.String">
     WITH features AS (

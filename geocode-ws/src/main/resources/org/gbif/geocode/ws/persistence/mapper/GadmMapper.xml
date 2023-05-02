@@ -137,7 +137,6 @@
           AND (#{gid} = ANY(top_levels) OR gid = #{gid})
         </if>
       </where>
-
-    </select>
+  </select>
 
 </mapper>

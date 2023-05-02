@@ -385,6 +385,72 @@
     ) AS tile;
   </select>
 
+  <!-- Tiles from the public.wdpa view -->
+  <select id="tileWdpa" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        'https://www.protectedplanet.net/' || "wdpaId"::text AS id,
+        'WDPA' AS type,
+        'https://www.protectedplanet.net/' AS source,
+        name AS title,
+        "wdpaId",
+        "wdpaParcelId",
+        "protectedAreaDefinition",
+        "originalName",
+        "designation",
+        "englishDesignation",
+        "designationType",
+        "iucnManagementCategory",
+        "internationalCriteria",
+        marine,
+        "reportedMarineArea",
+        "reportedArea",
+        "noTake",
+        "noTakeArea",
+        status,
+        "statusYear",
+        "governanceType",
+        "ownershipType",
+        "managementAuthority",
+        "managementPlan",
+        "verification",
+        "metadataId",
+        "subNationalLocation",
+        "parentIso3Code",
+        "iso3Code",
+        "supplementaryInformation",
+        "conservationObjectives",
+        geom,
+        centroid_geom
+      FROM wdpa
+      WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
+      <if test="id != null">
+        AND "wdpaId"::text = #{id}
+      </if>
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
+    )
+    SELECT ST_AsMVT(tile, 'wdpa', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, "wdpaId", "wdpaParcelId", "protectedAreaDefinition", "originalName", "designation", "englishDesignation",
+        "designationType", "iucnManagementCategory", "internationalCriteria", marine, "reportedMarineArea", "reportedArea", "noTake",
+        "noTakeArea", status, "statusYear", "governanceType", "ownershipType", "managementAuthority", "managementPlan", "verification",
+        "metadataId", "subNationalLocation", "parentIso3Code", "iso3Code", "supplementaryInformation", "conservationObjectives",
+        ST_AsMVTGeom(ST_Simplify(geom, #{scale}, false), ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, "wdpaId", "wdpaParcelId", "protectedAreaDefinition", "originalName", "designation", "englishDesignation",
+        "designationType", "iucnManagementCategory", "internationalCriteria", marine, "reportedMarineArea", "reportedArea", "noTake",
+        "noTakeArea", status, "statusYear", "governanceType", "ownershipType", "managementAuthority", "managementPlan", "verification",
+        "metadataId", "subNationalLocation", "parentIso3Code", "iso3Code", "supplementaryInformation", "conservationObjectives",
+        ST_AsMVTGeom(centroid_geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
   <!-- Tiles from the public.wgsrpd_level4 table -->
   <select id="tileWgsrpd" resultMap="tileMap">
     WITH overlappings AS (
@@ -534,6 +600,10 @@
 
   <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM iho
+  </select>
+
+  <select id="svgWdpa" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT "wdpaId" AS id, ST_AsSVG(ST_Subdivide(geom, 1000000)) AS shape FROM wdpa
   </select>
 
   <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">

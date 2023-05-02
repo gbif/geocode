@@ -56,6 +56,16 @@ function export_iho() {
     echo
 }
 
+function export_wdpa() {
+    echo "Exporting WDPA to geopackage"
+    exec_pgsql2shp layers/wdpa_1 "SELECT 'https://www.protectedplanet.net/' || \"wdpaId\"::text AS id, name, NULL AS isoCountryCode2Digit, geom FROM wdpa_subdivided ORDER BY \"wdpaParcelId\" LIMIT 500000;"
+    exec_pgsql2shp layers/wdpa_2 "SELECT 'https://www.protectedplanet.net/' || \"wdpaId\"::text AS id, name, NULL AS isoCountryCode2Digit, geom FROM wdpa_subdivided ORDER BY \"wdpaParcelId\" LIMIT 500000 OFFSET 500000;"
+    exec_pgsql2shp layers/wdpa_3 "SELECT 'https://www.protectedplanet.net/' || \"wdpaId\"::text AS id, name, NULL AS isoCountryCode2Digit, geom FROM wdpa_subdivided ORDER BY \"wdpaParcelId\" LIMIT 500000 OFFSET 1000000;"
+
+    echo "WDPA geopackage export complete"
+    echo
+}
+
 function export_wgsrpd() {
     echo "Exporting WGSRPD to shapefile"
     exec_pgsql2shp layers/wgsrpd_subdivided "SELECT 'WGSRPD:' || level4_cod AS id, level_4_na AS name, iso_code AS isoCountryCode2Digit, geom FROM wgsrpd_level4_subdivided"
@@ -97,6 +107,7 @@ else
     export_political
     export_gadm
     export_iho
+    export_wdpa
     export_wgsrpd
     export_continents
     [[ -w . ]] && touch export-complete

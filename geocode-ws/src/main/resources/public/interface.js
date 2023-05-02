@@ -29,6 +29,7 @@ const urlBase = '..';
 const occurrences_density_url = 'https://api.gbif.org/v2/map/occurrence/density/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
 const occurrences_adhoc_url = 'https://api.gbif.org/v2/map/occurrence/adhoc/{z}/{x}/{y}@{r}x.png?srs=EPSG%3A4326'.replace('{r}', pixel_ratio);
 const iucn_range_url = urlBase + '/tile/iucn/{z}/{x}/{y}.mvt';
+const wdpa_url = urlBase + '/tile/wdpa/{z}/{x}/{y}.mvt';
 
 var labels_input = document.getElementById('labels_input');
 
@@ -424,6 +425,20 @@ layers['iucn'] = new ol.layer.VectorTile({
     visible: false,
 });
 
+layers['wdpa'] = new ol.layer.VectorTile({
+    title: 'WDPA',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: wdpa_url,
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false,
+});
+
 layers['wgsrpd'] = new ol.layer.VectorTile({
     title: 'WGSRPD',
     source: new ol.source.VectorTile({
@@ -514,6 +529,7 @@ var map = new ol.Map({
         new ol.layer.Group({
             title: 'Layer',
             layers: [
+                layers['wdpa'],
                 layers['iucn'],
                 layers['centroids'],
                 layers['wgsrpd'],
@@ -682,3 +698,18 @@ iucn_range_input.onchange = (function(e) {
         }));
 });
 iucn_range_input.onchange();
+
+var wdpa_input = document.getElementById('wdpa_input');
+wdpa_input.onchange = (function(e) {
+    layers['wdpa'].setSource(
+        new ol.source.VectorTile({
+            projection: 'EPSG:4326',
+            format: new ol.format.MVT(),
+            tileGrid: tileGrid,
+            tilePixelRatio: 8,
+            url: wdpa_url+'?id='+wdpa_input.value,
+            tilePixelRatio: pixel_ratio,
+            wrapX: false
+        }));
+});
+wdpa_input.onchange();

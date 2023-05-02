@@ -88,7 +88,7 @@
           <addResources>false</addResources>
           <layout>ZIP</layout>
           <excludeGroupIds>org.apache.xmlgraphics</excludeGroupIds>
-          <jvmArguments>-Xmx16g</jvmArguments>
+          <jvmArguments>-Xmx24g</jvmArguments>
         </configuration>
       </plugin>
 
@@ -123,7 +123,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <argLine>-Xmx16g</argLine>
+          <argLine>-Xmx24g</argLine>
         </configuration>
       </plugin>
     </plugins>
