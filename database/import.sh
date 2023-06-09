@@ -5,6 +5,8 @@ set -o nounset
 
 readonly START_DIR=$PWD
 readonly SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+readonly NFS_SOURCE=/mnt/auto/maps
+readonly TEMP=/var/tmp/import
 
 if [[ -n ${POSTGRES_HOST:-} ]]; then
     readonly PGCONN="PG:host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PASSWORD dbname=$POSTGRES_DB"
@@ -42,6 +44,8 @@ function import_iso_map() {
     echo "Creating PostGIS extension"
     echo "CREATE EXTENSION IF NOT EXISTS postgis;" | exec_psql
     echo "CREATE EXTENSION IF NOT EXISTS postgis_topology;" | exec_psql
+    echo "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO PUBLIC;" | exec_psql
+    echo "GRANT SELECT ON ALL TABLES IN SCHEMA public TO PUBLIC;" | exec_psql
 
     echo "Importing ISO alpha code map"
 
@@ -134,8 +138,8 @@ function import_political() {
     # EEZ + land union (we're currently on version 3, which uses EEZ version 11):
     # Download from here: http://www.marineregions.org/downloads.php
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
     curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2022/05/EEZ_land_union_v3_202003.zip
     mkdir -p political
     unzip -oj EEZ_land_union_v3_202003.zip -d political/
@@ -330,8 +334,8 @@ function import_gadm() {
 
     # GADM, version 4.1: https://gadm.org/download_world.html
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
     curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2022/08/gadm_410-gpkg.zip || \
         curl -LSs --remote-name --continue-at - --fail https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_410-gpkg.zip
     mkdir -p gadm
@@ -496,8 +500,8 @@ function import_iho() {
 
     # IHO version 3: http://www.marineregions.org/downloads.php#iho
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
     curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/World_Seas_IHO_v3.zip
     mkdir -p iho
     unzip -oj World_Seas_IHO_v3.zip -d iho/
@@ -526,8 +530,8 @@ function import_wgsrpd() {
 
     # WGSRPD version 2.0: http://www.kew.org/gis/tdwg/index.html or http://web.archive.org/web/20170215024211/http://www.kew.org/gis/tdwg/index.html
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
 
     for i in 1 2 3 4; do
         curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/2020/05/level$i.zip || \
@@ -556,8 +560,8 @@ function import_wgsrpd() {
 }
 
 function import_esri_countries() {
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
     for i in `seq 8`; do
         curl -LSs --remote-name --fail https://download.gbif.org/MapDataMirror/2022/08/World_Countries_$i.zip
     done
@@ -608,8 +612,8 @@ function import_continents() {
 
     # Continent Cutter dataset, version 2021-04-27: https://github.org/gbif/continents
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
+    mkdir -p $TEMP
+    cd $TEMP
     curl -LSs --remote-name --fail https://github.com/gbif/continents/raw/master/continent_cookie_cutter.gpkg
 
     echo "Dropping old tables"
@@ -728,22 +732,53 @@ function import_iucn() {
 
     # IUCN Spatial Data download: https://www.iucnredlist.org/resources/spatial-data-download
 
-    mkdir -p /var/tmp/import
-    cd /var/tmp/import
-    #curl -LSs --remote-name --continue-at - --fail http://download.gbif.org/MapDataMirror/...
+    mkdir -p $TEMP
+    cd $TEMP
     mkdir -p iucn
-    unzip -oj /mnt/auto/maps/IUCN_Range_Maps/MAMMALS.zip -d iucn/
-
-    shp2pgsql -d -D -s 4326 -i -I -W UTF-8 iucn/MAMMALS.shp public.iucn | wrap_drop_geometry_commands > iucn/MAMMALS.sql
 
     echo "Dropping old tables"
     echo "DROP TABLE IF EXISTS iucn;" | exec_psql
+    created=
 
-    echo "Importing IUCN MAMMALS to PostGIS"
-    exec_psql_file iucn/MAMMALS.sql
+    for i in $NFS_SOURCE/IUCN_Range_Maps/*.zip; do
+        b=$(basename $i .zip)
 
-    rm iucn/ -Rf
+        if compgen -G iucn/$b/'*.shp'; then
+            echo "Already unzipped $b"
+        else
+            unzip -oj $i -d iucn/$b/
+        fi
 
+        for j in iucn/$b/*.shp; do
+            sql=iucn/$b/$(basename $j .shp).sql
+
+            if [[ -e $sql ]]; then
+                echo "Already generated $sql"
+            else
+                if [[ -z $created ]]; then
+                    echo "FIRST"
+                    shp2pgsql -c -D -s 4326 -I -W UTF-8 $j public.iucn | wrap_drop_geometry_commands | grep -v '^ANALYZE ' > $sql
+                    created=1
+                else
+                    echo "NOT FIRST"
+                    shp2pgsql -a -D -s 4326 -W UTF-8 $j public.iucn | wrap_drop_geometry_commands | grep -v '^ANALYZE ' > $sql
+                fi
+            fi
+
+            if [[ -e $sql.success ]]; then
+                echo "Already imported $sql"
+            else
+                echo "Importing IUCN data $b - $sql to PostGIS"
+                exec_psql_file $sql
+                touch $sql.success
+            fi
+        done
+
+        #rm iucn/$b -Rf
+        echo ———————
+    done
+
+    echo "ANALYZE iucn;" | exec_psql
     echo "UPDATE iucn SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
 
     echo "SELECT AddGeometryColumn('iucn', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql

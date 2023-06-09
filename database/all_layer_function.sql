@@ -162,6 +162,21 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (
       SELECT
+        'IUCN' AS type,
+        id_no::text AS id,
+        'https://iucnredlist.org/' AS source,
+        CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title,
+        NULL,
+        ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
+        ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
+      FROM iucn
+      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+        AND 'IUCN' = ANY(q_layers)
+      ORDER BY distance, id
+    )
+  UNION ALL
+    (
+      SELECT
         'WGSRPD' AS type,
         'WGSRPD:' || level4_cod AS id,
         'http://www.tdwg.org/standards/109' AS source,
@@ -203,6 +218,6 @@ FROM iho
 WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['IHO', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['IHO', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD', 'IUCN']);
 
 SELECT * FROM query_layers(-34.2, -53.1, 0.05, ARRAY['Political']);

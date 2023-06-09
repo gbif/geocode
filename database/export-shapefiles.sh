@@ -24,6 +24,16 @@ function exec_pgsql2shp() {
     fi
 }
 
+function exec_ogr2ogr() {
+    outfile=$1
+    shift
+    if [[ -n ${POSTGRES_HOST:-} ]]; then
+        ogr2ogr -f GPKG $outfile.gpkg "PG:host=$POSTGRES_HOST dbname=$POSTGRES_DB user=$POSTGRES_USER port=$POSTGRES_PORT" -sql "$@"
+    else
+        ogr2ogr -f GPKG $outfile.gpkg "PG:dbname=$POSTGRES_DB user=$POSTGRES_USER" -sql "$@"
+    fi
+}
+
 function export_centroids() {
     echo "Exporting Centroids to shapefile"
     exec_pgsql2shp layers/centroids "SELECT id, isoCountryCode2Digit AS name, isoCountryCode2Digit, ST_Expand(geom, 0.00001) FROM centroids"
@@ -53,6 +63,17 @@ function export_iho() {
     exec_pgsql2shp layers/iho_subdivided "SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, name, NULL AS isoCountryCode2Digit, geom FROM iho_subdivided"
 
     echo "IHO shapefile export complete"
+    echo
+}
+
+function export_iucn() {
+    echo "Exporting IUCN to shapefile"
+    for i in `seq 0 25`; do
+        let 'o = i * 500000' || true
+        exec_pgsql2shp layers/iucn_subdivided_$i "SELECT id_no::text AS id, CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title, NULL AS isoCountryCode2Digit, geom FROM iucn_subdivided LIMIT 500000 OFFSET $o;"
+    done
+
+    echo "IUCN shapefile export complete"
     echo
 }
 
@@ -97,6 +118,7 @@ else
     export_political
     export_gadm
     export_iho
+    export_iucn
     export_wgsrpd
     export_continents
     [[ -w . ]] && touch export-complete
