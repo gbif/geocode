@@ -110,13 +110,19 @@ public class VerifyAllISO3166PlacesIT {
     testCountry("Ocean by Saint Barthélemy", 18, -62.5, SAINT_BARTHÉLEMY);
     testCountry("New Caledonia", -20.98, 165.12, NEW_CALEDONIA);
     testCountry("Ocean by New Caledonia", -20.16, 165.36, NEW_CALEDONIA);
+    testCountry("Matthew Island", -22.35, 171.35, NEW_CALEDONIA, VANUATU);
+    testCountry("Hunter Island", -22.4, 172.083333, NEW_CALEDONIA, VANUATU);
     // The French Southern and Antarctic Lands
-    testCountry("Europa Island", -22.366667, 40.366667, FRENCH_SOUTHERN_TERRITORIES);
-    testCountry("Bassas da India", -21.483333, 39.683333, FRENCH_SOUTHERN_TERRITORIES);
-    testCountry("Juan de Nova Island", -17.055556, 42.725, FRENCH_SOUTHERN_TERRITORIES);
+    // These are the "Scattered Islands in the Indian Ocean": https://en.wikipedia.org/wiki/Scattered_Islands_in_the_Indian_Ocean
+    testCountry("Glorioso Islands", -11.55, 47.333333, MADAGASCAR, FRENCH_SOUTHERN_TERRITORIES); // Possibly TF ought to be before MG here.
     testCountry("Tromelin Island", -15.892222, 54.524722, FRENCH_SOUTHERN_TERRITORIES, MADAGASCAR, MAURITIUS);
-    // Possibly TF ought to be before MG here.
-    testCountry("Glorioso Islands", -11.55, 47.333333, MADAGASCAR, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Juan de Nova Island", -17.055556, 42.725, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Bassas da India", -21.483333, 39.683333, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Europa Island", -22.366667, 40.366667, FRENCH_SOUTHERN_TERRITORIES);
+    // These are the others: https://en.wikipedia.org/wiki/French_Southern_and_Antarctic_Lands#Administration
+    testCountry("Crozet Islands", -46.38, 51.67, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Kerguelen Islands", -49.25, 69.166667, FRENCH_SOUTHERN_TERRITORIES);
+    testCountry("Saint Paul and Amsterdam Islands", -38.2694, 77.5417, FRENCH_SOUTHERN_TERRITORIES);
 
     // Taiwan / Chinese Taipei
     testCountry("臺北市, Taiwan", 25.05, 121.54, TAIWAN);
@@ -140,6 +146,18 @@ public class VerifyAllISO3166PlacesIT {
     // Laâyoune, Western Sahara, Morocco
     testCountry("Laâyoune, Western Sahara, Morocco", 27.15, -13.20, WESTERN_SAHARA, MOROCCO);
     testCountry("Ocean west of Western Sahara, Morocco", 26.85, -13.65, WESTERN_SAHARA, MOROCCO);
+
+    // United States Minor Outlying Islands: https://en.wikipedia.org/wiki/United_States_Minor_Outlying_Islands
+    // https://en.wikipedia.org/wiki/ISO_3166-2:UM
+    testCountry("Midway Atoll", 28.2075, -177.35, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Wake Island", 19.295278, 166.631111, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Johnston Atoll", 16.736944, -169.523889, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Kingman Reef", 6.383333, -162.416667, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Palmyra Atoll", 5.883611, -162.078333, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Howland Island", 0.807178, -176.616522, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Baker Island", 0.195833, -176.479167, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Jarvis Island", -0.366667, -160, UNITED_STATES_OUTLYING_ISLANDS);
+    testCountry("Navassa Island", 18.402778, -75.0125, HAITI, UNITED_STATES_OUTLYING_ISLANDS, JAMAICA);
 
     // See also, https://en.wikipedia.org/wiki/List_of_states_with_limited_recognition
   }

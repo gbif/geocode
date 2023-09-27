@@ -240,6 +240,17 @@ function import_political() {
     echo "WITH osm AS (SELECT osm.geom FROM osm WHERE osm_id = '1650407')" \
         "UPDATE political SET geom = ST_Difference(political.geom, osm.geom) FROM osm WHERE iso_ter1 = 'FIN';" | exec_psql
 
+    # United States / United States Minor Outlying Islands
+    # https://en.wikipedia.org/wiki/ISO_3166-2:UM
+    # Remove Midway Atoll (United States Minor Outlying Islands) from Hawaii
+    echo "WITH handdrawn AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON ((-177.04996373497760942 31.60978833477749461, -177.83691262724664739 24.87185288052087273, -177.66332700965642744 24.37901220724413065, -177.36250316477767797 24.6621005824437951, -175.72778425823611315 31.30369873179363793, -176.27520866730711191 31.83088711396169757, -177.04996373497760942 31.60978833477749461))') AS geom)," \
+        "midway AS (SELECT ST_Intersection(handdrawn.geom, political.geom) AS geom FROM political, handdrawn WHERE mrgid_eez = 8453)" \
+        "INSERT INTO political (\"union\", territory1, iso_ter1, iso_sov1, geom) SELECT 'Midway Atoll', 'Midway Atoll', 'UMI', 'UMI', ST_Multi(geom) FROM midway;" | exec_psql
+    echo "WITH handdrawn AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON ((-177.04996373497760942 31.60978833477749461, -177.83691262724664739 24.87185288052087273, -177.66332700965642744 24.37901220724413065, -177.36250316477767797 24.6621005824437951, -175.72778425823611315 31.30369873179363793, -176.27520866730711191 31.83088711396169757, -177.04996373497760942 31.60978833477749461))') AS geom)" \
+        "UPDATE political SET geom = ST_Difference(political.geom, handdrawn.geom) FROM handdrawn WHERE mrgid_eez = 8453;" | exec_psql
+    # Set Navassa Island to United States Minor Outlying Islands
+    echo "UPDATE political SET iso_ter2 = 'UMI' WHERE mrgid_eez = 48951;";
+
     # Remove Antarctica EEZ, based on advice from VLIZ etc (emails with Tim Hirsch, 2019-02-19).
     echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'South Atlantic Ocean';" | exec_psql
     echo "UPDATE political SET geom = ST_Multi(ST_Difference(political.geom, iho.geom)) FROM iho WHERE iso_ter1 = 'ATA' AND name = 'Southern Ocean';" | exec_psql
@@ -274,7 +285,7 @@ function import_political() {
     # France considers the Tromelin Island part of the French Southern and Antarctic Lands
     echo "UPDATE political SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48946;" | exec_psql
     # And the Matthew and Hunter Islands part of New Caledonia
-    echo "UPDATE political SET iso_ter1 = 'ATF' WHERE mrgid_eez = 48948;" | exec_psql
+    echo "UPDATE political SET iso_ter1 = 'NCL' WHERE mrgid_eez = 48948;" | exec_psql
 
     # Note the areas having overlapping claims of some form, particularly these which include land:
     #
@@ -291,10 +302,10 @@ function import_political() {
     #  Glorioso Islands                                          │ MDG      │ ATF      │ ␀
     #  Hala'ib Triangle                                          │ SDN      │ EGY      │ ␀
     #  Kuril Islands                                             │ JPN      │ RUS      │ ␀
-    #  Matthew and Hunter Islands                                │ ATF      │ VUT      │ ␀
+    #  Matthew and Hunter Islands                                │ NCL      │ VUT      │ ␀
     #  Mayotte                                                   │ MYT      │ COM      │ ␀
     #  Melilla                                                   │ ESP      │ MAR      │ ␀
-    #  Navassa Island                                            │ HTI      │ USA      │ JAM
+    #  Navassa Island                                            │ HTI      │ UMI      │ JAM
     #  Overlapping claim: Kenya / Somalia                        │ KEN      │ SOM      │ ␀
     #  Palestine                                                 │ PSE      │ ISR      │ ␀
     #  Perejil Island                                            │ ESP      │ MAR      │ ␀

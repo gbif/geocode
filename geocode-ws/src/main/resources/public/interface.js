@@ -223,8 +223,8 @@ layers['grid'] = new ol.layer.Tile({
 	visible: false,
 });
 
-layers['baselayer'] = new ol.layer.Tile({
-    title: 'Base map',
+layers['baselayer-middle'] = new ol.layer.Tile({
+    title: 'Base map (Middle)',
     type: 'Base',
     source: new ol.source.TileImage({
         projection: 'EPSG:4326',
@@ -233,6 +233,19 @@ layers['baselayer'] = new ol.layer.Tile({
         tilePixelRatio: pixel_ratio,
         wrapX: false
     }),
+});
+
+layers['baselayer-geyser'] = new ol.layer.Tile({
+    title: 'Base map (Geyser)',
+    type: 'Base',
+    source: new ol.source.TileImage({
+        projection: 'EPSG:4326',
+        tileGrid: tileGrid,
+        url: 'https://tile.gbif.org/4326/omt/{z}/{x}/{y}@{r}x.png?style=gbif-geyser'.replace('{r}', pixel_ratio),
+        tilePixelRatio: pixel_ratio,
+        wrapX: false
+    }),
+    visible: false,
 });
 
 layers['baselayer-labels'] = new ol.layer.Tile({
@@ -467,7 +480,8 @@ var map = new ol.Map({
             title: 'Base',
             layers: [
                 layers['baselayer-osm'],
-                layers['baselayer'],
+                layers['baselayer-geyser'],
+                layers['baselayer-middle'],
                 layers['baselayer-labels']
             ]
         }),
