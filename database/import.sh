@@ -155,7 +155,7 @@ function import_political() {
     echo "Importing OSM from $START_DIR/osm"
     cd $START_DIR/osm
     for id in 13407035 192756 304751 2108121 2425963 3777250 2088990 52411 913110 1867188 62269 36989 1650407; do
-        [[ -f $id.xml ]] || curl -Ssfo $id.xml https://www.openstreetmap.org/api/0.6/relation/$id/full
+        [[ -f $id.xml ]] || curl -Ssfo $id.xml https://api.openstreetmap.org/api/0.6/relation/$id/full
         ogr2ogr -append -f PostgreSQL "$PGCONN dbname=$POSTGRES_DB" $id.xml -nln osm -lco GEOMETRY_NAME=geom multipolygons
     done
 
