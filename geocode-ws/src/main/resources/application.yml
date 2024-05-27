@@ -14,6 +14,13 @@ spring:
     root: @geocode-ws.shapefiles.path@
     enabled: PoliticalLayer, ContinentLayer, IhoLayer, GadmLayer, WgsrpdLayer
   defaultLayers: Political, Continent, Centroids, IHO, GADM, WGSRPD
+  cloud:
+    zookeeper:
+      enabled: false
+      discovery:
+        enabled: false
+      config:
+        enabled: false
 
   jmx:
     enabled: true
