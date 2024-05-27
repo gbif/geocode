@@ -163,7 +163,7 @@ public class GeocodeResource implements GeocodeService {
   @Override
   public List<Location> get(
       Double latitude, Double longitude, Double uncertaintyDegrees, Double uncertaintyMeters) {
-    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.EMPTY_LIST);
+    return get(latitude, longitude, uncertaintyDegrees, uncertaintyMeters, Collections.emptyList());
   }
 
   /*
