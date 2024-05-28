@@ -8,6 +8,8 @@ import org.gbif.ws.client.ClientBuilder;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.gbif.ws.json.JacksonJsonObjectMapperProvider;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +32,7 @@ public class GeocodeResourceIT {
   public GeocodeResourceIT(@LocalServerPort int localServerPort) {
     this.geocodeClient =
         new ClientBuilder()
+            .withObjectMapper(JacksonJsonObjectMapperProvider.getObjectMapperWithBuilderSupport())
             .withUrl("http://localhost:" + localServerPort)
             .build(GeocodeWsClient.class);
   }
