@@ -79,7 +79,7 @@
     <hamcrest-core.version>2.2</hamcrest-core.version>
 
     <!-- Third party dependencies -->
-    <feign.version>12.1</feign.version>
+    <feign.version>13.0</feign.version>
     <layers-store.version>2.2.0</layers-store.version>
     <logback.version>1.4.14</logback.version>
     <logstash-encoder.version>7.3</logstash-encoder.version>
