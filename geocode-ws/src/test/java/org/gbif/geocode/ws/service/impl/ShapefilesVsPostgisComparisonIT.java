@@ -188,10 +188,6 @@ public class ShapefilesVsPostgisComparisonIT {
 
   private void check(double latitude, double longitude, boolean debug) {
     System.out.println(i + "> Checking "+latitude+", "+longitude);
-    //TODO: Delete later
-    for (String pgLayer : pgLayers) {
-      System.out.println(pgLayer + " : " + sfLayers.size());
-    }
 
     boolean fail = false;
 
