@@ -52,7 +52,7 @@
   </modules>
 
   <properties>
-    <jdkLevel>17</jdkLevel>
+    <jdkLevel>11</jdkLevel>
     <main.basedir>${project.basedir}</main.basedir>
     <release.tagNameBase>geocode</release.tagNameBase>
 
