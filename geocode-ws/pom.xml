@@ -15,7 +15,7 @@
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
 
   <properties>
-    <jdkLevel>11</jdkLevel>
+    <jdkLevel>17</jdkLevel>
     <main.basedir>${project.parent.basedir}</main.basedir>
     <start-class>org.gbif.geocode.ws.GeocodeWsApplication</start-class>
     <batik.version>1.13</batik.version>
@@ -243,6 +243,12 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-x-discovery</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
