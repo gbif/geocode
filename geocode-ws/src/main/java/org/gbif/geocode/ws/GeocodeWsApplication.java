@@ -11,7 +11,6 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.Managemen
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
-import org.springframework.cloud.zookeeper.discovery.configclient.ZookeeperConfigServerAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -21,8 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     exclude = {
       SecurityAutoConfiguration.class,
       FeignAutoConfiguration.class,
-      ManagementWebSecurityAutoConfiguration.class,
-      ZookeeperConfigServerAutoConfiguration.class
+      ManagementWebSecurityAutoConfiguration.class
     })
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
 @ComponentScan(
