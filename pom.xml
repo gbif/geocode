@@ -77,6 +77,7 @@
 
     <!-- test -->
     <hamcrest-core.version>2.2</hamcrest-core.version>
+    <junit-jupiter.version>5.6.2</junit-jupiter.version>
 
     <!-- Third party dependencies -->
     <feign.version>10.12</feign.version>
@@ -93,6 +94,7 @@
     <!-- Plugin versions -->
     <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
     <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
+    <maven.exec.skip>false</maven.exec.skip>
   </properties>
 
   <dependencyManagement>
@@ -135,11 +137,6 @@
             <groupId>org.springframework.cloud</groupId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-zookeeper-config</artifactId>
-        <version>${spring-cloud-zookeeper.version}</version>
       </dependency>
       <dependency>
         <groupId>org.mybatis.spring.boot</groupId>
@@ -219,6 +216,12 @@
             <artifactId>junit-vintage-engine</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <!-- Third party dependencies -->
@@ -361,6 +364,9 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${exec-maven-plugin.version}</version>
+          <configuration>
+            <skip>${maven.exec.skip}</skip>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
