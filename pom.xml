@@ -58,8 +58,8 @@
 
     <!-- Spring -->
     <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
-    <spring-cloud-openfeign.version>2.2.10.RELEASE</spring-cloud-openfeign.version>
     <spring-cloud-zookeeper.version>2.2.5.RELEASE</spring-cloud-zookeeper.version>
+    <spring-cloud-openfeign.version>2.2.6.RELEASE</spring-cloud-openfeign.version>
     <mybatis-spring-boot-starter.version>2.3.2</mybatis-spring-boot-starter.version>
     <mybatis-spring-boot-starter-test.version>2.3.2</mybatis-spring-boot-starter-test.version>
     <spring-boot-admin.version>2.7.16</spring-boot-admin.version>
@@ -129,10 +129,6 @@
           <exclusion>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>spring-cloud-starter-zookeeper-config</artifactId>
-            <groupId>org.springframework.cloud</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -271,11 +267,6 @@
         <groupId>org.geotools</groupId>
         <artifactId>gt-referencing</artifactId>
         <version>${geotools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.github.classgraph</groupId>
-        <artifactId>classgraph</artifactId>
-        <version>4.8.139</version>
       </dependency>
 
       <!-- Third party dependencies -->
