@@ -1,5 +1,7 @@
 package org.gbif.geocode.ws.service.impl;
 
+import lombok.Getter;
+
 import org.gbif.api.vocabulary.Country;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
@@ -7,11 +9,9 @@ import org.gbif.geocode.api.service.GeocodeService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 
 import org.hamcrest.MatcherAssert;
@@ -418,6 +418,7 @@ public class VerifyAllISO3166PlacesIT {
     testCountry("Sanaa", 15.35, 44.2, YEMEN);
     testCountry("Lusaka", -15.41666667, 28.283333, ZAMBIA);
     testCountry("Harare", -17.81666667, 31.033333, ZIMBABWE);
+    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
 
     for (Country o : Country.OFFICIAL_COUNTRIES) {
       if (!spottedCountries.contains(o)) {
@@ -428,9 +429,6 @@ public class VerifyAllISO3166PlacesIT {
       MatcherAssert.assertThat(o.getTitle() + " checked", spottedCountries.contains(o));
     }
     Assertions.assertEquals(spottedCountries.size(), Country.OFFICIAL_COUNTRIES.size());
-
-    // Kosovo is an unofficial code (XK)
-    testCountry("Pristina", 42.66666667, 21.166667, KOSOVO);
 
     // The same countries, but in reverse, to check the bitmap cache is OK.
     // (grep testCountry VerifyAllISO3166PlacesIT.java | tac ...)
@@ -688,6 +686,7 @@ public class VerifyAllISO3166PlacesIT {
     testCountry("Kabul", 34.51666667, 69.183333, AFGHANISTAN);
   }
 
+  @Getter
   static class LatLng {
     double lat;
     double lng;
@@ -697,21 +696,14 @@ public class VerifyAllISO3166PlacesIT {
       this.lng = lng;
     }
 
-    public double getLat() {
-      return lat;
-    }
-
-    public double getLng() {
-      return lng;
-    }
   }
 
   private List<Country> getCountryForLatLng(LatLng coord) {
-    List<Country> countries = new ArrayList();
+    List<Country> countries = new ArrayList<>();
 
     Collection<Location> lookups = geocoder.get(coord.getLat(), coord.getLng(), null, null);
     boolean first = true;
-    if (lookups != null && lookups.size() > 0) {
+    if (lookups != null && !lookups.isEmpty()) {
       for (Location loc : lookups) {
         if (loc.getIsoCountryCode2Digit() != null && loc.getDistance() == 0) {
           countries.add(Country.fromIsoCode(loc.getIsoCountryCode2Digit()));

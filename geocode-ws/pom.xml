@@ -15,6 +15,7 @@
   <description>Provides a WebService to translate latitude and longitude into country names.</description>
 
   <properties>
+    <jdkLevel>11</jdkLevel>
     <main.basedir>${project.parent.basedir}</main.basedir>
     <start-class>org.gbif.geocode.ws.GeocodeWsApplication</start-class>
     <batik.version>1.13</batik.version>
@@ -186,6 +187,29 @@
 
     <!-- Third party -->
     <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>${zookeeper.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-framework</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-x-discovery</artifactId>
+    </dependency>
+    <dependency>
       <groupId>au.org.ala</groupId>
       <artifactId>layers-store</artifactId>
       <exclusions>
@@ -242,14 +266,12 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.zookeeper</groupId>
-      <artifactId>zookeeper</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zookeeper-config</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>curator-x-discovery</artifactId>
+          <groupId>org.apache.curator</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- test -->
@@ -271,7 +293,7 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
