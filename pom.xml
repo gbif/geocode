@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>58-SNAPSHOT</version>
+    <version>58</version>
   </parent>
 
   <groupId>org.gbif.geocode</groupId>
@@ -66,9 +66,9 @@
     <springdoc-openapi-ui.version>1.5.8</springdoc-openapi-ui.version>
 
     <!-- GBIF-->
-    <gbif-common-mybatis.version>1.4-SNAPSHOT</gbif-common-mybatis.version>
-    <gbif-api.version>1.16.4-SNAPSHOT</gbif-api.version>
-    <gbif-common-ws.version>1.28-SNAPSHOT</gbif-common-ws.version>
+    <gbif-common-mybatis.version>2.0.0</gbif-common-mybatis.version>
+    <gbif-api.version>2.0.0</gbif-api.version>
+    <gbif-common-ws.version>2.0.3</gbif-common-ws.version>
 
     <!-- DB -->
     <hikaricp.version>5.0.1</hikaricp.version>
