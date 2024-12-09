@@ -97,7 +97,6 @@
     <spring-boot-maven-plugin.version>${spring-boot.version}</spring-boot-maven-plugin.version>
     <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
     <maven.exec.skip>false</maven.exec.skip>
-    <surefireArgLine>--add-opens=java.base/java.lang.invoke=ALL-UNNAMED</surefireArgLine>
   </properties>
 
   <dependencyManagement>
