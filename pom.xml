@@ -43,6 +43,10 @@
       <id>gbif-all</id>
       <url>https://repository.gbif.org/content/groups/gbif</url>
     </repository>
+    <repository>
+      <id>ala-release</id>
+      <url>https://repository.gbif.org/repository/ala-release/</url>
+    </repository>
   </repositories>
 
   <modules>
