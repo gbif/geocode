@@ -92,6 +92,7 @@
     <findbugs-jsr305.version>3.0.2</findbugs-jsr305.version>
     <guava.version>32.1.2-jre</guava.version>
     <zookeeper.version>3.8.1</zookeeper.version>
+    <curator-framework.version>5.5.0-disable-connectstr-updates</curator-framework.version>
     <curator.version>5.5.0</curator.version>
     <curator-test.version>5.5.0</curator-test.version>
     <!-- Matched to version used by au.org.ala.layers-store -->
@@ -319,7 +320,7 @@
       <dependency>
         <groupId>org.apache.curator</groupId>
         <artifactId>curator-framework</artifactId>
-        <version>${curator.version}</version>
+        <version>${curator-framework.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.curator</groupId>
