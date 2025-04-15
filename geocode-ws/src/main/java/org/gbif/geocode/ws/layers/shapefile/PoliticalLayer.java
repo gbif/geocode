@@ -18,6 +18,11 @@ public class PoliticalLayer extends AbstractShapefileLayer {
   }
 
   @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    return uncertaintyDegrees;
+  }
+
+  @Override
   public String name() {
     return "Political";
   }

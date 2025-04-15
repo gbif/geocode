@@ -9,6 +9,11 @@ public class CentroidsLayer extends AbstractJTSLayer {
   }
 
   @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    return uncertaintyDegrees;
+  }
+
+  @Override
   public String name() {
     return "Centroids";
   }

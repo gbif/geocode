@@ -32,6 +32,11 @@ public class GeocodeBitmapCache extends AbstractBitmapCachedLayer implements Geo
   }
 
   @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    return uncertaintyDegrees;
+  }
+
+  @Override
   public String name() {
     return "Service-backed cache";
   }
