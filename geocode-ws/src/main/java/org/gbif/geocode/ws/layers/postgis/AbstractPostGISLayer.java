@@ -26,6 +26,11 @@ public abstract class AbstractPostGISLayer extends AbstractBitmapCachedLayer {
     this.locationMapper = locationMapper;
   }
 
+  @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    return uncertaintyDegrees;
+  }
+
   /**
    * Query the shapefile.
    */

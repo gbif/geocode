@@ -63,6 +63,11 @@ public abstract class AbstractBitmapCachedLayer {
   public abstract String source();
 
   /**
+   * Maximum uncertainty distance, in degrees, to allow for queries to this layer.
+   */
+  public abstract double adjustUncertainty(double uncertaintyDegrees, double latitude);
+
+  /**
    * Query the layer, using the bitmap cache first if the uncertainty allows it.
    */
   public final List<Location> query(double latitude, double longitude, double uncertaintyDegrees) {
@@ -72,8 +77,11 @@ public abstract class AbstractBitmapCachedLayer {
     }
 
     if (found == null) {
-      found = queryDatasource(latitude, longitude, uncertaintyDegrees);
-      putBitmap(latitude, longitude, found);
+      found = queryDatasource(latitude, longitude, adjustUncertainty(uncertaintyDegrees, latitude));
+
+      if (uncertaintyDegrees <= BITMAP_UNCERTAINTY_DEGREES) {
+        putBitmap(latitude, longitude, found);
+      }
     }
 
     return found;

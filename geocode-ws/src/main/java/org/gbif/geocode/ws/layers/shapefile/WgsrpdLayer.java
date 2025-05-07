@@ -12,6 +12,11 @@ public class WgsrpdLayer extends AbstractShapefileLayer {
   }
 
   @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    return uncertaintyDegrees;
+  }
+
+  @Override
   public String name() {
     return "WGSRPD";
   }

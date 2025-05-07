@@ -24,6 +24,27 @@ public class GadmLayer extends AbstractShapefileLayer {
   }
 
   @Override
+  public double adjustUncertainty(double uncertaintyDegrees, double latitude) {
+    // This is a very rough approximation of
+    // return Math.min(10.0, 250_000 / (111_319.491 * Math.cos(Math.toRadians(latitude))));
+    if (latitude >= 78) {
+      return Math.min(10.0, uncertaintyDegrees);
+    } else if (latitude >= 74) {
+      return Math.min(8.0, uncertaintyDegrees);
+    } else if (latitude >= 68) {
+      return Math.min(6.0, uncertaintyDegrees);
+    } else if (latitude >= 64) {
+      return Math.min(5.0, uncertaintyDegrees);
+    } else if (latitude >= 56) {
+      return Math.min(4.0, uncertaintyDegrees);
+    } else if (latitude >= 42) {
+      return Math.min(3.0, uncertaintyDegrees);
+    } else {
+      return Math.min(2.5, uncertaintyDegrees);
+    }
+  }
+
+  @Override
   public String name() {
     return "GADM";
   }
