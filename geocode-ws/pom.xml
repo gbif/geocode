@@ -178,6 +178,12 @@
     <dependency>
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common-mybatis</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>io.dropwizard.metrics</groupId>
+          <artifactId>metrics-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--  DB -->
