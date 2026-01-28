@@ -50,7 +50,6 @@ pipeline {
       }
       steps {
         build job: "geocode-ws-dev-deploy", wait: false, propagate: false
-        build job: "geocode-ws-dev-deploy", wait: false, propagate: false
       }
     }
 
