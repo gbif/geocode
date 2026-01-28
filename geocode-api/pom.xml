@@ -12,14 +12,7 @@
   <packaging>jar</packaging>
 
   <name>Geocode API</name>
-  <url>http://sites.gbif.org/common-resources/geocode-api</url>
-
-  <repositories>
-    <repository>
-      <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/gbif</url>
-    </repository>
-  </repositories>
+  <url>https://sites.gbif.org/common-resources/geocode-api</url>
 
   <properties>
     <main.basedir>${project.parent.basedir}</main.basedir>
@@ -34,16 +27,28 @@
       <groupId>org.gbif</groupId>
       <artifactId>gbif-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
 
     <!-- test -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
+      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
