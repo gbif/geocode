@@ -26,13 +26,13 @@ Then start the application with maven and your profile: `mvn -Pgeocode-ws spring
 
 ### Using a Java command
 
-You can create an [application.yml](src/resources/application.yml) and a [bootstrap.yml](src/resources/bootstrap.yml) files
-and pass them to the application:
+You can create an [application.yml](src/resources/application.yml)
+and pass it to the application:
 
-`java -jar geocode-ws-{your-version}-exec.jar.jar --spring.config.location=your_path/application.yml --spring.cloud.bootstrap.location=your_path/bootstrap.yml`
+`java -jar geocode-ws-{your-version}-exec.jar.jar --spring.config.location=your_path/application.yml`
 
-If you want to run the application with a java command this is the only way to pass the properties since the [application.yml](src/resources/application.yml) and a [bootstrap.yml](src/resources/bootstrap.yml)
-files provided in the project are not included in the packaged jar.
+If you want to run the application with a java command this is the only way to pass the properties since the [application.yml](src/resources/application.yml)
+file provided in the project is not included in the packaged jar.
 
 ### Using your IDE
 For development, it might be easier to run the [GeocodeWsApplication](src/main/java/org/gbif/geocode/ws/GeocodeWsApplication.java) class

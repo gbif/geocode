@@ -1,9 +1,0 @@
-# Add default properties here
-spring:
-  mvc:
-    static-path-pattern: /geocode/debug/**
-  cloud:
-    zookeeper:
-      enabled: false
-      discovery:
-        enabled: false

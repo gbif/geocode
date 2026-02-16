@@ -103,7 +103,6 @@
             <exclude>META-INF/*.DSA</exclude>
             <exclude>META-INF/*.RSA</exclude>
             <exclude>**/application.yml</exclude>
-            <exclude>**/bootstrap.yml</exclude>
             <exclude>**/logback.xml</exclude>
           </excludes>
           <archive>
