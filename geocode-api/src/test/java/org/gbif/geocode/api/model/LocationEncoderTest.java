@@ -48,6 +48,7 @@ public class LocationEncoderTest {
         location.setTitle(node.get("title").asText());
         location.setIsoCountryCode2Digit(node.get("isoCountryCode2Digit").asText());
         location.setDistance(node.get("distance").asDouble());
+        location.setDistanceMeters(node.get("distanceMeters").asDouble());
         locations.add(location);
       }
       return locations;
@@ -68,6 +69,7 @@ public class LocationEncoderTest {
       assertEquals(original.get(i).getTitle(), result.get(i).getTitle());
       assertEquals(original.get(i).getIsoCountryCode2Digit(), result.get(i).getIsoCountryCode2Digit());
       assertEquals(original.get(i).getDistance(), result.get(i).getDistance());
+      assertEquals(original.get(i).getDistanceMeters(), result.get(i).getDistanceMeters());
     }
   }
 

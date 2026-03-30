@@ -91,6 +91,7 @@ public class LocationEncoder {
       .setTitle(location.getTitle())
       .setIsoCountryCode2Digit(location.getIsoCountryCode2Digit())
       .setDistance(location.getDistance())
+      .setDistanceMeters(location.getDistanceMeters())
       .build();
   }
 
@@ -118,6 +119,8 @@ public class LocationEncoder {
     location.setTitle(locationAvro.getTitle());
     location.setIsoCountryCode2Digit(locationAvro.getIsoCountryCode2Digit());
     location.setDistance(locationAvro.getDistance());
+    location.setDistanceMeters(locationAvro.getDistanceMeters());
+
     return location;
   }
 

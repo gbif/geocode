@@ -41,6 +41,11 @@
       "name": "distance",
       "type": ["null", "double"],
       "default": null
+    },
+    {
+      "name": "distanceMeters",
+      "type": ["null", "double"],
+      "default": null
     }
   ]
 }
