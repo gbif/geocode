@@ -60,7 +60,18 @@ public class LocationEncoder {
   public static LocationAvro toAvro(Location location) {
     if (location == null) return null;
 
-    LocationType typeEnum = LocationType.valueOf(location.getType());
+    String type = location.getType();
+    if (type == null) {
+      throw new IllegalArgumentException(
+        "Location type must not be null for location id=" + location.getId());
+    }
+    LocationType typeEnum;
+    try {
+      typeEnum = LocationType.valueOf(type);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(
+        "Unknown LocationType '" + type + "' for location id=" + location.getId(), e);
+    }
 
     // Optimisation: detect common prefixes
     String id = location.getId();
@@ -80,7 +91,6 @@ public class LocationEncoder {
       .setTitle(location.getTitle())
       .setIsoCountryCode2Digit(location.getIsoCountryCode2Digit())
       .setDistance(location.getDistance())
-      .setDistanceMeters(location.getDistanceMeters())
       .build();
   }
 
@@ -92,7 +102,14 @@ public class LocationEncoder {
 
     String id = locationAvro.getId();
     if (locationAvro.getIdPrefix() != null) {
-      id = ID_PREFIX_MAP.get(locationAvro.getIdPrefix()) + id;
+      String prefix = ID_PREFIX_MAP.get(locationAvro.getIdPrefix());
+      if (prefix == null) {
+        throw new IllegalStateException(
+          "Unknown LocationIdPrefix " + locationAvro.getIdPrefix()
+            + " when decoding LocationAvro; ID_PREFIX_MAP must be updated to match the schema."
+        );
+      }
+      id = prefix + id;
     }
 
     Location location = new Location();
@@ -101,12 +118,14 @@ public class LocationEncoder {
     location.setTitle(locationAvro.getTitle());
     location.setIsoCountryCode2Digit(locationAvro.getIsoCountryCode2Digit());
     location.setDistance(locationAvro.getDistance());
-    location.setDistanceMeters(locationAvro.getDistanceMeters());
     return location;
   }
 
   /** Converts to the Avro representation. */
   public static LocationList toAvro(List<Location> locations) {
+    if (locations == null) {
+      throw new IllegalArgumentException("locations must not be null");
+    }
     List<LocationAvro> payload = new ArrayList<>(locations.size());
     for (Location location : locations) {
       payload.add(toAvro(location));

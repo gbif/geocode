@@ -25,7 +25,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link LocationEncoder}.0
+ * Tests for {@link LocationEncoder}.
  */
 public class LocationEncoderTest {
 
@@ -35,23 +35,23 @@ public class LocationEncoderTest {
    * Loads locations from the test JSON resource file.
    */
   private List<Location> loadLocations() throws Exception {
-    InputStream in = getClass().getResourceAsStream("/locations.json");
-    assertNotNull(in, "locations.json resource not found");
-    JsonNode root = MAPPER.readTree(in);
-    JsonNode locationsNode = root.get("locations");
-    List<Location> locations = new ArrayList<>();
-    for (JsonNode node : locationsNode) {
-      Location location = new Location();
-      location.setId(node.get("id").asText());
-      location.setType(node.get("type").asText());
-      location.setSource(node.get("source").asText());
-      location.setTitle(node.get("title").asText());
-      location.setIsoCountryCode2Digit(node.get("isoCountryCode2Digit").asText());
-      location.setDistance(node.get("distance").asDouble());
-      location.setDistanceMeters(node.get("distanceMeters").asDouble());
-      locations.add(location);
+    try (InputStream in = getClass().getResourceAsStream("/locations.json")) {
+      assertNotNull(in, "locations.json resource not found");
+      JsonNode root = MAPPER.readTree(in);
+      JsonNode locationsNode = root.get("locations");
+      List<Location> locations = new ArrayList<>();
+      for (JsonNode node : locationsNode) {
+        Location location = new Location();
+        location.setId(node.get("id").asText());
+        location.setType(node.get("type").asText());
+        location.setSource(node.get("source").asText());
+        location.setTitle(node.get("title").asText());
+        location.setIsoCountryCode2Digit(node.get("isoCountryCode2Digit").asText());
+        location.setDistance(node.get("distance").asDouble());
+        locations.add(location);
+      }
+      return locations;
     }
-    return locations;
   }
 
   /**
@@ -60,7 +60,7 @@ public class LocationEncoderTest {
   private void verifyResult(List<Location> result) throws Exception {
     List<Location> original = loadLocations();
     assertNotNull(result);
-    assertEquals(10, result.size());
+    assertEquals(original.size(), result.size());
     for (int i=0; i<original.size(); i++) {
       assertEquals(original.get(i).getId(), result.get(i).getId());
       assertEquals(original.get(i).getType(), result.get(i).getType());
@@ -68,7 +68,6 @@ public class LocationEncoderTest {
       assertEquals(original.get(i).getTitle(), result.get(i).getTitle());
       assertEquals(original.get(i).getIsoCountryCode2Digit(), result.get(i).getIsoCountryCode2Digit());
       assertEquals(original.get(i).getDistance(), result.get(i).getDistance());
-      assertEquals(original.get(i).getDistanceMeters(), result.get(i).getDistanceMeters());
     }
   }
 
@@ -86,8 +85,9 @@ public class LocationEncoderTest {
    * Round-trip check of encoding from bytes, calling attention to the removal of the source.
    */
   @Test
-  public void testEncodeDecodFromBytes() throws Exception {
+  public void testEncodeDecodeFromBytes() throws Exception {
     try (InputStream in = getClass().getResourceAsStream("/locations.json")) {
+      assertNotNull(in, "locations.json resource not found");
       byte[] encoded = LocationEncoder.encodeFromJsonBytes(in.readAllBytes());
       List<Location> decoded = LocationEncoder.decode(encoded);
       verifyResult(decoded);
