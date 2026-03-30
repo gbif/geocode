@@ -1,0 +1,15 @@
+{
+  "namespace": "org.gbif.geocode.api.model",
+  "type": "record",
+  "name": "LocationList",
+  "doc": "Container for a list of locations.",
+  "fields": [
+    {
+      "name": "locations",
+      "type": {
+        "type": "array",
+        "items": "org.gbif.geocode.api.model.LocationAvro"
+      }
+    }
+  ]
+}

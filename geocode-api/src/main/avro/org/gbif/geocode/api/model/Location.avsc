@@ -1,0 +1,51 @@
+{
+  "namespace": "org.gbif.geocode.api.model",
+  "type": "record",
+  "name": "LocationAvro",
+  "doc": "Represents a location feature.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "id_prefix",
+      "type": ["null", {
+        "type": "enum",
+        "name": "LocationIdPrefix",
+        "namespace": "org.gbif.geocode.api.model",
+        "symbols": ["MRGID"]
+      }],
+      "default": null
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "LocationType",
+        "namespace": "org.gbif.geocode.api.model",
+        "symbols": ["GADM0", "GADM1", "GADM2", "GADM3", "WGSRPD", "Continent", "Political", "IHO", "Centroids"]
+      }
+    },
+    {
+      "name": "title",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "isoCountryCode2Digit",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "distance",
+      "type": ["null", "double"],
+      "default": null
+    },
+    {
+      "name": "distanceMeters",
+      "type": ["null", "double"],
+      "default": null
+    }
+  ]
+}
