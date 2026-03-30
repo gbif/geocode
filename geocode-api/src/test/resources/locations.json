@@ -1,0 +1,94 @@
+{
+  "locations": [
+    {
+      "id": "ECU",
+      "type": "GADM0",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "Ecuador"
+    },
+    {
+      "id": "ECU.19_1",
+      "type": "GADM1",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "Pichincha"
+    },
+    {
+      "id": "ECU.19.8_1",
+      "type": "GADM2",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "San Miguel de los Bancos"
+    },
+    {
+      "id": "ECU.19.8.1_1",
+      "type": "GADM3",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "Mindo"
+    },
+    {
+      "id": "WGSRPD:ECU-OO",
+      "type": "WGSRPD",
+      "source": "http://www.tdwg.org/standards/109",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "Ecuador"
+    },
+    {
+      "id": "SOUTH_AMERICA",
+      "type": "Continent",
+      "source": "https://github.com/gbif/continents",
+      "isoCountryCode2Digit": "",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "SOUTH_AMERICA"
+    },
+    {
+      "id": "http://marineregions.org/mrgid/8431",
+      "type": "Political",
+      "source": "https://www.marineregions.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.0,
+      "distanceMeters": 0.0,
+      "title": "Ecuador"
+    },
+    {
+      "id": "ECU.19.8.2_1",
+      "type": "GADM3",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.038879275983394995,
+      "distanceMeters": 4327.5,
+      "title": "San Miguel De Los Bancos"
+    },
+    {
+      "id": "ECU.19.6_1",
+      "type": "GADM2",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.04057529715676165,
+      "distanceMeters": 4516.2,
+      "title": "Quito"
+    },
+    {
+      "id": "ECU.19.6.16_1",
+      "type": "GADM3",
+      "source": "http://gadm.org/",
+      "isoCountryCode2Digit": "EC",
+      "distance": 0.04057529715676165,
+      "distanceMeters": 4516.2,
+      "title": "Lloa"
+    }
+  ]
+}
