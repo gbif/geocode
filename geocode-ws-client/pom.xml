@@ -14,13 +14,6 @@
   <name>Geocode Web service client</name>
   <description>Provides a convenient client for the Geocode WS.</description>
 
-  <repositories>
-    <repository>
-      <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/gbif</url>
-    </repository>
-  </repositories>
-
   <properties>
     <main.basedir>${project.parent.basedir}</main.basedir>
   </properties>
@@ -31,26 +24,25 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
 
     <!-- Third party dependencies -->
     <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-jackson</artifactId>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.github.openfeign</groupId>
-      <artifactId>feign-httpclient</artifactId>
-    </dependency>
+
 
     <dependency>
       <groupId>org.gbif</groupId>
-      <artifactId>gbif-common-ws</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
+      <artifactId>gbif-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.gbif.geocode</groupId>

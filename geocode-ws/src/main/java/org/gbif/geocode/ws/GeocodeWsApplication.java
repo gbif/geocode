@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.amqp.RabbitHealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +22,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     exclude = {
       SecurityAutoConfiguration.class,
       FeignAutoConfiguration.class,
-      ManagementWebSecurityAutoConfiguration.class
+      ManagementWebSecurityAutoConfiguration.class,
+      RabbitAutoConfiguration.class,
+      RabbitHealthContributorAutoConfiguration.class
     })
 @MapperScan("org.gbif.geocode.ws.persistence.mapper")
 @ComponentScan(
@@ -38,7 +42,7 @@ public class GeocodeWsApplication {
   }
 
   @Configuration
-  public class WebMvcConfig implements WebMvcConfigurer {
+  public static class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

@@ -41,7 +41,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.ImmutableMap;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_COLOR;
@@ -130,21 +129,21 @@ public class BitmapGenerator implements CommandLineRunner {
 
   /** Generate bitmaps for each layer. */
   public void generateAllBitmaps(Path targetDirectory) throws Exception {
-    ImmutableMap<String, Supplier<List<SvgShape>>> svgSuppliers =
-        new ImmutableMap.Builder<String, Supplier<List<SvgShape>>>()
-            .put("political", tileMapper::svgPolitical)
-            .put("continent", tileMapper::svgContinent)
-            .put("gadm0", tileMapper::svgGadm0)
-            .put("gadm1", tileMapper::svgGadm1)
-            .put("gadm2", tileMapper::svgGadm2)
-            .put("gadm3", tileMapper::svgGadm3)
-            .put("gadm4", tileMapper::svgGadm4)
-            .put("gadm5", tileMapper::svgGadm5)
-            .put("iho", tileMapper::svgIho)
-            .put("wgsrpd", tileMapper::svgWgsrpd)
-            .put("centroids", tileMapper::svgCentroids)
-            .put("gadm3210", tileMapper::svgGadm3210)
-            .build();
+    Map<String, Supplier<List<SvgShape>>> svgSuppliers =
+        Map.ofEntries(
+            Map.entry("political", tileMapper::svgPolitical),
+            Map.entry("continent", tileMapper::svgContinent),
+            Map.entry("gadm0", tileMapper::svgGadm0),
+            Map.entry("gadm1", tileMapper::svgGadm1),
+            Map.entry("gadm2", tileMapper::svgGadm2),
+            Map.entry("gadm3", tileMapper::svgGadm3),
+            Map.entry("gadm4", tileMapper::svgGadm4),
+            Map.entry("gadm5", tileMapper::svgGadm5),
+            Map.entry("iho", tileMapper::svgIho),
+            Map.entry("wgsrpd", tileMapper::svgWgsrpd),
+            Map.entry("centroids", tileMapper::svgCentroids),
+            Map.entry("gadm3210", tileMapper::svgGadm3210)
+        );
 
     for (Map.Entry<String, Supplier<List<SvgShape>>> x : svgSuppliers.entrySet()) {
       generateBitmap(x.getValue(), targetDirectory, x.getKey());

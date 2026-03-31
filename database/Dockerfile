@@ -46,7 +46,6 @@ RUN mkdir -p /usr/src/app/conf
 WORKDIR /usr/src/app
 
 COPY docker_application.yml /usr/src/app/application.yml
-COPY docker_bootstrap.yml /usr/src/app/bootstrap.yml
 COPY docker_logback.xml /usr/src/app/conf/logback.xml
 COPY docker_supervisord.conf /etc/supervisord.conf
 

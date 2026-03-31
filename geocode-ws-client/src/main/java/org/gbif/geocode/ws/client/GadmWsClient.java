@@ -6,7 +6,7 @@ import org.gbif.geocode.api.model.GadmRegion;
 import org.gbif.geocode.api.service.GadmService;
 
 import java.util.Collection;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

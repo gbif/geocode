@@ -6,7 +6,7 @@ import org.gbif.geocode.api.service.GeocodeService;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;

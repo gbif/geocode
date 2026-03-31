@@ -5,9 +5,9 @@ import org.gbif.api.model.common.paging.PagingResponse;
 import org.gbif.geocode.api.model.GadmRegion;
 
 import java.util.Collection;
-import javax.annotation.Nullable;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 public interface GadmService {
 
