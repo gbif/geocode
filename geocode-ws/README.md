@@ -73,7 +73,7 @@ You can also try http://localhost:8080/geocode/debug/map.html
 
 ## Create the database and shapefiles
 
-See [../database/scripts/import.sh](../database/scripts/import.sh) for a script to import the database, and from it export shapefiles. With appropriate environment variables, it can be used against non-Docker databases.
+See [../database/import.sh](../database/import.sh) for a script to import the database, and from it export shapefiles. With appropriate environment variables, it can be used against non-Docker databases.
 
 ## Map image for faster lookups
 

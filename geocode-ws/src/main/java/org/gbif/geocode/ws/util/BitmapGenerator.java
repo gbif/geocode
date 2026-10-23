@@ -56,6 +56,9 @@ import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_C
 @ComponentScan(basePackages = {"org.gbif.geocode.ws.persistence"})
 public class BitmapGenerator implements CommandLineRunner {
 
+  private static final int width =  7_200*2;
+  private static final int height = 3_600*2;
+
   // It does not seem worth using a templating engine for a single "template".  Welcome to 1995!
   private static final String SVG_HEADER =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -64,10 +67,9 @@ public class BitmapGenerator implements CommandLineRunner {
           // geometricPrecision has anti-aliasing, but crispEdges misses out tiny shapes.
           "<svg shape-rendering=\"geometricPrecision\" "
           +
-          // This gives us a 7200×3600 image, with the "units" (pixels) on a scale -180°–180°,
-          // -90°–90°.
+          // This gives us a 7200×3600 image, with the "units" (pixels) on a scale -180°–180°, -90°–90°.
           // Therefore, 1px = 1°.
-          "height=\"3600\" width=\"7200\" viewBox=\"-180 -90 360 180\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+          "height=\"" + height + "\" width=\"" + width + "\" viewBox=\"-180 -90 360 180\" xmlns=\"http://www.w3.org/2000/svg\">\n"
           + "\n"
           + "  <style type=\"text/css\">\n"
           + "    path {\n"
@@ -231,11 +233,10 @@ public class BitmapGenerator implements CommandLineRunner {
       BufferedImage filled = ImageIO.read(filledPngFile.toFile());
       BufferedImage hollow = ImageIO.read(hollowPngFile.toFile());
 
-      int height = filled.getHeight();
-      int width = filled.getWidth();
+      double absMaxLatitude = (double) height/2;
 
       for (int y = 0; y < height; y++) {
-        double latitude = (1800d-y)/1800d*90d;
+        double latitude = (absMaxLatitude-y)/absMaxLatitude*90d;
         int xSpread = (int) Math.round(Math.ceil(kmToPx(latitude, 5)));
 
         for (int x = 0; x < width; x++) {
@@ -308,8 +309,6 @@ public class BitmapGenerator implements CommandLineRunner {
     System.out.println("Generating combined layer bitmap.");
     Stopwatch sw = Stopwatch.createStarted();
 
-    int height = 3600;
-    int width = 7200;
     BufferedImage combined = new BufferedImage(width, height, TYPE_INT_RGB);
 
     BufferedImage[] images = new BufferedImage[layerNames.length];
@@ -354,10 +353,10 @@ public class BitmapGenerator implements CommandLineRunner {
 
   /** Length of N kilometres in pixels, on a 7200×3600 pixel map. */
   private double kmToPx(double latitude, double n_km) {
-    return n_km / (lengthParallelKm(latitude) / 7200d);
+    return n_km / (lengthParallelKm(latitude) / ((double)width));
   }
 
   private double kmToPx(double n_km) {
-    return n_km / (lengthParallelKm(0) / 7200d);
+    return n_km / (lengthParallelKm(0) / ((double)width));
   }
 }
