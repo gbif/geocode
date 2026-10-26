@@ -60,7 +60,7 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{70.29634012819375, 20.305876112895362}); // Norway EEZ (I think)
 
     for (double[] point : points) {
-      check(point[0], point[1], false);
+      check(point, false);
     }
   }
 
@@ -76,7 +76,7 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{1.59435, 10.49347}); // Equatorial Guinea centroid
 
     for (double[] point : points) {
-      check(point[0], point[1], false);
+      check(point, false);
     }
   }
 
@@ -98,10 +98,15 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{52.9313560477876,122.71514675874727});
     points.add(new double[]{-74.72108973271868,42.498406709271535});
     points.add(new double[]{-75.7882187778486,-140.36844990373686});
-    points.add(new double[]{-8.129791605459658, -61.50063994508639});
+
+    // Check at different resolutions, relates to the bug fixed in https://github.com/gbif/pipelines/issues/1498
+    points.add(new double[]{-8.129791605459658, -61.50063994508639, 0.2});
+    points.add(new double[]{-8.129791605459658, -61.50063994508639, 0.4});
+    points.add(new double[]{-8.129791605459658, -61.50063994508639, 0.6});
+    points.add(new double[]{-8.129791605459658, -61.50063994508639, 0.8});
 
     for (double[] point : points) {
-      check(point[0], point[1], false);
+      check(point, false);
     }
   }
 
@@ -156,7 +161,7 @@ public class ShapefilesVsPostgisComparisonIT {
     points.add(new double[]{-9.511075495429864, 142.01194310596043});
 
     for (double[] point : points) {
-      check(point[0], point[1], false);
+      check(point, false);
     }
   }
 
@@ -179,20 +184,20 @@ public class ShapefilesVsPostgisComparisonIT {
     pgLayers.add("PG_WGSRPD");
 
     for (int i = 0; i < count; i++) {
-      double latitude = Math.random() * 180 - 90;
-      double longitude = Math.random() * 360 - 180;
-
-      check(latitude, longitude, false);
+      check(new double[]{Math.random() * 180 - 90, Math.random() * 360 - 180, Math.random() / 2}, false);
     }
   }
 
-  private void check(double latitude, double longitude, boolean debug) {
-    System.out.println(i + "> Checking "+latitude+", "+longitude);
+  private void check(double[] point, boolean debug) {
+    double latitude = point[0];
+    double longitude = point[1];
+    double uncertainty = (point.length > 2) ? point[2] : 0.2;
+    System.out.println(i + "> Checking "+latitude+", "+longitude+", "+uncertainty);
 
     boolean fail = false;
 
-    List<Location> p = geocoderService.get(latitude, longitude, 0.05, null, pgLayers).stream().sorted().collect(Collectors.toList());
-    List<Location> s = geocoderService.get(latitude, longitude, 0.05, null, sfLayers).stream().sorted().collect(Collectors.toList());
+    List<Location> p = geocoderService.get(latitude, longitude, uncertainty, null, pgLayers).stream().sorted().collect(Collectors.toList());
+    List<Location> s = geocoderService.get(latitude, longitude, uncertainty, null, sfLayers).stream().sorted().collect(Collectors.toList());
 
     if (debug) {
       if (p.size() == s.size()) {
@@ -246,7 +251,7 @@ public class ShapefilesVsPostgisComparisonIT {
       if (debug) {
         Assertions.fail("Difference between PostGIS and ShapeFile responses");
       } else {
-        check(latitude, longitude, true);
+        check(point, true);
       }
     }
 

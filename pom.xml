@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>59</version>
+    <version>61</version>
   </parent>
 
   <groupId>org.gbif.geocode</groupId>
@@ -96,6 +96,7 @@
     <!-- DB -->
     <hikaricp.version>7.0.2</hikaricp.version>
     <mybatis.version>3.5.19</mybatis.version>
+    <postgresql.version>42.1.4</postgresql.version>
 
     <!-- test -->
     <hamcrest.version>3.0</hamcrest.version>
@@ -105,7 +106,7 @@
     <!-- Third party dependencies -->
     <jackson.version>2.19.4</jackson.version>
     <feign.version>13.6</feign.version>
-    <layers-store.version>2.2.0</layers-store.version>
+    <layers-store.version>2.3.0-gbif-3</layers-store.version>
     <logback.version>1.5.21</logback.version>
     <logstash-encoder.version>8.1</logstash-encoder.version>
     <batik.version>1.13</batik.version>
@@ -124,7 +125,7 @@
     <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
 
     <!-- Matched to version used by au.org.ala.layers-store -->
-    <geotools.version>24.4.01</geotools.version>
+    <geotools.version>27.0</geotools.version>
     <jts.version>1.13</jts.version>
 
     <!-- Plugin versions -->
@@ -232,6 +233,11 @@
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgresql.version}</version>
       </dependency>
 
       <!-- test -->
@@ -347,11 +353,6 @@
         <groupId>org.geotools</groupId>
         <artifactId>gt-opengis</artifactId>
         <version>${geotools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.vividsolutions</groupId>
-        <artifactId>jts</artifactId>
-        <version>${jts.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
