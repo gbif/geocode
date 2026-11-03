@@ -165,6 +165,7 @@ function import_political() {
 
     # Add the code for Antarctica (missing since Antarctica doesn't have sovereignty etc).
     echo "UPDATE political SET iso_ter1 = 'ATA' WHERE mrgid_eez = 8489;" | exec_psql
+    echo "INSERT INTO political (gid, \"union\", mrgid_eez, iso_ter1, geom) SELECT -199, 'Antarctica', 8489, 'ATA', ST_Multi(ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326));" | exec_psql
 
     # China / Taiwan: remove Fukien Province from China and add to Taiwan
     # 8486 / 8321 / https://www.openstreetmap.org/relation/3777250
@@ -227,7 +228,7 @@ function import_political() {
     echo "WITH handdrawn AS (SELECT ST_GeomFromEWKT('SRID=4326;POLYGON ((-177.04996373497760942 31.60978833477749461, -177.83691262724664739 24.87185288052087273, -177.66332700965642744 24.37901220724413065, -177.36250316477767797 24.6621005824437951, -175.72778425823611315 31.30369873179363793, -176.27520866730711191 31.83088711396169757, -177.04996373497760942 31.60978833477749461))') AS geom)" \
         "UPDATE political SET geom = ST_Difference(political.geom, handdrawn.geom) FROM handdrawn WHERE mrgid_eez = 8453;" | exec_psql
     # Set Navassa Island to United States Minor Outlying Islands
-    echo "UPDATE political SET iso_ter2 = 'UMI' WHERE mrgid_eez = 48951;";
+    echo "UPDATE political SET iso_ter2 = 'UMI', iso_ter3 = 'JAM' WHERE mrgid_eez = 48951;" | exec_psql
 
     # Remove Overlapping Claim South China Sea, MR DB doesn't mark a sovereign claim here (only case of this).
     echo "DELETE from political WHERE mrgid_eez = 49003;" | exec_psql

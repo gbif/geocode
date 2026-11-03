@@ -73,7 +73,8 @@ public class VerifyAllISO3166PlacesIT {
     testCountry("Sea around Jan Mayen", 71, -4, SVALBARD_JAN_MAYEN);
     // As does Bouvet Island
     testCountry("Bouvet Island", -54.43, 3.38, BOUVET_ISLAND);
-    testCountry("Sea around Bouvet Island", -54.5, 3, BOUVET_ISLAND);
+    // Bouvet island does not have an EEZ.
+    // testCountry("Sea around Bouvet Island", -54.5, 3, BOUVET_ISLAND);
 
     // Similarly for Denmark, Greenland, Faroe Islands, Australia etc.
 
