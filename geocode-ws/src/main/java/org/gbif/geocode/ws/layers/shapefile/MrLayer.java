@@ -4,11 +4,11 @@ import org.gbif.geocode.ws.layers.Bitmap;
 
 import au.org.ala.layers.intersect.SimpleShapeFile;
 
-public class IhoLayer extends AbstractShapefileLayer {
-  public IhoLayer(String root) {
-    super(new SimpleShapeFile(root + "iho_subdivided", new String[]{"id", "name", "isoCountry"}),
-      Bitmap.class.getResourceAsStream("iho.png"),
-      1);
+public class MrLayer extends AbstractShapefileLayer {
+  public MrLayer(String root) {
+    super(new SimpleShapeFile(root + "mr_subdivided", new String[]{"id", "name", "isoCountry"}),
+      Bitmap.class.getResourceAsStream("mr.png"),
+      100);
   }
 
   @Override
@@ -18,11 +18,11 @@ public class IhoLayer extends AbstractShapefileLayer {
 
   @Override
   public String name() {
-    return "IHO";
+    return "MR";
   }
 
   @Override
   public String source() {
-    return "http://marineregions.org/";
+    return "https://marineregions.org/";
   }
 }

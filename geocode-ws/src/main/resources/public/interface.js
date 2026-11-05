@@ -150,7 +150,7 @@ function countryStyle() {
             pattern = makePatternBBlob(colour);
         } else if (feature.get('type') == 'WGSRPD') {
             pattern = makePatternB(colour);
-        } else if (feature.get('type') == 'GADM3' || feature.get('type') == 'IHO') {
+        } else if (feature.get('type') == 'GADM3' || feature.get('type') == 'MR') {
             pattern = makePatternH(colour);
         } else {
             pattern = makePatternF(colour);
@@ -396,14 +396,14 @@ layers['gadm0'] = new ol.layer.VectorTile({
     visible: false
 });
 
-layers['iho'] = new ol.layer.VectorTile({
-    title: 'IHO',
+layers['mr'] = new ol.layer.VectorTile({
+    title: 'Marine Regions',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
         tileGrid: tileGrid,
         tilePixelRatio: 8,
-        url: urlBase + '/tile/iho/{z}/{x}/{y}.mvt',
+        url: urlBase + '/tile/mr/{z}/{x}/{y}.mvt',
         wrapX: false,
     }),
     style: countryStyle(),
@@ -517,7 +517,7 @@ var map = new ol.Map({
                 layers['iucn'],
                 layers['centroids'],
                 layers['wgsrpd'],
-                layers['iho'],
+                layers['mr'],
                 layers['gadm5'],
                 layers['gadm4'],
                 layers['gadm3'],

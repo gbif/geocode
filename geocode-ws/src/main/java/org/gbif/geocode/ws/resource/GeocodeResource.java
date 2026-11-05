@@ -81,7 +81,7 @@ public class GeocodeResource implements GeocodeService {
       "GADM1",
       "GADM2",
       "GADM3",
-      "IHO",
+      "MR",
       "WGSRPD");
   }
 

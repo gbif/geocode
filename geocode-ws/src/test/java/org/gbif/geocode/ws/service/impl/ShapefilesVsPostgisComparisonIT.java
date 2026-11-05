@@ -175,13 +175,13 @@ public class ShapefilesVsPostgisComparisonIT {
     sfLayers.add("Political");
     sfLayers.add("Continent");
     sfLayers.add("GADM3210");
-    sfLayers.add("IHO");
+    sfLayers.add("MR");
     sfLayers.add("WGSRPD");
     pgLayers.clear();
     pgLayers.add("PG_Political");
     pgLayers.add("PG_Continent");
     pgLayers.add("PG_GADM3210");
-    pgLayers.add("PG_IHO");
+    pgLayers.add("PG_MR");
     pgLayers.add("PG_WGSRPD");
 
     for (int i = 0; i < count; i++) {

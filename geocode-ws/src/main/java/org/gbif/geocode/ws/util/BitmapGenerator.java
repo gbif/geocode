@@ -56,8 +56,8 @@ import static org.apache.batik.transcoder.image.ImageTranscoder.KEY_BACKGROUND_C
 @ComponentScan(basePackages = {"org.gbif.geocode.ws.persistence"})
 public class BitmapGenerator implements CommandLineRunner {
 
-  private static final int width =  7_200*2;
-  private static final int height = 3_600*2;
+  private static final int width =  7_200;
+  private static final int height = 3_600;
 
   // It does not seem worth using a templating engine for a single "template".  Welcome to 1995!
   private static final String SVG_HEADER =
@@ -85,7 +85,7 @@ public class BitmapGenerator implements CommandLineRunner {
 
   private static final String HOLLOW_PATH_FORMAT = "  <path id='%s' d='%s'/>\n";
 
-  private static final String FILLED_PATH_FORMAT = "  <path id='%s' style='fill: %s' d='%s'/>\n";
+  private static final String FILLED_PATH_FORMAT = "  <path id='%s' style='fill: %s; opacity: 0.5' d='%s'/>\n";
 
   private static final String SVG_FOOTER = "</svg>\n";
 
@@ -122,7 +122,7 @@ public class BitmapGenerator implements CommandLineRunner {
         "gadm1",
         "gadm2",
         "gadm3",
-        "iho",
+        "mr",
         "wgsrpd",
         "centroids");
 
@@ -141,7 +141,7 @@ public class BitmapGenerator implements CommandLineRunner {
             Map.entry("gadm3", tileMapper::svgGadm3),
             Map.entry("gadm4", tileMapper::svgGadm4),
             Map.entry("gadm5", tileMapper::svgGadm5),
-            Map.entry("iho", tileMapper::svgIho),
+            Map.entry("mr", tileMapper::svgMr),
             Map.entry("wgsrpd", tileMapper::svgWgsrpd),
             Map.entry("centroids", tileMapper::svgCentroids),
             Map.entry("gadm3210", tileMapper::svgGadm3210)

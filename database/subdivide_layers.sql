@@ -76,16 +76,16 @@ BEGIN
 END
 $do$;
 
--- IHO
-DROP TABLE IF EXISTS iho_subdivided;
-CREATE TABLE iho_subdivided AS
+-- MR
+DROP TABLE IF EXISTS mr_subdivided;
+CREATE TABLE mr_subdivided AS
     SELECT *
-    FROM iho
+    FROM mr
     WHERE ST_NPoints(geom) <= 1024;
 
-INSERT INTO iho_subdivided
-    SELECT gid, name, id, longitude, latitude, min_x, min_y, max_x, max_y, area, mrgid, ST_Multi(ST_Subdivide(ST_MakeValid(geom), 1024)) AS geom
-    FROM iho
+INSERT INTO mr_subdivided
+    SELECT mrgid, title, source, ST_Multi(ST_Subdivide(ST_MakeValid(geom), 1024)) AS geom
+    FROM mr
     WHERE ST_NPoints(geom) > 1024 AND ST_NPoints(geom) <= 10000;
 
 DO
@@ -94,14 +94,14 @@ DECLARE
    k   record;
 BEGIN
    FOR k IN
-      SELECT gid, name FROM iho WHERE ST_NPoints(geom) > 10000
+      SELECT mrgid, title FROM mr WHERE ST_NPoints(geom) > 10000
    LOOP
-      RAISE NOTICE 'Processing % (%)', k.gid, k.name;
-      INSERT INTO iho_subdivided
-        SELECT gid, name, id, longitude, latitude, min_x, min_y, max_x, max_y, area, mrgid, ST_Multi(ST_Subdivide(ST_MakeValid(geom), 1024)) AS geom
-        FROM iho
-        WHERE gid = k.gid;
-      RAISE NOTICE 'Completed % (%)', k.gid, k.name;
+      RAISE NOTICE 'Processing % (%)', k.mrgid, k.title;
+      INSERT INTO mr_subdivided
+        SELECT mrgid, title, source, ST_Multi(ST_Subdivide(ST_MakeValid(geom), 1024)) AS geom
+        FROM mr
+        WHERE mrgid = k.mrgid;
+      RAISE NOTICE 'Completed % (%)', k.mrgid, k.title;
    END LOOP;
 END
 $do$;

@@ -8,8 +8,8 @@ import org.gbif.geocode.ws.layers.postgis.AbstractPostGISLayer;
 import org.gbif.geocode.ws.layers.postgis.PGCentroidsLayer;
 import org.gbif.geocode.ws.layers.postgis.PGContinentLayer;
 import org.gbif.geocode.ws.layers.postgis.PGGadmLayer;
-import org.gbif.geocode.ws.layers.postgis.PGIhoLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIucnLayer;
+import org.gbif.geocode.ws.layers.postgis.PGMrLayer;
 import org.gbif.geocode.ws.layers.postgis.PGPoliticalLayer;
 import org.gbif.geocode.ws.layers.postgis.PGWgsrpdLayer;
 import org.gbif.geocode.ws.layers.shapefile.AbstractShapefileLayer;
@@ -62,7 +62,7 @@ public class GeocodeServiceImpl implements GeocodeService {
       Class<AbstractShapefileLayer>[] availableShapefileLayers = new Class[]{
         org.gbif.geocode.ws.layers.shapefile.ContinentLayer.class,
         org.gbif.geocode.ws.layers.shapefile.GadmLayer.class,
-        org.gbif.geocode.ws.layers.shapefile.IhoLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.MrLayer.class,
         org.gbif.geocode.ws.layers.shapefile.PoliticalLayer.class,
         org.gbif.geocode.ws.layers.shapefile.WgsrpdLayer.class
       };
@@ -88,8 +88,8 @@ public class GeocodeServiceImpl implements GeocodeService {
         PGCentroidsLayer.class,
         PGContinentLayer.class,
         PGGadmLayer.class,
-        PGIhoLayer.class,
         PGIucnLayer.class,
+        PGMrLayer.class,
         PGPoliticalLayer.class,
         PGWgsrpdLayer.class
       };

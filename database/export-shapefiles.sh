@@ -58,11 +58,11 @@ function export_gadm() {
     echo
 }
 
-function export_iho() {
-    echo "Exporting IHO to shapefile"
-    exec_pgsql2shp layers/iho_subdivided "SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, name, NULL AS isoCountryCode2Digit, geom FROM iho_subdivided"
+function export_mr() {
+    echo "Exporting MR to shapefile"
+    exec_pgsql2shp layers/mr_subdivided "SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, title AS name, NULL AS isoCountryCode2Digit, geom FROM mr_subdivided"
 
-    echo "IHO shapefile export complete"
+    echo "MR shapefile export complete"
     echo
 }
 
@@ -117,7 +117,7 @@ else
     export_centroids
     export_political
     export_gadm
-    export_iho
+    export_mr
     export_iucn
     export_wgsrpd
     export_continents

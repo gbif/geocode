@@ -26,7 +26,7 @@ public interface GeoJsonMapper {
   String[] geoJsonGadm2(@Param("id") String id);
   String[] geoJsonGadm1(@Param("id") String id);
   String[] geoJsonGadm0(@Param("id") String id);
-  String[] geoJsonIho(@Param("id") String id);
+  String[] geoJsonMr(@Param("id") String id);
   String[] geoJsonIucn(@Param("id") String id);
   String[] geoJsonWgsrpd(@Param("id") String id);
 

@@ -24,7 +24,7 @@
         "type": "enum",
         "name": "LocationType",
         "namespace": "org.gbif.geocode.api.model",
-        "symbols": ["GADM0", "GADM1", "GADM2", "GADM3", "WGSRPD", "Continent", "Political", "IHO", "Centroids", "IUCN"]
+        "symbols": ["GADM0", "GADM1", "GADM2", "GADM3", "WGSRPD", "Continent", "Political", "MR", "Centroids", "IUCN"]
       }
     },
     {

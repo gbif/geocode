@@ -147,16 +147,16 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (
       SELECT
-        'IHO' AS type,
+        'MR' AS type,
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        'http://marineregions.org/' AS source,
-        name AS title,
+        source,
+        title,
         NULL,
         ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
         ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
-      FROM iho
+      FROM mr
       WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
-        AND 'IHO' = ANY(q_layers)
+        AND 'MR' = ANY(q_layers)
       ORDER BY distance, id
     )
   UNION ALL
@@ -208,16 +208,16 @@ $$ LANGUAGE SQL IMMUTABLE;
 
 -- Examples / tests
 SELECT
-  'IHO' AS type,
+  'MR' AS type,
   'http://marineregions.org/mrgid/' || mrgid AS id,
-  'http://marineregions.org/' AS source,
-  name AS title,
+  source,
+  title,
   NULL,
-  ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326))
-FROM iho
-WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326), 0.05)
-ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(4.02, 50.02), 4326)) ASC;
+  ST_Distance(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326))
+FROM mr
+WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326), 0.05)
+ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326)) ASC;
 
-SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['IHO', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD', 'IUCN']);
+SELECT * FROM query_layers(4.02, 50.02, 0.05, ARRAY['MR', 'Political', 'Continent', 'GADM', 'Centroids', 'WGSRPD', 'IUCN']);
 
 SELECT * FROM query_layers(-34.2, -53.1, 0.05, ARRAY['Political']);

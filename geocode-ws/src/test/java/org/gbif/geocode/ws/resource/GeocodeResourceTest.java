@@ -50,7 +50,7 @@ public class GeocodeResourceTest {
       "GADM1",
       "GADM2",
       "GADM3",
-      "IHO",
+      "MR",
       "WGSRPD");
 
     Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d, 0d);

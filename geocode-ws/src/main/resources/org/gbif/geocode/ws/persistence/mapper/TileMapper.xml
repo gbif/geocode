@@ -12,7 +12,7 @@
       SELECT
         'http://marineregions.org/mrgid/' || political.mrgid_eez AS id,
         'Political' AS type,
-        'http://marineregions.org' AS source,
+        'https://marineregions.org' AS source,
         political.union AS title,
         iso_map.iso2 AS isoCountryCode2Digit,
         geom,
@@ -291,17 +291,17 @@
     ) AS tile;
   </select>
 
-  <!-- Tiles from the public.iho table -->
-  <select id="tileIho" resultMap="tileMap">
+  <!-- Tiles from the public.mr table -->
+  <select id="tileMr" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        'IHO' AS type,
-        'http://marineregions.org' AS source,
+        'MR' AS type,
+        'https://marineregions.org' AS source,
         name AS title,
         geom,
         centroid_geom
-      FROM iho
+      FROM mr
       WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
       <if test="id != null">
         AND mrgid::text = #{id}
@@ -310,7 +310,7 @@
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
     )
-    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
+    SELECT ST_ASMVT(tile, 'mr', 4096, 'mvtgeometry') AS t
     FROM (
       SELECT
         id, type, source, title,
@@ -404,7 +404,7 @@
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
     )
-    SELECT ST_ASMVT(tile, 'iho', 4096, 'mvtgeometry') AS t
+    SELECT ST_ASMVT(tile, 'mr', 4096, 'mvtgeometry') AS t
     FROM (
       SELECT
         id, type, source, title,
@@ -532,8 +532,8 @@
     SELECT COALESCE(gid_1, gid_0) AS id, ST_AsSVG(geom) AS shape FROM gadm1
   </select>
 
-  <select id="svgIho" resultType="org.gbif.geocode.ws.model.SvgShape">
-    SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM iho
+  <select id="svgMr" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT 'http://marineregions.org/mrgid/' || mrgid AS id, ST_AsSVG(geom) AS shape FROM mr
   </select>
 
   <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">

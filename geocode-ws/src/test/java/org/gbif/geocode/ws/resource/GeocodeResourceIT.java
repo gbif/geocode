@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(value = "classpath:application-test.properties",
-  properties = {"spring.shapefiles.enabled=PoliticalLayer, IhoLayer", "spring.defaultLayers=Political, IHO"})
+  properties = {"spring.shapefiles.enabled=PoliticalLayer, MrLayer", "spring.defaultLayers=Political, MR"})
 public class GeocodeResourceIT {
 
   private final GeocodeService geocodeClient;
@@ -40,7 +40,7 @@ public class GeocodeResourceIT {
   @Test
   public void reverseTest() {
     Collection<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList());
-    assertEquals(1, result.size());
+    assertEquals(2, result.size());
     assertEquals("South Atlantic Ocean", result.iterator().next().getTitle());
   }
 

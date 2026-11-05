@@ -199,17 +199,17 @@
     FROM features;
   </select>
 
-  <!-- GeoJSON from the public.iho table -->
-  <select id="geoJsonIho" resultType="java.lang.String">
+  <!-- GeoJSON from the public.mr table -->
+  <select id="geoJsonMr" resultType="java.lang.String">
     WITH features AS (
       SELECT
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        'IHO' AS type,
-        'http://marineregions.org' AS source,
+        'MR' AS type,
+        'https://marineregions.org' AS source,
         name AS title,
         geom,
         centroid_geom
-      FROM iho
+      FROM mr
       WHERE mrgid::text = #{id}
     )
     SELECT jsonb_build_object(
