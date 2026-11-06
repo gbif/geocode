@@ -291,17 +291,17 @@
     ) AS tile;
   </select>
 
-  <!-- Tiles from the public.mr table -->
-  <select id="tileMr" resultMap="tileMap">
+  <!-- Tiles from the public.mr_eez table -->
+  <select id="tileMrEez" resultMap="tileMap">
     WITH overlappings AS (
       SELECT
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        'MR' AS type,
-        'https://marineregions.org' AS source,
-        name AS title,
+        'MR_EEZ' AS type,
+        'https://www.marineregions.org/sources.php#marbound' AS source,
+        geoname AS title,
         geom,
         centroid_geom
-      FROM mr
+      FROM mr_eez
       WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
       <if test="id != null">
         AND mrgid::text = #{id}
@@ -310,7 +310,73 @@
       SELECT * FROM overlappings
       WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
     )
-    SELECT ST_ASMVT(tile, 'mr', 4096, 'mvtgeometry') AS t
+    SELECT ST_ASMVT(tile, 'mr_eez', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(ST_Simplify(geom, #{scale}, false), ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(centroid_geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.mr_iho table -->
+  <select id="tileMrIho" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'MR_IHO' AS type,
+        'https://www.marineregions.org/sources.php#iho' AS source,
+        name AS title,
+        geom,
+        centroid_geom
+      FROM mr_iho
+      WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
+      <if test="id != null">
+        AND mrgid::text = #{id}
+      </if>
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'mr_iho', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(ST_Simplify(geom, #{scale}, false), ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title,
+        ST_AsMVTGeom(centroid_geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
+  <!-- Tiles from the public.mr_lme table -->
+  <select id="tileMrLme" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'MR_LME' AS type,
+        'http://geonode.iwlearn.org/' AS source,
+        lme_name AS title,
+        geom,
+        centroid_geom
+      FROM mr_lme
+      WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
+      <if test="id != null">
+        AND mrgid::text = #{id}
+      </if>
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
+    )
+    SELECT ST_ASMVT(tile, 'mr_lme', 4096, 'mvtgeometry') AS t
     FROM (
       SELECT
         id, type, source, title,

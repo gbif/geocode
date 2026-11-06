@@ -234,6 +234,7 @@ layers['baselayer-middle'] = new ol.layer.Tile({
         tilePixelRatio: pixel_ratio,
         wrapX: false
     }),
+    visible: false,
 });
 
 layers['baselayer-geyser'] = new ol.layer.Tile({
@@ -246,7 +247,6 @@ layers['baselayer-geyser'] = new ol.layer.Tile({
         tilePixelRatio: pixel_ratio,
         wrapX: false
     }),
-    visible: false,
 });
 
 layers['baselayer-labels'] = new ol.layer.Tile({
