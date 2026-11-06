@@ -294,6 +294,10 @@ function import_political() {
 
     echo "CREATE INDEX political_eez_iso_3digit ON political (iso_ter1);" | exec_psql
 
+    echo "Subdividing political layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_political.sql
+
     echo "Marine Regions Land Union import complete"
     echo
 }
@@ -460,6 +464,10 @@ function import_gadm() {
     echo "SELECT AddGeometryColumn('gadm0', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE gadm0 SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
+    echo "Subdividing gadm3 layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_gadm3.sql
+
     echo "GADM import complete"
     echo
 }
@@ -491,6 +499,11 @@ function import_mr_eez() {
     # Centroids
     echo "SELECT AddGeometryColumn('mr_eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE mr_eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "Subdividing mr_eez layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_mr_eez.sql
+
     echo "MR EEZ & ABNJ import complete"
 }
 
@@ -512,6 +525,11 @@ function import_mr_iho() {
     # Centroids
     echo "SELECT AddGeometryColumn('mr_iho', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE mr_iho SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "Subdividing mr_iho layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_mr_iho.sql
+
     echo "IHO import complete"
 }
 
@@ -533,6 +551,11 @@ function import_mr_lme() {
     # Centroids
     echo "SELECT AddGeometryColumn('mr_lme', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE mr_lme SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "Subdividing mr_lme layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_mr_lme.sql
+
     echo "LME import complete"
 }
 
@@ -565,6 +588,10 @@ function import_wgsrpd() {
         echo "SELECT AddGeometryColumn('wgsrpd_level$i', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
         echo "UPDATE wgsrpd_level$i SET centroid_geom = ST_Centroid(geom);" | exec_psql
     done
+
+    echo "Subdividing wgsrpd layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_wgsrpd.sql
 
     echo "WGSRPD import complete"
     echo
@@ -734,6 +761,10 @@ EOF
     echo "SELECT AddGeometryColumn('continent', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE continent SET centroid_geom = ST_Centroid(geom);" | exec_psql
 
+    echo "Subdividing continent layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_continent.sql
+
     echo "Continents import complete"
     echo
 }
@@ -794,6 +825,10 @@ function import_iucn() {
 
     echo "SELECT AddGeometryColumn('iucn', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
     echo "UPDATE iucn SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "Subdividing iucn layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_iucn.sql
 
     echo "IUCN import complete"
     echo

@@ -189,21 +189,21 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
         AND ('MR_LME' = ANY(q_layers) OR 'MR' = ANY(q_layers))
       ORDER BY distance, id
     )
-  UNION ALL
-    (
-      SELECT
-        'IUCN' AS type,
-        id_no::text AS id,
-        'https://iucnredlist.org/' AS source,
-        CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title,
-        NULL,
-        ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
-        ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
-      FROM iucn
-      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
-        AND 'IUCN' = ANY(q_layers)
-      ORDER BY distance, id
-    )
+  -- UNION ALL
+  --   (
+  --     SELECT
+  --       'IUCN' AS type,
+  --       id_no::text AS id,
+  --       'https://iucnredlist.org/' AS source,
+  --       CONCAT_WS(' ', sci_name, subspecies, subpop, island) AS title,
+  --       NULL,
+  --       ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
+  --       ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
+  --     FROM iucn
+  --     WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+  --       AND 'IUCN' = ANY(q_layers)
+  --     ORDER BY distance, id
+  --   )
   UNION ALL
     (
       SELECT

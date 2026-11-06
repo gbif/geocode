@@ -109,22 +109,6 @@ function export_continents() {
     echo
 }
 
-function subdivide_layers() {
-    cd $START_DIR
-    exec_psql_file $SCRIPT_DIR/subdivide_layers.sql
-
-    echo "Subdividing layers complete"
-    echo
-}
-
-if [[ -e layers-subdivided ]]; then
-    echo "Layers already subdivided"
-else
-    echo "Subdividing layers"
-    subdivide_layers
-    [[ -w . ]] && touch layers-subdivided
-fi
-
 if [[ -e export-complete ]]; then
     echo "Data already exported"
 else
