@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a single geo-layer and its bitmap cache.
  */
-public abstract class AbstractBitmapCachedLayer {
+public abstract class AbstractBitmapCachedLayer implements Layer {
   private Logger LOG = LoggerFactory.getLogger(getClass());
 
   // Bitmap image cache

@@ -12,7 +12,7 @@ spring:
     enabled: false
   shapefiles:
     root: @geocode-ws.shapefiles.path@
-    enabled: PoliticalLayer, ContinentLayer, MrLayer, GadmLayer, WgsrpdLayer
+    enabled: PoliticalLayer, ContinentLayer, MrEezLayer, MrIhoLayer, MrLmeLayer, GadmLayer, WgsrpdLayer
   defaultLayers: Political, Continent, Centroids, MR, GADM, WGSRPD
   config:
     import: "optional:zookeeper:"

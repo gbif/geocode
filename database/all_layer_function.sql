@@ -147,16 +147,46 @@ RETURNS TABLE(layer text, id text, source text, title text, isoCountryCode2Digit
   UNION ALL
     (
       SELECT
-        'MR' AS type,
+        'MR_EEZ' AS type,
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        source,
-        title,
+        'https://www.marineregions.org/sources.php#marbound' AS source,
+        geoname AS title,
         NULL,
         ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
         ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
-      FROM mr
+      FROM mr_eez
       WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
-        AND 'MR' = ANY(q_layers)
+        AND ('MR_EEZ' = ANY(q_layers) OR 'MR' = ANY(q_layers))
+      ORDER BY distance, id
+    )
+  UNION ALL
+    (
+      SELECT
+        'MR_IHO' AS type,
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'https://www.marineregions.org/sources.php#iho' AS source,
+        name AS title,
+        NULL,
+        ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
+        ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
+      FROM mr_iho
+      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+        AND ('MR_IHO' = ANY(q_layers) OR 'MR' = ANY(q_layers))
+      ORDER BY distance, id
+    )
+  UNION ALL
+    (
+      SELECT
+        'MR_LME' AS type,
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'http://geonode.iwlearn.org/' AS source,
+        lme_name AS title,
+        NULL,
+        ST_Distance(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)) AS distance,
+        ST_Distance(geom::geography, ST_SetSRID(ST_Point(q_lng, q_lat), 4326)::geography) AS distanceMeters
+      FROM mr_lme
+      WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(q_lng, q_lat), 4326), q_unc)
+        AND ('MR_LME' = ANY(q_layers) OR 'MR' = ANY(q_layers))
       ORDER BY distance, id
     )
   UNION ALL
@@ -210,11 +240,11 @@ $$ LANGUAGE SQL IMMUTABLE;
 SELECT
   'MR' AS type,
   'http://marineregions.org/mrgid/' || mrgid AS id,
-  source,
-  title,
+  'https://marineregions.org' AS source,
+  name AS title,
   NULL,
   ST_Distance(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326))
-FROM mr
+FROM mr_iho
 WHERE ST_DWithin(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326), 0.05)
 ORDER BY ST_Distance(geom, ST_SetSRID(ST_Point(-4.02, 50.02), 4326)) ASC;
 

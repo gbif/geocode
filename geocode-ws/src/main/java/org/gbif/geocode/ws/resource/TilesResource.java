@@ -122,8 +122,16 @@ public class TilesResource {
         tile = tileMapper.tileGadm0(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
-      case "mr":
-        tile = tileMapper.tileMr(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
+      case "mr_eez":
+        tile = tileMapper.tileMrEez(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
+        break;
+
+      case "mr_iho":
+        tile = tileMapper.tileMrIho(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
+        break;
+
+      case "mr_lme":
+        tile = tileMapper.tileMrLme(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
       case "iucn":

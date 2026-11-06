@@ -1,15 +1,20 @@
 package org.gbif.geocode.ws.service.impl;
 
 import org.gbif.geocode.api.cache.AbstractBitmapCachedLayer;
+import org.gbif.geocode.api.cache.Layer;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
+import org.gbif.geocode.ws.layers.combined.MrLayer;
+import org.gbif.geocode.ws.layers.combined.PGMrLayer;
 import org.gbif.geocode.ws.layers.jts.AbstractJTSLayer;
 import org.gbif.geocode.ws.layers.postgis.AbstractPostGISLayer;
 import org.gbif.geocode.ws.layers.postgis.PGCentroidsLayer;
 import org.gbif.geocode.ws.layers.postgis.PGContinentLayer;
 import org.gbif.geocode.ws.layers.postgis.PGGadmLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIucnLayer;
-import org.gbif.geocode.ws.layers.postgis.PGMrLayer;
+import org.gbif.geocode.ws.layers.postgis.PGMrEezLayer;
+import org.gbif.geocode.ws.layers.postgis.PGMrIhoLayer;
+import org.gbif.geocode.ws.layers.postgis.PGMrLmeLayer;
 import org.gbif.geocode.ws.layers.postgis.PGPoliticalLayer;
 import org.gbif.geocode.ws.layers.postgis.PGWgsrpdLayer;
 import org.gbif.geocode.ws.layers.shapefile.AbstractShapefileLayer;
@@ -37,7 +42,7 @@ import org.springframework.stereotype.Service;
 public class GeocodeServiceImpl implements GeocodeService {
   private static final Logger LOG = LoggerFactory.getLogger(GeocodeServiceImpl.class);
 
-  private final Map<String, AbstractBitmapCachedLayer> layers = new HashMap<>();
+  private final Map<String, Layer> layers = new HashMap<>();
   private final List<String> defaultLayers = new ArrayList<>();
 
   // The default distance was originally chosen at ~5km to allow for gaps between land and sea in the simplified datasets.
@@ -62,7 +67,9 @@ public class GeocodeServiceImpl implements GeocodeService {
       Class<AbstractShapefileLayer>[] availableShapefileLayers = new Class[]{
         org.gbif.geocode.ws.layers.shapefile.ContinentLayer.class,
         org.gbif.geocode.ws.layers.shapefile.GadmLayer.class,
-        org.gbif.geocode.ws.layers.shapefile.MrLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.MrEezLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.MrIhoLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.MrLmeLayer.class,
         org.gbif.geocode.ws.layers.shapefile.PoliticalLayer.class,
         org.gbif.geocode.ws.layers.shapefile.WgsrpdLayer.class
       };
@@ -73,7 +80,7 @@ public class GeocodeServiceImpl implements GeocodeService {
         if (enabled == null || enabled.isEmpty() || enabled.contains(name)) {
           try {
             Constructor<AbstractShapefileLayer> c = class_.getDeclaredConstructor(String.class);
-            AbstractShapefileLayer layer = c.newInstance(new Object[]{root});
+            AbstractShapefileLayer layer = c.newInstance(root);
             layers.put(layer.name(), layer);
           } catch (Exception e) {
             throw new RuntimeException("Error loading layer "+name+" from "+root, e);
@@ -89,7 +96,9 @@ public class GeocodeServiceImpl implements GeocodeService {
         PGContinentLayer.class,
         PGGadmLayer.class,
         PGIucnLayer.class,
-        PGMrLayer.class,
+        PGMrEezLayer.class,
+        PGMrIhoLayer.class,
+        PGMrLmeLayer.class,
         PGPoliticalLayer.class,
         PGWgsrpdLayer.class
       };
@@ -119,16 +128,37 @@ public class GeocodeServiceImpl implements GeocodeService {
         }
       }
 
+      // 4: Initialize combined layers
+      if (enabled != null && enabled.containsAll(List.of("MrEezLayer", "MrIhoLayer", "MrLmeLayer"))) {
+        try {
+          Layer mrLayer = new MrLayer(layers.get("MR_EEZ"), layers.get("MR_IHO"), layers.get("MR_LME"));
+          layers.put(mrLayer.name(), mrLayer);
+        } catch (Exception e) {
+          throw new RuntimeException("Error loading combined layer MR", e);
+        }
+      } else {
+        LOG.info("Not loading combined layer MR because dependent layers are not present.");
+      }
+
+      try {
+        Layer pgMrLayer = new PGMrLayer(layers.get("PG_MR_EEZ"), layers.get("PG_MR_IHO"), layers.get("PG_MR_LME"));
+        layers.put(pgMrLayer.name(), pgMrLayer);
+      } catch (Exception e) {
+        throw new RuntimeException("Error loading layer PG_MR", e);
+      }
+
+      // 5: Verify.
       if (layers.isEmpty()) {
         throw new RuntimeException("No layers loaded!");
       }
 
-      LOG.info("Available layers are {}", layers.keySet());
+      LOG.info("Available layers are {}", layers.keySet().stream().sorted());
 
       for (String d : defaultLayers) {
         if (layers.containsKey(d)) {
           this.defaultLayers.add(d);
         } else {
+          System.err.println("Default layer "+d+" is configured, but the layer doesn't exist");
           throw new RuntimeException("Default layer "+d+" is configured, but the layer doesn't exist");
         }
       }
@@ -186,7 +216,7 @@ public class GeocodeServiceImpl implements GeocodeService {
     uncertaintyDegrees = Math.max(uncertaintyDegrees, MINIMUM_UNCERTAINTY_DEGREES);
 
     // For each layer, check the bitmap cache, then query the shapefile if needed.
-    for (Map.Entry<String,AbstractBitmapCachedLayer> entry : layers.entrySet()) {
+    for (Map.Entry<String,Layer> entry : layers.entrySet()) {
       if (useLayers.contains(entry.getKey())) {
         locations.addAll(entry.getValue().query(lat, lng, uncertaintyDegrees));
       }

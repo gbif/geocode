@@ -146,11 +146,11 @@ function countryStyle() {
 
         console.log(feature.get('type'));
 
-        if (feature.get('type') == 'Political') {
+        if (feature.get('type') == 'Political' || feature.get('type') == 'MR_LME') {
             pattern = makePatternBBlob(colour);
-        } else if (feature.get('type') == 'WGSRPD') {
+        } else if (feature.get('type') == 'WGSRPD' || feature.get('type') == 'MR_IHO') {
             pattern = makePatternB(colour);
-        } else if (feature.get('type') == 'GADM3' || feature.get('type') == 'MR') {
+        } else if (feature.get('type') == 'GADM3' || feature.get('type') == 'MR_EEZ') {
             pattern = makePatternH(colour);
         } else {
             pattern = makePatternF(colour);
@@ -396,14 +396,42 @@ layers['gadm0'] = new ol.layer.VectorTile({
     visible: false
 });
 
-layers['mr'] = new ol.layer.VectorTile({
-    title: 'Marine Regions',
+layers['mr_eez'] = new ol.layer.VectorTile({
+    title: 'MR EEZ',
     source: new ol.source.VectorTile({
         projection: 'EPSG:4326',
         format: new ol.format.MVT(),
         tileGrid: tileGrid,
         tilePixelRatio: 8,
-        url: urlBase + '/tile/mr/{z}/{x}/{y}.mvt',
+        url: urlBase + '/tile/mr_eez/{z}/{x}/{y}.mvt',
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false,
+});
+
+layers['mr_iho'] = new ol.layer.VectorTile({
+    title: 'MR IHO',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: urlBase + '/tile/mr_iho/{z}/{x}/{y}.mvt',
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false,
+});
+
+layers['mr_lme'] = new ol.layer.VectorTile({
+    title: 'MR LME',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: urlBase + '/tile/mr_lme/{z}/{x}/{y}.mvt',
         wrapX: false,
     }),
     style: countryStyle(),
@@ -517,7 +545,9 @@ var map = new ol.Map({
                 layers['iucn'],
                 layers['centroids'],
                 layers['wgsrpd'],
-                layers['mr'],
+                layers['mr_lme'],
+                layers['mr_eez'],
+                layers['mr_iho'],
                 layers['gadm5'],
                 layers['gadm4'],
                 layers['gadm3'],

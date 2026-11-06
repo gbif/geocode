@@ -85,7 +85,7 @@ public class BitmapGenerator implements CommandLineRunner {
 
   private static final String HOLLOW_PATH_FORMAT = "  <path id='%s' d='%s'/>\n";
 
-  private static final String FILLED_PATH_FORMAT = "  <path id='%s' style='fill: %s; opacity: 0.5' d='%s'/>\n";
+  private static final String FILLED_PATH_FORMAT = "  <path id='%s' style='fill: %s' d='%s'/>\n";
 
   private static final String SVG_FOOTER = "</svg>\n";
 
@@ -122,7 +122,9 @@ public class BitmapGenerator implements CommandLineRunner {
         "gadm1",
         "gadm2",
         "gadm3",
-        "mr",
+        "mr_eez",
+        "mr_iho",
+        "mr_lme",
         "wgsrpd",
         "centroids");
 
@@ -141,7 +143,9 @@ public class BitmapGenerator implements CommandLineRunner {
             Map.entry("gadm3", tileMapper::svgGadm3),
             Map.entry("gadm4", tileMapper::svgGadm4),
             Map.entry("gadm5", tileMapper::svgGadm5),
-            Map.entry("mr", tileMapper::svgMr),
+            Map.entry("mr_eez", tileMapper::svgMrEez),
+            Map.entry("mr_iho", tileMapper::svgMrIho),
+            Map.entry("mr_lme", tileMapper::svgMrLme),
             Map.entry("wgsrpd", tileMapper::svgWgsrpd),
             Map.entry("centroids", tileMapper::svgCentroids),
             Map.entry("gadm3210", tileMapper::svgGadm3210)

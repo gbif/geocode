@@ -464,8 +464,38 @@ function import_gadm() {
     echo
 }
 
-function import_mr() {
-    echo "Downloading Marine Regions datasets"
+function import_mr_eez() {
+    echo "Downloading MR EEZ & ABNJ datasets"
+    mkdir -p $TEMP
+    cd $TEMP
+
+    # EEZ v12: https://doi.org/10.14284/632
+    curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/10/eez_v12.gpkg
+    echo "Importing EEZ to PostGIS"
+    ogr2ogr -overwrite -nln mr_eez -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" eez_v12.gpkg
+    rm eez_v12.gpkg -Rf
+    echo "EEZ import complete"
+    echo
+
+    # High Seas v2: https://doi.org/10.14284/696
+    curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/10/High_Seas_v2.gpkg
+    echo "Importing High Seas to PostGIS"
+    ogr2ogr -nln mr_eez -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" High_Seas_v2.gpkg
+    rm High_Seas_v2.gpkg -Rf
+    echo "High Seas import complete"
+    echo
+
+    echo "UPDATE mr_eez SET geoname = 'High Seas' WHERE mrgid = 63203;" | exec_psql
+    echo "UPDATE mr_eez SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
+    # Centroids
+    echo "SELECT AddGeometryColumn('mr_eez', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE mr_eez SET centroid_geom = ST_Centroid(geom);" | exec_psql
+    echo "MR EEZ & ABNJ import complete"
+}
+
+function import_mr_iho() {
+    echo "Downloading MR IHO dataset"
     mkdir -p $TEMP
     cd $TEMP
 
@@ -478,8 +508,17 @@ function import_mr() {
     exec_psql_file iho/iho.sql
     rm iho.zip iho/ -Rf
     echo "UPDATE mr_iho SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
+    # Centroids
+    echo "SELECT AddGeometryColumn('mr_iho', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE mr_iho SET centroid_geom = ST_Centroid(geom);" | exec_psql
     echo "IHO import complete"
-    echo
+}
+
+function import_mr_lme() {
+    echo "Downloading MR Large Marine Ecosystems dataset"
+    mkdir -p $TEMP
+    cd $TEMP
 
     # Large Marine Ecosystems: https://geo.vliz.be/geoserver/MarineRegions/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=MarineRegions:lme&outputFormat=SHAPE-ZIP&count=100000&srsName=EPSG:4326
     curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/10/lme.zip
@@ -490,46 +529,11 @@ function import_mr() {
     exec_psql_file lme/lme.sql
     rm lme.zip lme/ -Rf
     echo "UPDATE mr_lme SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
-    echo "LME import complete"
-    echo
-
-    # High Seas v2: https://doi.org/10.14284/696
-    curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/10/High_Seas_v2.gpkg
-    echo "Importing High Seas to PostGIS"
-    ogr2ogr -overwrite -nln mr_abnj -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" High_Seas_v2.gpkg
-    rm High_Seas_v2.gpkg -Rf
-    echo "UPDATE mr_abnj SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
-    echo "High Seas import complete"
-    echo
-
-    # EEZ v12: https://doi.org/10.14284/632
-    curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/10/eez_v12.gpkg
-    echo "Importing EEZ to PostGIS"
-    ogr2ogr -overwrite -nln mr_eez -lco GEOMETRY_NAME=geom -f PostgreSQL "$PGCONN" eez_v12.gpkg
-    rm eez_v12.gpkg -Rf
-    echo "UPDATE mr_eez SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
-    echo "EEZ import complete"
-    echo
-
-    # Combine
-    echo "
-        DROP TABLE IF EXISTS mr;
-        CREATE TABLE mr (
-            mrgid                BIGINT,
-            title                TEXT,
-            source               TEXT);
-        SELECT AddGeometryColumn('mr', 'geom', 4326, 'MULTIPOLYGON', 2);
-        SELECT AddGeometryColumn('mr', 'centroid_geom', 4326, 'POINT', 2);
-
-        INSERT INTO mr (mrgid, title, source, geom) SELECT mrgid, name AS title, source, geom FROM mr_abnj;
-        INSERT INTO mr (mrgid, title, source, geom) SELECT mrgid, geoname AS title, 'https://www.marineregions.org/sources.php#marbound' AS source, geom FROM mr_eez;
-        INSERT INTO mr (mrgid, title, source, geom) SELECT mrgid, name AS title, 'https://www.marineregions.org/sources.php#iho' AS source, geom FROM mr_iho;
-        INSERT INTO mr (mrgid, title, source, geom) SELECT mrgid, lme_name AS title, 'http://geonode.iwlearn.org/' AS source, geom FROM mr_lme;
-          " | exec_psql
 
     # Centroids
-    echo "UPDATE mr SET centroid_geom = ST_Centroid(geom);" | exec_psql
-    echo "Marine Regions import complete"
+    echo "SELECT AddGeometryColumn('mr_lme', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE mr_lme SET centroid_geom = ST_Centroid(geom);" | exec_psql
+    echo "LME import complete"
 }
 
 function import_wgsrpd() {
@@ -831,7 +835,9 @@ else
     import_iso_map
     create_cache
     import_centroids
-    import_mr
+    import_mr_eez
+    import_mr_iho
+    import_mr_lme
     import_political
     import_gadm
     create_gadm_indices

@@ -199,17 +199,61 @@
     FROM features;
   </select>
 
-  <!-- GeoJSON from the public.mr table -->
-  <select id="geoJsonMr" resultType="java.lang.String">
+  <!-- GeoJSON from the public.mr_eez table -->
+  <select id="geoJsonMrEez" resultType="java.lang.String">
     WITH features AS (
       SELECT
         'http://marineregions.org/mrgid/' || mrgid AS id,
-        'MR' AS type,
-        'https://marineregions.org' AS source,
+        'MR_EEZ' AS type,
+        'https://www.marineregions.org/sources.php#marbound' AS source,
+        geoname AS title,
+        geom,
+        centroid_geom
+      FROM mr_eez
+      WHERE mrgid::text = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.mr_iho table -->
+  <select id="geoJsonMrIho" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'MR_IHO' AS type,
+        'https://www.marineregions.org/sources.php#iho' AS source,
         name AS title,
         geom,
         centroid_geom
-      FROM mr
+      FROM mr_iho
+      WHERE mrgid::text = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
+  <!-- GeoJSON from the public.mr_lme table -->
+  <select id="geoJsonMrLme" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        'http://marineregions.org/mrgid/' || mrgid AS id,
+        'MR_LME' AS type,
+        'http://geonode.iwlearn.org/' AS source,
+        lme_name AS title,
+        geom,
+        centroid_geom
+      FROM mr_lme
       WHERE mrgid::text = #{id}
     )
     SELECT jsonb_build_object(

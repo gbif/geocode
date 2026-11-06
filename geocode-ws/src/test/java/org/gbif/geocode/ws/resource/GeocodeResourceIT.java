@@ -7,6 +7,9 @@ import org.gbif.ws.client.ClientBuilder;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import org.gbif.ws.json.JacksonJsonObjectMapperProvider;
 
@@ -24,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(value = "classpath:application-test.properties",
-  properties = {"spring.shapefiles.enabled=PoliticalLayer, MrLayer", "spring.defaultLayers=Political, MR"})
+  properties = {"spring.shapefiles.enabled=PoliticalLayer, MrEezLayer, MrIhoLayer, MrLmeLayer", "spring.defaultLayers=Political, MR"})
 public class GeocodeResourceIT {
 
   private final GeocodeService geocodeClient;
@@ -39,9 +42,16 @@ public class GeocodeResourceIT {
 
   @Test
   public void reverseTest() {
-    Collection<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList());
+    List<Location> result = geocodeClient.get(-1d, -1d, 0.1d, null, Collections.emptyList());
     assertEquals(2, result.size());
-    assertEquals("South Atlantic Ocean", result.iterator().next().getTitle());
+    result.sort(new Comparator<Location>() {
+      @Override
+      public int compare(Location location, Location t1) {
+        return location.getTitle().compareTo(t1.getTitle());
+      }
+    });
+    assertEquals("High Seas", result.get(0).getTitle());
+    assertEquals("South Atlantic Ocean", result.get(1).getTitle());
   }
 
   @Test

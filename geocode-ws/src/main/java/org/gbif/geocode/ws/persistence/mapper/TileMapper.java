@@ -30,7 +30,9 @@ public interface TileMapper {
   List<SvgShape> svgGadm3210();
   List<SvgShape> svgGadm210();
   List<SvgShape> svgGadm10();
-  List<SvgShape> svgMr();
+  List<SvgShape> svgMrEez();
+  List<SvgShape> svgMrIho();
+  List<SvgShape> svgMrLme();
   List<SvgShape> svgIucn();
   List<SvgShape> svgWgsrpd();
 
@@ -43,7 +45,9 @@ public interface TileMapper {
   Tile tileGadm2(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileGadm1(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileGadm0(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
-  Tile tileMr(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
+  Tile tileMrEez(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
+  Tile tileMrIho(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
+  Tile tileMrLme(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileIucn(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileWgsrpd(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
 
