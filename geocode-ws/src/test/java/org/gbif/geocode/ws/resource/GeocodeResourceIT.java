@@ -23,11 +23,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(value = "classpath:application-test.properties",
-  properties = {"spring.shapefiles.enabled=PoliticalLayer, MrEezLayer, MrIhoLayer, MrLmeLayer", "spring.defaultLayers=Political, MR"})
+  properties = {"spring.shapefiles.enabled=PoliticalLayer, MrEezLayer, MrIhoLayer, MrLmeLayer, KbaLayer", "spring.defaultLayers=Political, MR"})
 public class GeocodeResourceIT {
 
   private final GeocodeService geocodeClient;
@@ -60,6 +61,16 @@ public class GeocodeResourceIT {
         geocodeClient.get(51d, 18d, 0.1d, null, Collections.singletonList("Political"));
     assertEquals(1, result.size());
     assertEquals("PL", result.iterator().next().getIsoCountryCode2Digit());
+  }
+
+  @Test
+  public void reverseKbaTest() {
+    // Inside Serengeti National Park, Tanzania.
+    for (String layer : List.of("KBA", "PG_KBA")) {
+      List<Location> result = geocodeClient.get(-2.3687d, 34.6954d, null, null, Collections.singletonList(layer));
+      assertTrue(result.stream().allMatch(l -> "KBA".equals(l.getType())), layer);
+      assertTrue(result.stream().anyMatch(l -> "6972".equals(l.getId()) && "Serengeti National Park".equals(l.getTitle())), layer);
+    }
   }
 
   @Test

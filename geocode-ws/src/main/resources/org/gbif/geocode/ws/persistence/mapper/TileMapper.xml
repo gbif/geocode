@@ -484,6 +484,44 @@
     ) AS tile;
   </select>
 
+  <!-- Tiles from the public.kba table -->
+  <select id="tileKba" resultMap="tileMap">
+    WITH overlappings AS (
+      SELECT
+        sitrecid::text AS id,
+        'KBA' AS type,
+        'https://www.keybiodiversityareas.org/' AS source,
+        intname AS title,
+        natname AS nationalName,
+        country,
+        iso3,
+        kbaclass AS kbaClass,
+        kbastatus AS kbaStatus,
+        geom,
+        centroid_geom
+      FROM kba
+      WHERE geom &amp;&amp; ST_Expand(ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), #{buffer})
+      <if test="id != null">
+        AND sitrecid::text = #{id}
+      </if>
+    ), intersectings AS (
+      SELECT * FROM overlappings
+      WHERE ST_AsMVTGeom(geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) IS NOT NULL
+    )
+    SELECT ST_AsMVT(tile, 'kba', 4096, 'mvtgeometry') AS t
+    FROM (
+      SELECT
+        id, type, source, title, nationalName, country, iso3, kbaClass, kbaStatus,
+        ST_AsMVTGeom(ST_Simplify(geom, #{scale}, false), ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+      UNION ALL
+      SELECT
+        id, type, source, title, nationalName, country, iso3, kbaClass, kbaStatus,
+        ST_AsMVTGeom(centroid_geom, ST_MakeBox2D(ST_Point(#{b1}, #{b2}), ST_Point(#{b3}, #{b4})), 4096, 64, true) AS mvtgeometry
+      FROM intersectings
+    ) AS tile;
+  </select>
+
   <!-- Tiles from the public.centroids view -->
   <select id="tileCentroids" resultMap="tileMap">
     WITH overlappings AS (
@@ -612,6 +650,24 @@
 
   <select id="svgWgsrpd" resultType="org.gbif.geocode.ws.model.SvgShape">
     SELECT level4_cod AS id, ST_AsSVG(geom) AS shape FROM wgsrpd_level4
+  </select>
+
+  <!--
+    KBAs overlap each other.  Each KBA is drawn with its own colour, then the overlapping areas are drawn on top
+    in black (id BLACK), so the bitmap cache never answers for a point inside more than one KBA.
+  -->
+  <select id="svgKba" resultType="org.gbif.geocode.ws.model.SvgShape">
+    SELECT id, shape FROM (
+      SELECT 0 AS o, sitrecid::bigint::text AS id, ST_AsSVG(geom) AS shape FROM kba
+    UNION ALL
+      SELECT 1 AS o, 'BLACK' AS id, ST_AsSVG(overlap) AS shape
+      FROM (
+        SELECT ST_CollectionExtract(ST_Intersection(a.geom, b.geom), 3) AS overlap
+        FROM kba a JOIN kba b ON a.gid &lt; b.gid AND ST_Intersects(a.geom, b.geom) AND NOT ST_Touches(a.geom, b.geom)
+      ) kba_overlaps
+      WHERE NOT ST_IsEmpty(overlap)
+    ) shapes
+    ORDER BY o
   </select>
 
   <select id="svgCentroids" resultType="org.gbif.geocode.ws.model.SvgShape">

@@ -769,6 +769,33 @@ EOF
     echo
 }
 
+function import_kba() {
+    echo "Downloading Key Biodiversity Areas (KBA) dataset"
+    mkdir -p $TEMP
+    cd $TEMP
+
+    # Key Biodiversity Areas: https://www.keybiodiversityareas.org/en (provided by contact)
+    curl -LSs --remote-name --continue-at - --fail https://download.gbif.org/MapDataMirror/2026/11/kbas_sept_2026_poly_point_comb.zip
+    mkdir -p kba
+    unzip -oj kbas_sept_2026_poly_point_comb.zip -d kba/
+    echo "Importing KBA to PostGIS"
+    shp2pgsql -d -D -s 4326 -I -W UTF-8 kba/kbas_sept_2026_poly_point_comb.shp public.kba | wrap_drop_geometry_commands > kba/kba.sql
+    exec_psql_file kba/kba.sql
+    rm kba.zip kba/ -Rf
+    echo "Making valid"
+    echo "UPDATE kba SET geom = ST_MakeValid(geom) WHERE NOT ST_IsValid(geom);" | exec_psql
+
+    # Centroids
+    echo "SELECT AddGeometryColumn('kba', 'centroid_geom', 4326, 'POINT', 2);" | exec_psql
+    echo "UPDATE kba SET centroid_geom = ST_Centroid(geom);" | exec_psql
+
+    echo "Subdividing kba layer"
+    cd $START_DIR
+    exec_psql_file $SCRIPT_DIR/subdivide_layer_kba.sql
+
+    echo "KBA import complete"
+}
+
 function import_iucn() {
     echo "Using IUCN range maps from NFS"
 
@@ -879,6 +906,7 @@ else
     import_wgsrpd
     import_esri_countries
     import_continents
+    import_kba
     import_iucn
     create_combined_function
     touch import-complete

@@ -101,6 +101,14 @@ function export_wgsrpd() {
     echo
 }
 
+function export_kba() {
+    echo "Exporting KBA to shapefile"
+    exec_pgsql2shp layers/kba_subdivided "SELECT sitrecid::text AS id, intname AS name, NULL AS isoCountryCode2Digit, geom FROM kba_subdivided"
+
+    echo "KBA shapefile export complete"
+    echo
+}
+
 function export_continents() {
     echo "Exporting Continents to shapefile"
     exec_pgsql2shp layers/continents_subdivided "SELECT continent AS id, continent AS name, NULL AS isoCountryCode2Digit, geom FROM continent_subdivided"
@@ -122,6 +130,7 @@ else
     export_mr_lme
     export_iucn
     export_wgsrpd
+    export_kba
     export_continents
     [[ -w . ]] && touch export-complete
 fi

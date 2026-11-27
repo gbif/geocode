@@ -466,6 +466,20 @@ layers['wgsrpd'] = new ol.layer.VectorTile({
     visible: false
 });
 
+layers['kba'] = new ol.layer.VectorTile({
+    title: 'KBA',
+    source: new ol.source.VectorTile({
+        projection: 'EPSG:4326',
+        format: new ol.format.MVT(),
+        tileGrid: tileGrid,
+        tilePixelRatio: 8,
+        url: urlBase + '/tile/kba/{z}/{x}/{y}.mvt',
+        wrapX: false,
+    }),
+    style: countryStyle(),
+    visible: false
+});
+
 layers['centroids'] = new ol.layer.VectorTile({
     title: 'Centroids',
     source: new ol.source.VectorTile({
@@ -544,6 +558,7 @@ var map = new ol.Map({
             layers: [
                 layers['iucn'],
                 layers['centroids'],
+                layers['kba'],
                 layers['wgsrpd'],
                 layers['mr_lme'],
                 layers['mr_eez'],

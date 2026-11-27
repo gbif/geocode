@@ -110,6 +110,10 @@ public class FeatureResource {
         features = geoJsonMapper.geoJsonWgsrpd(id);
         break;
 
+      case "kba":
+        features = geoJsonMapper.geoJsonKba(id);
+        break;
+
       case "centroids":
         features = geoJsonMapper.geoJsonCentroids(id);
         break;

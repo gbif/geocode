@@ -177,12 +177,14 @@ public class ShapefilesVsPostgisComparisonIT {
     sfLayers.add("GADM3210");
     sfLayers.add("MR");
     sfLayers.add("WGSRPD");
+    sfLayers.add("KBA");
     pgLayers.clear();
     pgLayers.add("PG_Political");
     pgLayers.add("PG_Continent");
     pgLayers.add("PG_GADM3210");
     pgLayers.add("PG_MR");
     pgLayers.add("PG_WGSRPD");
+    pgLayers.add("PG_KBA");
 
     for (int i = 0; i < count; i++) {
       check(new double[]{Math.random() * 180 - 90, Math.random() * 360 - 180, Math.random() / 2}, false);

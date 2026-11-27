@@ -35,6 +35,7 @@ public interface TileMapper {
   List<SvgShape> svgMrLme();
   List<SvgShape> svgIucn();
   List<SvgShape> svgWgsrpd();
+  List<SvgShape> svgKba();
 
   Tile tilePolitical(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileCentroids(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
@@ -50,6 +51,7 @@ public interface TileMapper {
   Tile tileMrLme(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileIucn(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
   Tile tileWgsrpd(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
+  Tile tileKba(@Param("b1") double b1, @Param("b2") double b2, @Param("b3") double b3, @Param("b4") double b4, @Param("buffer") double buffer, @Param("scale") double scale, @Param("id") String id);
 
   void toCache(@Param("layer") String layer, @Param("z") int z, @Param("x") long x, @Param("y") long y, @Param("id") String id, @Param("tile") Tile tile, @Param("timeTaken") long timeTaken);
   Tile fromCache(@Param("layer") String layer, @Param("z") int z, @Param("x") long x, @Param("y") long y, @Param("id") String id);

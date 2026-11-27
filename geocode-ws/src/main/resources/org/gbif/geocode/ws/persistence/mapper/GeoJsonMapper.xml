@@ -332,6 +332,39 @@
     FROM features;
   </select>
 
+  <!-- GeoJSON from the public.kba table -->
+  <select id="geoJsonKba" resultType="java.lang.String">
+    WITH features AS (
+      SELECT
+        sitrecid::text AS id,
+        'KBA' AS type,
+        'https://www.keybiodiversityareas.org/' AS source,
+        intname AS title,
+        natname AS "nationalName",
+        region,
+        country,
+        iso3,
+        sitareakm2 AS "siteAreaKm2",
+        kbastatus AS "kbaStatus",
+        kbaclass AS "kbaClass",
+        ibastatus AS "ibaStatus",
+        legacykba AS "legacyKba",
+        azestatus AS "azeStatus",
+        lastupdate AS "lastUpdate",
+        geom,
+        centroid_geom
+      FROM kba
+      WHERE sitrecid::text = #{id}
+    )
+    SELECT jsonb_build_object(
+      'type',       'Feature',
+      'id',         id,
+      'geometry',   ST_AsGeoJSON(geom)::jsonb,
+      'properties', to_jsonb(features.*) - 'id' - 'geom'
+    )::text AS json
+    FROM features;
+  </select>
+
   <!-- GeoJSON from the public.centroids view -->
   <select id="geoJsonCentroids" resultType="java.lang.String">
     WITH features AS (

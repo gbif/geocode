@@ -89,6 +89,9 @@ public class BitmapGenerator implements CommandLineRunner {
 
   private static final String SVG_FOOTER = "</svg>\n";
 
+  // Shapes with this id are filled black, so the bitmap cache always defers to the datasource there.
+  private static final String BLACK_ID = "BLACK";
+
   private final TileMapper tileMapper;
   private final ConfigurableApplicationContext context;
 
@@ -122,6 +125,7 @@ public class BitmapGenerator implements CommandLineRunner {
         "gadm1",
         "gadm2",
         "gadm3",
+        "kba",
         "mr_eez",
         "mr_iho",
         "mr_lme",
@@ -147,6 +151,7 @@ public class BitmapGenerator implements CommandLineRunner {
             Map.entry("mr_iho", tileMapper::svgMrIho),
             Map.entry("mr_lme", tileMapper::svgMrLme),
             Map.entry("wgsrpd", tileMapper::svgWgsrpd),
+            Map.entry("kba", tileMapper::svgKba),
             Map.entry("centroids", tileMapper::svgCentroids),
             Map.entry("gadm3210", tileMapper::svgGadm3210)
         );
@@ -203,9 +208,11 @@ public class BitmapGenerator implements CommandLineRunner {
       Map<String, String> knownColours = new HashMap<>();
 
       for (SvgShape shape : shapes) {
-        String colour = knownColours.getOrDefault(shape.getId(), colours.pop());
+        // Shapes with the id BLACK mark areas the cache must never answer for, e.g. where shapes in the layer overlap.
+        String colour = BLACK_ID.equals(shape.getId())
+          ? "#000000"
+          : knownColours.computeIfAbsent(shape.getId(), k -> colours.pop());
         filledSvg.write(String.format(FILLED_PATH_FORMAT, shape.getId(), colour, shape.getShape()));
-        knownColours.put(shape.getId(), colour);
         hollowSvg.write(String.format(HOLLOW_PATH_FORMAT, shape.getId(), shape.getShape()));
       }
 

@@ -142,6 +142,10 @@ public class TilesResource {
         tile = tileMapper.tileWgsrpd(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;
 
+      case "kba":
+        tile = tileMapper.tileKba(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
+        break;
+
       case "centroids":
         tile = tileMapper.tileCentroids(b[0].getX(), b[0].getY(), b[1].getX(), b[1].getY(), buffer[z], scale[z], id);
         break;

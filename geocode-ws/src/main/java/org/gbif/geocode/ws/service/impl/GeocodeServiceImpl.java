@@ -12,6 +12,7 @@ import org.gbif.geocode.ws.layers.postgis.PGCentroidsLayer;
 import org.gbif.geocode.ws.layers.postgis.PGContinentLayer;
 import org.gbif.geocode.ws.layers.postgis.PGGadmLayer;
 import org.gbif.geocode.ws.layers.postgis.PGIucnLayer;
+import org.gbif.geocode.ws.layers.postgis.PGKbaLayer;
 import org.gbif.geocode.ws.layers.postgis.PGMrEezLayer;
 import org.gbif.geocode.ws.layers.postgis.PGMrIhoLayer;
 import org.gbif.geocode.ws.layers.postgis.PGMrLmeLayer;
@@ -67,6 +68,7 @@ public class GeocodeServiceImpl implements GeocodeService {
       Class<AbstractShapefileLayer>[] availableShapefileLayers = new Class[]{
         org.gbif.geocode.ws.layers.shapefile.ContinentLayer.class,
         org.gbif.geocode.ws.layers.shapefile.GadmLayer.class,
+        org.gbif.geocode.ws.layers.shapefile.KbaLayer.class,
         org.gbif.geocode.ws.layers.shapefile.MrEezLayer.class,
         org.gbif.geocode.ws.layers.shapefile.MrIhoLayer.class,
         org.gbif.geocode.ws.layers.shapefile.MrLmeLayer.class,
@@ -96,6 +98,7 @@ public class GeocodeServiceImpl implements GeocodeService {
         PGContinentLayer.class,
         PGGadmLayer.class,
         PGIucnLayer.class,
+        PGKbaLayer.class,
         PGMrEezLayer.class,
         PGMrIhoLayer.class,
         PGMrLmeLayer.class,
