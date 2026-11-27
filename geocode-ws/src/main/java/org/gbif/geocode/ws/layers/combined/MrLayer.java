@@ -23,6 +23,8 @@ public class MrLayer implements Layer {
       found.addAll(layer.query(latitude, longitude, uncertaintyDegrees));
     }
 
+    found.stream().iterator().forEachRemaining(location -> location.setType("MR"));
+
     return found;
   }
 

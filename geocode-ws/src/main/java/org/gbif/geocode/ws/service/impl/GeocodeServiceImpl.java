@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +156,7 @@ public class GeocodeServiceImpl implements GeocodeService {
         throw new RuntimeException("No layers loaded!");
       }
 
-      LOG.info("Available layers are {}", layers.keySet().stream().sorted());
+      LOG.info("Available layers are {}", layers.keySet().stream().sorted().collect(Collectors.joining(" ")));
 
       for (String d : defaultLayers) {
         if (layers.containsKey(d)) {
