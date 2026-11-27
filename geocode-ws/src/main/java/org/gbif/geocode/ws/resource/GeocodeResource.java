@@ -82,6 +82,7 @@ public class GeocodeResource implements GeocodeService {
       "GADM2",
       "GADM3",
       "MR",
+      "KBA",
       "WGSRPD");
   }
 

@@ -165,7 +165,7 @@ function import_political() {
 
     # Add the code for Antarctica (missing since Antarctica doesn't have sovereignty etc).
     echo "UPDATE political SET iso_ter1 = 'ATA' WHERE mrgid_eez = 8489;" | exec_psql
-    echo "INSERT INTO political (gid, \"union\", mrgid_eez, iso_ter1, geom) SELECT -199, 'Antarctica', 8489, 'ATA', ST_Multi(ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326));" | exec_psql
+    echo "UPDATE political SET geom = ST_UNION(geom, ST_Multi(ST_SetSRID(ST_MakeBox2D(ST_Point(-180, -90), ST_Point(180, -88)), 4326))) WHERE mrgid_eez = 8489;" | exec_psql
 
     # China / Taiwan: remove Fukien Province from China and add to Taiwan
     # 8486 / 8321 / https://www.openstreetmap.org/relation/3777250
