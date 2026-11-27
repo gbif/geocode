@@ -42,7 +42,7 @@ public class GeocodeResourceTest {
     GeocodeService geocoder = mock(GeocodeService.class);
     GeocodeService geocodeService = new GeocodeResource(geocoder, null);
 
-    List<String> defaultLayers = Arrays.asList(
+    List<String> layers = Arrays.asList(
       "Political",
       "Centroids",
       "Continent",
@@ -55,9 +55,9 @@ public class GeocodeResourceTest {
 
     Location locationTest = new Location("test", "political", "source", "Germany", "DE", 0d, 0d);
     Location locationTest2 = new Location("test", "political", "source", "Germany", "DE", 0d, 0d);
-    when(geocoder.get(10.0d, 53.0d, null, null, defaultLayers)).thenReturn(Arrays.asList(locationTest));
-    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null, null);
-    verify(geocoder).get(10.0d, 53.0d, null, null, defaultLayers);
+    when(geocoder.get(10.0d, 53.0d, null, null, layers)).thenReturn(Arrays.asList(locationTest));
+    Collection<Location> locations = geocodeService.get(10.0d, 53.0d, null, null, layers);
+    verify(geocoder).get(10.0d, 53.0d, null, null, layers);
     assertEquals(1, locations.size());
     assertTrue(locations.contains(locationTest2));
   }

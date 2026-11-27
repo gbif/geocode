@@ -1,8 +1,5 @@
 package org.gbif.geocode.ws.resource;
 
-import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.gbif.geocode.api.cache.GeocodeBitmapCache;
 import org.gbif.geocode.api.model.Location;
 import org.gbif.geocode.api.service.GeocodeService;
@@ -10,12 +7,8 @@ import org.gbif.geocode.ws.resource.exception.OffWorldException;
 import org.gbif.geocode.ws.resource.exception.VeryUncertainException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import jakarta.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +29,11 @@ import com.google.common.io.ByteStreams;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 
 /** Provides the web service interface to query our Geocoder. */
 @Tag(
@@ -62,8 +58,6 @@ public class GeocodeResource implements GeocodeService {
 
   private final GeocodeService geocoderService;
 
-  private final List<String> defaultLayers;
-
   private static final String DEFAULT_LAYERS_CACHE_BITMAP = "cache-bitmap.png";
   private final String eTag;
 
@@ -72,18 +66,6 @@ public class GeocodeResource implements GeocodeService {
     this.geocoderService = new GeocodeBitmapCache(
         geocoderService, this.getClass().getResourceAsStream(DEFAULT_LAYERS_CACHE_BITMAP));
     this.eTag = buildProperties != null ? buildProperties.getVersion() : "unknown";
-
-    this.defaultLayers = Arrays.asList(
-      "Political",
-      "Centroids",
-      "Continent",
-      "GADM",
-      "GADM1",
-      "GADM2",
-      "GADM3",
-      "MR",
-      "KBA",
-      "WGSRPD");
   }
 
   @Operation(
@@ -141,13 +123,6 @@ public class GeocodeResource implements GeocodeService {
     }
     if (uncertaintyDegrees != null && uncertaintyMeters != null) {
       throw new VeryUncertainException("Cannot specify uncertainty in both degrees and metres.");
-    }
-
-    if (layers == null || layers.isEmpty()) {
-      layers = new ArrayList<>(defaultLayers);
-    } else if (layers.contains("GADM0") || layers.contains("GADM1") || layers.contains("GADM2") || layers.contains("GADM3")) {
-      // As an optimization, GADM is queried as single layer
-      layers.add("GADM");
     }
 
     // Limit the response to 1000 entries.  See the branch paging-responses for an initial implementation of paging,

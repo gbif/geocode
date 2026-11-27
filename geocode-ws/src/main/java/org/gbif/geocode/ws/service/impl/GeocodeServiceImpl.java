@@ -187,8 +187,11 @@ public class GeocodeServiceImpl implements GeocodeService {
     List<String> useLayers) {
     List<Location> locations = new ArrayList<>();
 
-    if (useLayers.isEmpty()) {
+    if (useLayers == null || useLayers.isEmpty()) {
       useLayers = defaultLayers;
+    } else if (useLayers.contains("GADM0") || useLayers.contains("GADM1") || useLayers.contains("GADM2") || useLayers.contains("GADM3")) {
+      // As an optimization, GADM is queried as single layer
+      useLayers.add("GADM");
     }
 
     // Convert uncertainty in metres to degrees, approximating the Earth as a sphere.
